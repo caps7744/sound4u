@@ -26,6 +26,10 @@
             android:name="it.polimi.dima.sound4u.FirstAccessActivity"
             android:label="@string/title_activity_first_access" >
         </activity>
+        <activity
+            android:name="it.polimi.dima.sound4u.SingupActivity"
+            android:label="@string/title_activity_singup" >
+        </activity>
     </application>
 
 </manifest>
