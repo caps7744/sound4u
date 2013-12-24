@@ -1,34 +1,103 @@
 package it.polimi.dima.sound4u;
 
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.os.Handler;
+import android.os.Message;
+import android.os.SystemClock;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.os.Build;
+import android.widget.ImageView;
+
+import java.lang.ref.WeakReference;
 
 public class SplashActivity extends ActionBarActivity {
+
+    private static final long MIN_WAIT_INTERVAL = 1500L;
+
+    private static final long MAX_WAIT_INTERVAL = 3000L;
+
+    private static final int GO_AHEAD_WHAT = 1;
+
+    private static final String IS_DONE_KEY = "it.polimi.dima.sound4u.key.IS_DONE_KEY";
+
+    private static final String START_TIME_KEY = "it.polimi.dima.sound4u.key.START_TIME_KEY";
+
+    private long mStartTime = -1;
+
+    private boolean mIsDone;
+
+    private UiHandler mHandler;
+
+    private static class UiHandler extends Handler {
+
+        private WeakReference<SplashActivity> mActivityRef;
+
+        public UiHandler(final SplashActivity srcActivity) {
+            this.mActivityRef = new WeakReference<SplashActivity>(srcActivity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            final SplashActivity srcActivity = this.mActivityRef.get();
+            if(srcActivity == null) {
+                return;
+            }
+            switch (msg.what) {
+                case GO_AHEAD_WHAT:
+                    long elapsedTime = SystemClock.uptimeMillis() - srcActivity.mStartTime;
+                    if(elapsedTime >= MIN_WAIT_INTERVAL && !srcActivity.mIsDone) {
+                        srcActivity.mIsDone = true;
+                        srcActivity.goAhead();
+                    }
+                    break;
+            }
+        }
+    }
+
+    private void goAhead() {
+        final Intent intent = new Intent(this, FirstAccessActivity.class);
+        startActivity(intent);
+        finish();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new DummyFragment())
-                    .commit();
+        if(savedInstanceState != null) {
+            this.mStartTime = savedInstanceState.getLong(START_TIME_KEY);
         }
+        mHandler = new UiHandler(this);
+        final ImageView logoImageView = (ImageView) findViewById(R.id.splash_imageview);
+        logoImageView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                long elapsedTime = SystemClock.uptimeMillis() - mStartTime;
+                if(elapsedTime >= MIN_WAIT_INTERVAL && !mIsDone) {
+                    mIsDone = true;
+                    goAhead();
+                }
+                return false;
+            }
+        });
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(mStartTime == -1L) {
+            mStartTime = SystemClock.uptimeMillis();
+        }
+        final Message goAheadMessage = mHandler.obtainMessage(GO_AHEAD_WHAT);
+        mHandler.sendMessageAtTime(goAheadMessage, mStartTime + MAX_WAIT_INTERVAL);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.splash, menu);
         return true;
@@ -46,20 +115,10 @@ public class SplashActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * A dummy fragment containing a simple view.
-     */
-    public static class DummyFragment extends Fragment {
-
-        public DummyFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_splash, container, false);
-            return rootView;
-        }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(IS_DONE_KEY, mIsDone);
+        outState.putLong(START_TIME_KEY, mStartTime);
     }
-
 }
