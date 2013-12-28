@@ -1,15 +1,11 @@
 package it.polimi.dima.sound4u;
 
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.os.Build;
+import android.widget.Button;
 
 public class FirstAccessActivity extends ActionBarActivity {
 
@@ -17,12 +13,28 @@ public class FirstAccessActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first);
+        final Button loginButton = (Button) findViewById(R.id.login_button);
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doLogin();
+            }
+        });
+        final Button signupButton = (Button) findViewById(R.id.signup_button);
+        signupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doSignUp();
+            }
+        });
+    }
 
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new DummyFragment())
-                    .commit();
-        }
+    private void doSignUp() {
+        // TODO
+    }
+
+    private void doLogin() {
+        // TODO
     }
 
 
@@ -44,22 +56,6 @@ public class FirstAccessActivity extends ActionBarActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * A dummy fragment containing a simple view.
-     */
-    public static class DummyFragment extends Fragment {
-
-        public DummyFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_first, container, false);
-            return rootView;
-        }
     }
 
 }

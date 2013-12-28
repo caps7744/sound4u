@@ -1,11 +1,11 @@
 package it.polimi.dima.sound4u;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
-import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -14,11 +14,11 @@ import android.widget.ImageView;
 
 import java.lang.ref.WeakReference;
 
-public class SplashActivity extends ActionBarActivity {
+public class SplashActivity extends Activity {
 
-    private static final long MIN_WAIT_INTERVAL = 1500L;
+    private static final long MIN_WAIT_INTERVAL = 3000L;
 
-    private static final long MAX_WAIT_INTERVAL = 3000L;
+    private static final long MAX_WAIT_INTERVAL = 6000L;
 
     private static final int GO_AHEAD_WHAT = 1;
 

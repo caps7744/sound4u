@@ -6,5 +6,7 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_first_access">First Access</string>
     <string name="title_activity_singup">Signup</string>
+    <string name="login_button">Login</string>
+    <string name="signup_button">Sign Up</string>
 
 </resources>

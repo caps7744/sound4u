@@ -15,6 +15,7 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".SplashActivity"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,7 +23,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="it.polimi.dima.sound4u.FirstAccessActivity"
+            android:name=".FirstAccessActivity"
             android:label="@string/title_activity_first_access" >
         </activity>
         <activity
