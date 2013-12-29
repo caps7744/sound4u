@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Absolute colors -->
+    <color name="red">#FF0000</color>
+    <color name="green">#00FF00</color>
+    <color name="blue">#0000FF</color>
+    <color name="black">#000000</color>
+    <color name="grey">#BBBBBB</color>
+    <color name="light_grey">#EEEEEE</color>
+    <color name="dark_grey">#555555</color>
+
+    <!-- Application colors -->
+    <string name="error_message_color">@color/red</string>
+
+</resources>
