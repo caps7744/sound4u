@@ -13,6 +13,8 @@ public class FirstAccessActivity extends ActionBarActivity {
 
     private static final int LOGIN_REQUEST_ID = 1;
 
+    private static final int SIGNUP_REQUEST_ID = 2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,7 +36,8 @@ public class FirstAccessActivity extends ActionBarActivity {
     }
 
     private void doSignUp() {
-        // TODO
+        final Intent signupIntent = new Intent(SingupActivity.SIGNUP_ACTION);
+        startActivityForResult(signupIntent, SIGNUP_REQUEST_ID);
     }
 
     private void doLogin() {
@@ -46,7 +49,16 @@ public class FirstAccessActivity extends ActionBarActivity {
         if(requestCode == LOGIN_REQUEST_ID) {
             switch (resultCode) {
                 case RESULT_OK:
-                    // TODO Manage right login.
+                    // TODO Manage correct login.
+                    finish();
+                    break;
+                case RESULT_CANCELED:
+                    break;
+            }
+        } else if (requestCode == SIGNUP_REQUEST_ID) {
+            switch (resultCode) {
+                case RESULT_OK:
+                    // TODO Manage correct sign up.
                     finish();
                     break;
                 case RESULT_CANCELED:

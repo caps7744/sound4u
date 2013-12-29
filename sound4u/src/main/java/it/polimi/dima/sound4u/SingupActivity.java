@@ -13,16 +13,12 @@ import android.os.Build;
 
 public class SingupActivity extends ActionBarActivity {
 
+    public static final String SIGNUP_ACTION = "it.polimi.dima.sound4u.action.SIGNUP_ACTION";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
-
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new DummyFragment())
-                    .commit();
-        }
     }
 
 
@@ -46,20 +42,8 @@ public class SingupActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * A dummy fragment containing a simple view.
-     */
-    public static class DummyFragment extends Fragment {
-
-        public DummyFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_signup, container, false);
-            return rootView;
-        }
+    private void doSignup(View signupButton) {
+        // TODO
     }
 
 }

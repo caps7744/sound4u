@@ -34,6 +34,10 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="FirstAccessActivity" />
+            <intent-filter>
+                <action android:name="it.polimi.dima.sound4u.action.SIGNUP_ACTION" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".LoginActivity"

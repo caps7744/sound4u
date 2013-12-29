@@ -14,6 +14,14 @@
     <string name="username_label">Username</string>
     <string name="password_label">Passwrod</string>
     <string name="login_button_label">Login</string>
+    <!-- Sign up Activity -->
+    <string name="name_label">Name</string>
+    <string name="surname_label">Surname</string>
+    <string name="password_first_hint">Insert password</string>
+    <string name="password_second_hint">Insert again</string>
+    <string name="birthdate_label">Birth Date</string>
+    <string name="birthplace_label">Birth Place</string>
+    <string name="birthdate_hint">GG/MM/AAAA</string>
     <!-- Error messages -->
     <string name="mandatory_field_error">The field %1$s is mandatory</string>
     <string name="wrong_credential_error">Wrong credentials! Please try again.</string>
