@@ -1,6 +1,6 @@
 package it.polimi.dima.sound4u.model;
 
-import android.media.Image;
+import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
@@ -35,7 +35,7 @@ public class User implements Parcelable{
     /**
      * Initialized to null to represent that no avatar is available.
      */
-    //private Image avatar = null;
+    private Bitmap avatar = null;
 
     private String name;
 
@@ -60,7 +60,9 @@ public class User implements Parcelable{
         this.id = in.readLong();
         this.username = in.readString();
         this.password = in.readString();
-        // TODO Image management
+        if(in.readByte() == PRESENT) {
+            this.avatar = in.readParcelable(Bitmap.class.getClassLoader());
+        }
         if(in.readByte() == PRESENT) {
             this.name = in.readString();
         }
@@ -95,9 +97,9 @@ public class User implements Parcelable{
         return password;
     }
 
-    /*public Image getAvatar() {
+    public Bitmap getAvatar() {
         return avatar;
-    }*/
+    }
 
     public String getName() {
         return name;
@@ -119,13 +121,25 @@ public class User implements Parcelable{
         return birthPlace;
     }
 
-    /*public User withAvatar(final Image avatar) {
+    public User withAvatar(final Bitmap avatar) {
         if(avatar == null) {
-            throw new IllegalArgumentException("Image cannot be null!");
+            throw new IllegalArgumentException("Avatar cannot be null!");
         }
         this.avatar = avatar;
         return this;
-    }*/
+    }
+
+    public User removeAvatar() {
+        if(!hasAvatar()) {
+            throw new IllegalStateException("User already have no avatar!");
+        }
+        this.avatar = null;
+        return  this;
+    }
+
+    public boolean hasAvatar() {
+        return avatar != null;
+    }
 
     public User withName(final String name) {
         if(name == null) {
@@ -174,7 +188,12 @@ public class User implements Parcelable{
         dest.writeLong(id);
         dest.writeString(username);
         dest.writeString(password);
-        // TODO Image management
+        if(avatar != null ) {
+            dest.writeByte(PRESENT);
+            dest.writeParcelable(avatar, flags);
+        } else {
+            dest.writeByte(NOT_PRESENT);
+        }
         if(!TextUtils.isEmpty(name)) {
             dest.writeByte(PRESENT);
             dest.writeString(name);

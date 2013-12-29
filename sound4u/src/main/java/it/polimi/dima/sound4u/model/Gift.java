@@ -31,53 +31,53 @@ public class Gift implements Parcelable{
 
     private long id;
 
-    private long sender_id;
+    private User sender;
 
-    private long receiver_id;
+    private User receiver;
 
-    private long sound_id;
+    private Sound sound;
 
     private String message;
 
-    private byte viewed;
+    private boolean viewed;
 
-    private Gift(final long id, final long sender_id, final long receiver_id, final long sound_id) {
+    private Gift(final long id, final User sender, final User receiver, final Sound sound) {
         this.id = id;
-        this.sender_id = sender_id;
-        this.receiver_id = receiver_id;
-        this.sound_id = sound_id;
-        viewed = VIEWED;
+        this.sender= sender;
+        this.receiver = receiver;
+        this.sound = sound;
+        viewed = false;
     }
 
     private Gift(Parcel in) {
         this.id = in.readLong();
-        this.sender_id = in.readLong();
-        this.receiver_id = in.readLong();
-        this.sound_id = in.readLong();
+        this.sender = in.readParcelable(User.class.getClassLoader());
+        this.receiver = in.readParcelable(User.class.getClassLoader());
+        this.sound = in.readParcelable(Sound.class.getClassLoader());
         if(in.readByte() == PRESENT) {
             this.message = in.readString();
         }
-        this.viewed = in.readByte();
+        this.viewed = in.readByte() == VIEWED;
     }
 
-    public static Gift create(final long id, final long sender_id, final long receiver_id, final long sound_id) {
-        return  new Gift(id, sender_id, receiver_id, sound_id);
+    public static Gift create(final long id, final User sender, final User receiver, final Sound sound) {
+        return  new Gift(id, sender, receiver, sound);
     }
 
     public long getId() {
         return id;
     }
 
-    public long getSenderId() {
-        return sender_id;
+    public User getSender() {
+        return sender;
     }
 
-    public long getReceiverId() {
-        return receiver_id;
+    public User getReceiver() {
+        return receiver;
     }
 
-    public long getSoundId() {
-        return sound_id;
+    public Sound getSound() {
+        return sound;
     }
 
     public String getMessage() {
@@ -85,7 +85,7 @@ public class Gift implements Parcelable{
     }
 
     public boolean isViewed() {
-        return viewed == VIEWED;
+        return viewed;
     }
 
     public Gift withMessage(final String message) {
@@ -97,10 +97,10 @@ public class Gift implements Parcelable{
     }
 
     public Gift markAsViewed() {
-        if(viewed == NOT_VIEWED) {
+        if(viewed) {
             throw new IllegalStateException("Gift cannot be marked as viewed again!");
         }
-        this.viewed = VIEWED;
+        this.viewed = true;
         return this;
     }
 
@@ -112,15 +112,15 @@ public class Gift implements Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(id);
-        dest.writeLong(sender_id);
-        dest.writeLong(receiver_id);
-        dest.writeLong(sound_id);
+        dest.writeParcelable(sender, flags);
+        dest.writeParcelable(receiver, flags);
+        dest.writeParcelable(sound, flags);
         if(!TextUtils.isEmpty(message)) {
             dest.writeByte(PRESENT);
             dest.writeString(message);
         } else {
             dest.writeByte(NOT_PRESENT);
         }
-        dest.writeByte(viewed);
+        dest.writeByte(viewed ? VIEWED : NOT_VIEWED);
     }
 }
