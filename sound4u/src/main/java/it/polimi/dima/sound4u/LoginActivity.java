@@ -2,27 +2,23 @@ package it.polimi.dima.sound4u;
 
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.os.Build;
 import android.widget.EditText;
 import android.widget.TextView;
+import it.polimi.dima.sound4u.conf.Const;
 import it.polimi.dima.sound4u.model.User;
 import it.polimi.dima.sound4u.service.LoginService;
 
 public class LoginActivity extends ActionBarActivity {
 
-    public static final String LOGIN_ACTION = "it.polimi.dima.sound4u.action.LOGIN_ACTION";
+    public static final String LOGIN_ACTION = Const.PKG + ".action.LOGIN_ACTION";
 
-    public static final String USER_DATA_EXTRA = "it.polimi.dima.sound4u.extra.USER_DATA_EXTRA";
+    public static final String USER_EXTRA = Const.PKG + ".extra.USER_EXTRA";
 
     private EditText usernameEditText;
 
@@ -81,7 +77,7 @@ public class LoginActivity extends ActionBarActivity {
         final User user = LoginService.get().login(username, password);
         if(user != null) {
             Intent resultIntent = new Intent();
-            resultIntent.putExtra(USER_DATA_EXTRA, user);
+            resultIntent.putExtra(USER_EXTRA, user);
             setResult(RESULT_OK, resultIntent);
             finish();
         } else {

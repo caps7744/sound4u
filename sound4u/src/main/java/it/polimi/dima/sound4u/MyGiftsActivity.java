@@ -10,15 +10,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
+import it.polimi.dima.sound4u.conf.Const;
 
-public class SingupActivity extends ActionBarActivity {
+public class MyGiftsActivity extends ActionBarActivity {
 
-    public static final String SIGNUP_ACTION = "it.polimi.dima.sound4u.action.SIGNUP_ACTION";
+    public static final String USER_EXTRA = Const.PKG + ".extra.USER_EXTRA";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_signup);
+        setContentView(R.layout.activity_my_gifts);
     }
 
 
@@ -26,7 +27,7 @@ public class SingupActivity extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.singup, menu);
+        getMenuInflater().inflate(R.menu.my_gifts, menu);
         return true;
     }
 
@@ -40,10 +41,6 @@ public class SingupActivity extends ActionBarActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void doSignup(View signupButton) {
-        // TODO
     }
 
 }

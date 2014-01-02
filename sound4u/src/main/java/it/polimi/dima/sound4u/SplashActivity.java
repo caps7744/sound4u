@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+import it.polimi.dima.sound4u.conf.Const;
 
 import java.lang.ref.WeakReference;
 
@@ -22,9 +23,9 @@ public class SplashActivity extends Activity {
 
     private static final int GO_AHEAD_WHAT = 1;
 
-    private static final String IS_DONE_KEY = "it.polimi.dima.sound4u.key.IS_DONE_KEY";
+    private static final String IS_DONE_KEY = Const.PKG + ".key.IS_DONE_KEY";
 
-    private static final String START_TIME_KEY = "it.polimi.dima.sound4u.key.START_TIME_KEY";
+    private static final String START_TIME_KEY = Const.PKG + ".key.START_TIME_KEY";
 
     private long mStartTime = -1;
 

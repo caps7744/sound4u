@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import it.polimi.dima.sound4u.conf.Const;
 import it.polimi.dima.sound4u.model.User;
 
 public class FirstAccessActivity extends ActionBarActivity {
@@ -14,6 +15,8 @@ public class FirstAccessActivity extends ActionBarActivity {
     private static final int LOGIN_REQUEST_ID = 1;
 
     private static final int SIGNUP_REQUEST_ID = 2;
+
+    public static final String USER_EXTRA = Const.PKG + ".extra.USER_EXTRA";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +39,7 @@ public class FirstAccessActivity extends ActionBarActivity {
     }
 
     private void doSignUp() {
-        final Intent signupIntent = new Intent(SingupActivity.SIGNUP_ACTION);
+        final Intent signupIntent = new Intent(SignupActivity.SIGNUP_ACTION);
         startActivityForResult(signupIntent, SIGNUP_REQUEST_ID);
     }
 
@@ -45,11 +48,15 @@ public class FirstAccessActivity extends ActionBarActivity {
         startActivityForResult(loginIntent, LOGIN_REQUEST_ID);
     }
 
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == LOGIN_REQUEST_ID) {
             switch (resultCode) {
                 case RESULT_OK:
-                    // TODO Manage correct login.
+                    final User user = (User) data.getParcelableExtra(LoginActivity.USER_EXTRA);
+                    final Intent menuIntent = new Intent(this, MyGiftsActivity.class);
+                    menuIntent.putExtra(MyGiftsActivity.USER_EXTRA, user);
+                    startActivity(menuIntent);
                     finish();
                     break;
                 case RESULT_CANCELED:
@@ -58,7 +65,10 @@ public class FirstAccessActivity extends ActionBarActivity {
         } else if (requestCode == SIGNUP_REQUEST_ID) {
             switch (resultCode) {
                 case RESULT_OK:
-                    // TODO Manage correct sign up.
+                    final User user = (User) data.getParcelableExtra(SignupActivity.USER_EXTRA);
+                    final Intent menuIntent = new Intent(this, MyGiftsActivity.class);
+                    menuIntent.putExtra(MyGiftsActivity.USER_EXTRA, user);
+                    startActivity(menuIntent);
                     finish();
                     break;
                 case RESULT_CANCELED:

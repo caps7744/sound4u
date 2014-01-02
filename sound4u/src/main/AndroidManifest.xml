@@ -14,42 +14,47 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".SplashActivity"
+            android:name="it.polimi.dima.sound4u.SplashActivity"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".FirstAccessActivity"
+            android:name="it.polimi.dima.sound4u.FirstAccessActivity"
             android:label="@string/title_activity_first_access" >
         </activity>
         <activity
-            android:name=".SingupActivity"
+            android:name="it.polimi.dima.sound4u.SignupActivity"
             android:label="@string/title_activity_singup"
             android:parentActivityName="FirstAccessActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="FirstAccessActivity" />
+
             <intent-filter>
                 <action android:name="it.polimi.dima.sound4u.action.SIGNUP_ACTION" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name="it.polimi.dima.sound4u.LoginActivity"
             android:label="@string/title_activity_login"
             android:parentActivityName="FirstAccessActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="FirstAccessActivity" />
+
             <intent-filter>
                 <action android:name="it.polimi.dima.sound4u.action.LOGIN_ACTION" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="it.polimi.dima.sound4u.MyGiftsActivity"
+            android:label="@string/title_activity_my_gifts" >
         </activity>
     </application>
 

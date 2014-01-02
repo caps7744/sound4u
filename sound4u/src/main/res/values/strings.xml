@@ -6,24 +6,32 @@
     <string name="action_settings">Settings</string>
     <!-- First Access Activity -->
     <string name="title_activity_first_access">First Access</string>
-    <string name="title_activity_singup">Signup</string>
     <string name="login_button">Login</string>
     <string name="signup_button">Sign Up</string>
     <!-- Login Activity -->
     <string name="title_activity_login">Login</string>
     <string name="username_label">Username</string>
-    <string name="password_label">Passwrod</string>
+    <string name="password_label">Password</string>
     <string name="login_button_label">Login</string>
     <!-- Sign up Activity -->
-    <string name="name_label">Name</string>
-    <string name="surname_label">Surname</string>
+    <string name="title_activity_singup">Signup</string>
     <string name="password_first_hint">Insert password</string>
     <string name="password_second_hint">Insert again</string>
+    <!-- Add Info Activity -->
+    <string name="title_activity_add_info">Additional Info</string>
+    <string name="email_label">Email</string>
+    <string name="name_label">Name</string>
+    <string name="surname_label">Surname</string>
     <string name="birthdate_label">Birth Date</string>
     <string name="birthplace_label">Birth Place</string>
     <string name="birthdate_hint">GG/MM/AAAA</string>
+    <string name="add_info_button">Add Info</string>
+    <string name="skip_label">Skip</string>
     <!-- Error messages -->
     <string name="mandatory_field_error">The field %1$s is mandatory</string>
     <string name="wrong_credential_error">Wrong credentials! Please try again.</string>
+    <string name="passwords_equals">Passwords don\'t match</string>
+    <string name="username_already_used">%1$s already exists in Sound4u</string>
+    <string name="title_activity_my_gifts">My Gifts</string>
 
 </resources>
