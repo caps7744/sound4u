@@ -27,11 +27,17 @@
     <string name="birthdate_hint">GG/MM/AAAA</string>
     <string name="add_info_button">Add Info</string>
     <string name="skip_label">Skip</string>
+    <!-- Player Activity -->
+    <string name="equalizer_button">equalizer</string>
+    <string name="download_button">download</string>
     <!-- Error messages -->
     <string name="mandatory_field_error">The field %1$s is mandatory</string>
     <string name="wrong_credential_error">Wrong credentials! Please try again.</string>
     <string name="passwords_equals">Passwords don\'t match</string>
     <string name="username_already_used">%1$s already exists in Sound4u</string>
     <string name="title_activity_my_gifts">My Gifts</string>
+    <string name="title_activity_player">PlayerActivity</string>
+
+
 
 </resources>

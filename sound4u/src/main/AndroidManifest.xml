@@ -19,6 +19,7 @@
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -36,6 +37,7 @@
 
             <intent-filter>
                 <action android:name="it.polimi.dima.sound4u.action.SIGNUP_ACTION" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -49,12 +51,17 @@
 
             <intent-filter>
                 <action android:name="it.polimi.dima.sound4u.action.LOGIN_ACTION" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
             android:name="it.polimi.dima.sound4u.MyGiftsActivity"
             android:label="@string/title_activity_my_gifts" >
+        </activity>
+        <activity
+            android:name="it.polimi.dima.sound4u.PlayerActivity"
+            android:label="@string/title_activity_player" >
         </activity>
     </application>
 
