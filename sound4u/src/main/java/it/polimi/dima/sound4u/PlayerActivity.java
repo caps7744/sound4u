@@ -1,9 +1,10 @@
 package it.polimi.dima.sound4u;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
-import android.view.*;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 
 public class PlayerActivity extends ActionBarActivity {
 
@@ -13,9 +14,7 @@ public class PlayerActivity extends ActionBarActivity {
         setContentView(R.layout.activity_player);
 
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.playerContainer, new DummyFragment())
-                    .commit();
+            showThumbnailFragment();
         }
     }
 
@@ -45,30 +44,20 @@ public class PlayerActivity extends ActionBarActivity {
 
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         android.support.v4.app.FragmentTransaction transaction = fm.beginTransaction();
-        transaction.replace(R.id.playerContainer, fragment);
+        transaction.replace(R.id.thumbnailEqualizerContainer, fragment);
         transaction.commit();
     }
 
     public void backToPlayer(View view) {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.playerContainer, new DummyFragment())
-                .commit();
+        showThumbnailFragment();
     }
 
-    /**
-     * A dummy fragment containing a simple view.
-     */
-    public static class DummyFragment extends Fragment {
+    private void showThumbnailFragment() {
+        ThumbnailFragment fragment = new ThumbnailFragment();
 
-        public DummyFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_player, container, false);
-            return rootView;
-        }
+        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        android.support.v4.app.FragmentTransaction transaction = fm.beginTransaction();
+        transaction.replace(R.id.thumbnailEqualizerContainer, fragment);
+        transaction.commit();
     }
-
 }
