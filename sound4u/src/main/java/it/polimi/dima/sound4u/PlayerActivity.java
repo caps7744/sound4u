@@ -1,9 +1,9 @@
 package it.polimi.dima.sound4u;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.*;
 
 public class PlayerActivity extends ActionBarActivity {
 
@@ -11,6 +11,12 @@ public class PlayerActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
+
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.playerContainer, new DummyFragment())
+                    .commit();
+        }
     }
 
 
@@ -32,6 +38,37 @@ public class PlayerActivity extends ActionBarActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void goToEqualizer(View view) {
+        EqualizerFragment fragment = new EqualizerFragment();
+
+        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        android.support.v4.app.FragmentTransaction transaction = fm.beginTransaction();
+        transaction.replace(R.id.playerContainer, fragment);
+        transaction.commit();
+    }
+
+    public void backToPlayer(View view) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.playerContainer, new DummyFragment())
+                .commit();
+    }
+
+    /**
+     * A dummy fragment containing a simple view.
+     */
+    public static class DummyFragment extends Fragment {
+
+        public DummyFragment() {
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_player, container, false);
+            return rootView;
+        }
     }
 
 }

@@ -36,8 +36,7 @@
     <string name="passwords_equals">Passwords don\'t match</string>
     <string name="username_already_used">%1$s already exists in Sound4u</string>
     <string name="title_activity_my_gifts">My Gifts</string>
+
     <string name="title_activity_player">PlayerActivity</string>
-
-
 
 </resources>
