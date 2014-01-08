@@ -1,5 +1,6 @@
 package it.polimi.dima.sound4u.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -42,7 +43,16 @@ public class PlayerActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void goToEqualizer(View view) {
+    /*
+    Not implemented yet, it works just for the interface
+     */
+    public void doSoundSearch(View view) {
+        Intent intent;
+        intent = new Intent(this, SoundSearchActivity.class);
+        startActivity(intent);
+    }
+
+    public void showEqualizer(View view) {
         EqualizerFragment fragment = new EqualizerFragment();
 
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
@@ -51,7 +61,7 @@ public class PlayerActivity extends ActionBarActivity {
         transaction.commit();
     }
 
-    public void backToPlayer(View view) {
+    public void showThumbnail(View view) {
         showThumbnailFragment();
     }
 

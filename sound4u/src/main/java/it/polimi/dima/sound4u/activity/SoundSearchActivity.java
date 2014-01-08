@@ -1,15 +1,11 @@
 package it.polimi.dima.sound4u.activity;
 
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.os.Build;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import it.polimi.dima.sound4u.R;
 
 public class SoundSearchActivity extends ActionBarActivity {
@@ -19,17 +15,20 @@ public class SoundSearchActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sound_search);
 
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new DummyFragment())
-                    .commit();
-        }
-    }
+        ListView listView = (ListView)findViewById(R.id.list_sound_search_results);
 
+        // Example String Results
+        String [] array = new String[]{"Angra - The Course of Nature", "Aquaria - Shambala", "Calico Jack - House of Jewelry", "Judas Priest - Breaking the Law", "Motorhead - Overkill", "Nid - Let it Be", "A - B", "C - D", "E - F", "G - H", "I - J", "K - L"};
+
+        //remember to optimize http://www.simplesoft.it/android/guida-agli-adapter-e-le-listview-in-android.html
+        ArrayAdapter<String> arrayAdapter =
+                new ArrayAdapter<String>(this, R.layout.list_row_sound, R.id.list_element_sound, array);
+        listView.setAdapter(arrayAdapter);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        
+
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.sound_search, menu);
         return true;
@@ -46,21 +45,4 @@ public class SoundSearchActivity extends ActionBarActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-    /**
-     * A dummy fragment containing a simple view.
-     */
-    public static class DummyFragment extends Fragment {
-
-        public DummyFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_sound_search, container, false);
-            return rootView;
-        }
-    }
-
 }

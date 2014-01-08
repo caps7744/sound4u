@@ -1,17 +1,39 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools" android:id="@+id/playerContainer"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" >
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+    <LinearLayout android:layout_width="fill_parent"
+                  android:layout_height="wrap_content"
+            android:background="@color/grey">
+
+        <!-- Search Dialog -->
+        <EditText
+                android:layout_width="208dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/sound_search_text"
+                android:layout_marginRight="12dp"
+                android:hint="@string/sound_search_suggestion"/>
+
+        <!-- Search Button -->
+        <ImageButton
+                android:layout_width="67dp"
+                android:layout_height="fill_parent"
+                android:id="@+id/sound_search_btn"
+                android:src="@drawable/ic_action_search"
+                android:onClick="doSoundSearch"/>
+
+    </LinearLayout>
 
     <!-- Player Header -->
     <LinearLayout
             android:id="@+id/player_header_bg"
             android:layout_width="fill_parent"
-            android:layout_height="60dip"
+            android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:paddingLeft="5dp"
             android:paddingRight="5dp">
-
         <!-- Song Title -->
         <TextView
                 android:id="@+id/songTitle"
@@ -23,33 +45,69 @@
                 android:paddingLeft="10dp"
                 android:textStyle="bold"
                 android:text="The Good, The Bad And The Ugly"
-                android:layout_marginTop="10dp"/>"
-
-        <!-- Playlist button -->
-        <ImageButton
-                android:id="@+id/btnPlaylist"
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:src="@drawable/img_btn_playlist"
-                android:background="@null"/>
+                android:layout_below="@+id/player_header_bg"
+                android:layout_alignParentLeft="true"/>
     </LinearLayout>
 
 <LinearLayout
                 android:id="@+id/thumbnailEqualizerContainer"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="240dp"
+                android:layout_height="100dp"
                 android:layout_marginTop="65dp"
-                android:name="it.polimi.dima.sound4u.ThumbnailFragment"/>
+                android:name="it.polimi.dima.sound4u.ThumbnailFragment">
+</LinearLayout>
 
     <!-- Player Footer -->
     <LinearLayout
             android:id="@+id/player_footer_bg"
             android:layout_width="fill_parent"
-            android:layout_height="100dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical">
 
+        <!-- Progress Bar/Seek bar -->
+        <SeekBar
+                android:id="@+id/songProgressBar"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginBottom="20dp"
+                android:thumb="@drawable/seek_handler"
+                android:progressDrawable="@drawable/img_seekbar_progress_blue"
+                android:paddingLeft="6dp"
+                android:paddingRight="6dp"/>
+
+        <!-- Timer Display -->
+        <LinearLayout
+                android:id="@+id/timerDisplay"
+                android:layout_above="@id/songProgressBar"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginBottom="10dp">
+            <!-- Current Duration Label -->
+            <TextView
+                    android:id="@+id/songCurrentDurationLabel"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="left"
+                    android:textColor="#eeeeee"
+                    android:textStyle="bold"/>
+            <!-- Total Duration Label -->
+            <TextView
+                    android:id="@+id/songTotalDurationLabel"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:textColor="#04cbde"
+                    android:textStyle="bold"/>
+        </LinearLayout>
         <!-- Player Buttons -->
         <LinearLayout
                 android:layout_width="wrap_content"
@@ -94,71 +152,29 @@
                     android:layout_height="wrap_content"
                     android:background="@null"/>
         </LinearLayout>
-    </LinearLayout>
-
-    <!-- Progress Bar/Seek bar -->
-    <SeekBar
-            android:id="@+id/songProgressBar"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginBottom="20dp"
-            android:layout_above="@id/player_footer_bg"
-            android:thumb="@drawable/seek_handler"
-            android:progressDrawable="@drawable/img_seekbar_progress_blue"
-            android:paddingLeft="6dp"
-            android:paddingRight="6dp"/>
-
-    <!-- Timer Display -->
-    <LinearLayout
-            android:id="@+id/timerDisplay"
-            android:layout_above="@id/songProgressBar"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginBottom="10dp">
-        <!-- Current Duration Label -->
-        <TextView
-                android:id="@+id/songCurrentDurationLabel"
+        <!-- Download / Equalizer buttons -->
+        <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="left"
-                android:textColor="#eeeeee"
-                android:textStyle="bold"/>
-        <!-- Total Duration Label -->
-        <TextView
-                android:id="@+id/songTotalDurationLabel"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="right"
-                android:textColor="#04cbde"
-                android:textStyle="bold"/>
-    </LinearLayout>
-
-    <!-- Download / Equalizer buttons -->
-    <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@id/timerDisplay"
-            android:gravity="center">
-        <!-- Download Button -->
-        <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/download_button"
-                android:id="@+id/downloadButton"/>
-        <!-- Equalizer Button -->
-        <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/equalizer_button"
-                android:id="@+id/equalizerButton"
-                android:onClick="goToEqualizer"/>
+                android:layout_above="@id/timerDisplay"
+                android:gravity="center">
+            <!-- Download Button -->
+            <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/download_button"
+                    android:id="@+id/downloadButton"/>
+            <!-- Equalizer Button -->
+            <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/equalizer_button"
+                    android:id="@+id/equalizerButton"
+                    android:onClick="showEqualizer"/>
+        </LinearLayout>
     </LinearLayout>
 
 
-</RelativeLayout>
+
+
+</LinearLayout>
