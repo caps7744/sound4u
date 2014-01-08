@@ -28,7 +28,7 @@
             android:label="@string/title_activity_first_access" >
         </activity>
         <activity
-            android:name="it.polimi.dima.sound4u.activity.LoginActivity"
+            android:name=".activity.FacebookLoginActivity"
             android:label="@string/title_activity_login" >
             <intent-filter>
                 <action android:name="it.polimi.dima.sound4u.action.LOGIN_ACTION" />
