@@ -1,4 +1,4 @@
-package it.polimi.dima.sound4u;
+package it.polimi.dima.sound4u.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+import it.polimi.dima.sound4u.R;
 import it.polimi.dima.sound4u.conf.Const;
 
 import java.lang.ref.WeakReference;

@@ -1,10 +1,13 @@
-package it.polimi.dima.sound4u;
+package it.polimi.dima.sound4u.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import it.polimi.dima.sound4u.R;
+import it.polimi.dima.sound4u.fragment.EqualizerFragment;
+import it.polimi.dima.sound4u.fragment.ThumbnailFragment;
 
 public class PlayerActivity extends ActionBarActivity {
 

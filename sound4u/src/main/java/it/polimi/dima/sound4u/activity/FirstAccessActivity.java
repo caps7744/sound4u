@@ -1,16 +1,19 @@
-package it.polimi.dima.sound4u;
+package it.polimi.dima.sound4u.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import it.polimi.dima.sound4u.R;
 import it.polimi.dima.sound4u.conf.Const;
+import it.polimi.dima.sound4u.fragment.FirstAccessFragment;
 import it.polimi.dima.sound4u.model.User;
 
-public class FirstAccessActivity extends ActionBarActivity {
+public class FirstAccessActivity extends FragmentActivity implements FirstAccessFragment.FirstAccessListener {
 
     private static final int LOGIN_REQUEST_ID = 1;
 
@@ -21,29 +24,18 @@ public class FirstAccessActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_first);
-        final Button loginButton = (Button) findViewById(R.id.login_button);
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                doLogin();
-            }
-        });
-        final Button signupButton = (Button) findViewById(R.id.signup_button);
-        signupButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                doSignUp();
-            }
-        });
+        setContentView(R.layout.activity_single_fragment);
+        if (savedInstanceState == null) {
+            final FirstAccessFragment fragment = new FirstAccessFragment();
+            getSupportFragmentManager().beginTransaction().add(R.id.anchor_point, fragment).commit();
+        }
     }
 
-    private void doSignUp() {
-        final Intent signupIntent = new Intent(SignupActivity.SIGNUP_ACTION);
-        startActivityForResult(signupIntent, SIGNUP_REQUEST_ID);
+    public void doSignUp() {
+        // TODO Nothing, I have only to refactor a bit.
     }
 
-    private void doLogin() {
+    public void doLogin() {
         final Intent loginIntent = new Intent(LoginActivity.LOGIN_ACTION);
         startActivityForResult(loginIntent, LOGIN_REQUEST_ID);
     }
@@ -65,10 +57,6 @@ public class FirstAccessActivity extends ActionBarActivity {
         } else if (requestCode == SIGNUP_REQUEST_ID) {
             switch (resultCode) {
                 case RESULT_OK:
-                    final User user = (User) data.getParcelableExtra(SignupActivity.USER_EXTRA);
-                    final Intent menuIntent = new Intent(this, MyGiftsActivity.class);
-                    menuIntent.putExtra(MyGiftsActivity.USER_EXTRA, user);
-                    startActivity(menuIntent);
                     finish();
                     break;
                 case RESULT_CANCELED:
@@ -79,7 +67,6 @@ public class FirstAccessActivity extends ActionBarActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.first_access, menu);
         return true;

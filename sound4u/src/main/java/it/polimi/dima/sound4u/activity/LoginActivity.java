@@ -1,4 +1,4 @@
-package it.polimi.dima.sound4u;
+package it.polimi.dima.sound4u.activity;
 
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import it.polimi.dima.sound4u.R;
 import it.polimi.dima.sound4u.conf.Const;
 import it.polimi.dima.sound4u.model.User;
 import it.polimi.dima.sound4u.service.LoginService;

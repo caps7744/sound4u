@@ -1,10 +1,11 @@
-package it.polimi.dima.sound4u;
+package it.polimi.dima.sound4u.fragment;
 
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import it.polimi.dima.sound4u.R;
 
 /**
  * Created by Caps on 07/01/14.

@@ -1,15 +1,12 @@
 package it.polimi.dima.sound4u.service;
 
+import it.polimi.dima.sound4u.dummy.DummyContent;
 import it.polimi.dima.sound4u.model.User;
 
 /**
  * Created by canidio-andrea on 29/12/13.
  */
 public class LoginService {
-
-    private static final String DUMMY_USERNAME = "dummy";
-
-    private static final String DUMMY_PASSWORD = "password";
 
     private static LoginService instance;
 
@@ -21,10 +18,11 @@ public class LoginService {
     }
 
     public User login(String username, String password) {
-        User user = null;
-        if(DUMMY_USERNAME.equalsIgnoreCase(username) && DUMMY_PASSWORD.equalsIgnoreCase(password)) {
-            user = User.create(1L, username, password);
+        for(User user: DummyContent.USERS) {
+            if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
+                return user;
+            }
         }
-        return user;
+        return null;
     }
 }

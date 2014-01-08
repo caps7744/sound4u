@@ -1,4 +1,4 @@
-package it.polimi.dima.sound4u;
+package it.polimi.dima.sound4u.activity;
 
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -10,16 +10,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
-import it.polimi.dima.sound4u.conf.Const;
+import it.polimi.dima.sound4u.R;
 
-public class MyGiftsActivity extends ActionBarActivity {
-
-    public static final String USER_EXTRA = Const.PKG + ".extra.USER_EXTRA";
+public class SoundSearchActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_gifts);
+        setContentView(R.layout.activity_sound_search);
+
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.container, new DummyFragment())
+                    .commit();
+        }
     }
 
 
@@ -27,7 +31,7 @@ public class MyGiftsActivity extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.my_gifts, menu);
+        getMenuInflater().inflate(R.menu.sound_search, menu);
         return true;
     }
 
@@ -41,6 +45,22 @@ public class MyGiftsActivity extends ActionBarActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * A dummy fragment containing a simple view.
+     */
+    public static class DummyFragment extends Fragment {
+
+        public DummyFragment() {
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_sound_search, container, false);
+            return rootView;
+        }
     }
 
 }
