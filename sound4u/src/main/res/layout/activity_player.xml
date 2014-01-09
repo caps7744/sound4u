@@ -12,7 +12,7 @@
         <EditText
                 android:layout_width="208dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/sound_search_text"
+                android:id="@+id/edit_text_sound_search"
                 android:layout_marginRight="12dp"
                 android:hint="@string/sound_search_suggestion"/>
 
@@ -20,7 +20,7 @@
         <ImageButton
                 android:layout_width="67dp"
                 android:layout_height="fill_parent"
-                android:id="@+id/sound_search_btn"
+                android:id="@+id/btn_sound_search"
                 android:src="@drawable/ic_action_search"
                 android:onClick="doSoundSearch"/>
 
@@ -36,7 +36,7 @@
             android:paddingRight="5dp">
         <!-- Song Title -->
         <TextView
-                android:id="@+id/songTitle"
+                android:id="@+id/song_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -50,7 +50,7 @@
     </LinearLayout>
 
 <LinearLayout
-                android:id="@+id/thumbnailEqualizerContainer"
+                android:id="@+id/thumbnail_equalizer_container"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
@@ -58,6 +58,32 @@
                 android:name="it.polimi.dima.sound4u.ThumbnailFragment">
 </LinearLayout>
 
+    <!-- Player Buttons Container -->
+    <LinearLayout android:layout_width="fill_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="horizontal">
+        <!-- Play Button -->
+        <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Play"
+                android:id="@+id/btn_play"/>
+        <!-- Play Button -->
+        <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pause"
+                android:id="@+id/btn_pause"/>
+        <!-- Play Button -->
+        <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Stop"
+                android:id="@+id/btn_stop"/>
+    </LinearLayout>
     <!-- Player Footer -->
     <LinearLayout
             android:id="@+id/player_footer_bg"
@@ -68,8 +94,9 @@
             android:orientation="vertical">
 
         <!-- Progress Bar/Seek bar -->
+
         <SeekBar
-                android:id="@+id/songProgressBar"
+                android:id="@+id/seek_bar"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="20dp"
@@ -82,8 +109,8 @@
 
         <!-- Timer Display -->
         <LinearLayout
-                android:id="@+id/timerDisplay"
-                android:layout_above="@id/songProgressBar"
+                android:id="@+id/timer_display"
+                android:layout_above="@id/seek_bar"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="20dp"
@@ -91,7 +118,7 @@
                 android:layout_marginBottom="10dp">
             <!-- Current Duration Label -->
             <TextView
-                    android:id="@+id/songCurrentDurationLabel"
+                    android:id="@+id/current_duration_label"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -100,7 +127,7 @@
                     android:textStyle="bold"/>
             <!-- Total Duration Label -->
             <TextView
-                    android:id="@+id/songTotalDurationLabel"
+                    android:id="@+id/total_duration_label"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -108,68 +135,24 @@
                     android:textColor="#04cbde"
                     android:textStyle="bold"/>
         </LinearLayout>
-        <!-- Player Buttons -->
-        <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp">
-            <!-- Previous Button -->
-            <ImageButton
-                    android:id="@+id/btnPrevious"
-                    android:src="@drawable/img_btn_previous"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@null"/>
-            <!-- Backward Button -->
-            <ImageButton
-                    android:id="@+id/btnBackward"
-                    android:src="@drawable/img_btn_backward"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@null"/>
-            <!-- Play Button -->
-            <ImageButton
-                    android:id="@+id/btnPlay"
-                    android:src="@drawable/img_btn_play"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@null"/>
-            <!-- Forward Button -->
-            <ImageButton
-                    android:id="@+id/btnForward"
-                    android:src="@drawable/img_btn_forward"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@null"/>
-            <!-- Next Button -->
-            <ImageButton
-                    android:id="@+id/btnNext"
-                    android:src="@drawable/img_btn_next"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@null"/>
-        </LinearLayout>
         <!-- Download / Equalizer buttons -->
         <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_above="@id/timerDisplay"
+                android:layout_above="@id/timer_display"
                 android:gravity="center">
             <!-- Download Button -->
             <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/download_button"
-                    android:id="@+id/downloadButton"/>
+                    android:id="@+id/btn_download"/>
             <!-- Equalizer Button -->
             <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/equalizer_button"
-                    android:id="@+id/equalizerButton"
+                    android:id="@+id/btn_equalizer"
                     android:onClick="showEqualizer"/>
         </LinearLayout>
     </LinearLayout>
