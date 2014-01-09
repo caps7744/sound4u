@@ -30,18 +30,23 @@ public class Sound implements Parcelable{
 
     private String title;
 
-    private String author;
+    private User author;
 
-    private Bitmap cover;
+    private String cover;
+
+    private String urlStream;
 
     private Sound(Parcel in) {
         this.id = in.readLong();
         this.title = in.readString();
         if(in.readByte() == PRESENT) {
-            this.author = in.readString();
+            this.author = in.readParcelable(User.class.getClassLoader());
         }
         if(in.readByte() == PRESENT) {
-            this.cover = in.readParcelable(Bitmap.class.getClassLoader());
+            this.cover = in.readString();
+        }
+        if(in.readByte() == PRESENT) {
+            this.urlStream = in.readString();
         }
     }
 
@@ -63,27 +68,30 @@ public class Sound implements Parcelable{
         return title;
     }
 
-    public String getAuthor() {
+    public User getAuthor() {
         return author;
     }
 
-    public Bitmap getCover() {
+    public String getCover() {
         return cover;
     }
 
-    public Sound withAuthor(String author) {
-        if(author == null) {
-            throw new IllegalArgumentException("Author cannot be null!");
-        }
+    public String getURLStream() {
+        return urlStream;
+    }
+
+    public Sound withAuthor(User author) {
         this.author = author;
         return this;
     }
 
-    public Sound withCover(Bitmap cover) {
-        if(cover == null) {
-            throw new IllegalArgumentException("Cover cannot be null!");
-        }
+    public Sound withCover(String cover) {
         this.cover = cover;
+        return this;
+    }
+
+    public Sound withURLStream(String urlStream) {
+        this.urlStream = urlStream;
         return this;
     }
 
@@ -96,15 +104,21 @@ public class Sound implements Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(id);
         dest.writeString(title);
-        if(!TextUtils.isEmpty(author)) {
+        if(author != null) {
             dest.writeByte(PRESENT);
-            dest.writeString(author);
+            dest.writeParcelable(author, flags);
         } else {
             dest.writeByte(NOT_PRESENT);
         }
-        if(cover != null) {
+        if(!TextUtils.isEmpty(cover)) {
             dest.writeByte(PRESENT);
-            dest.writeParcelable(cover, flags);
+            dest.writeString(cover);
+        } else {
+            dest.writeByte(NOT_PRESENT);
+        }
+        if(!TextUtils.isEmpty(urlStream)) {
+            dest.writeByte(PRESENT);
+            dest.writeString(urlStream);
         } else {
             dest.writeByte(NOT_PRESENT);
         }

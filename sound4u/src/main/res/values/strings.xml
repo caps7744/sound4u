@@ -54,5 +54,6 @@
     <string name="placeholder_receiver">Receiver\'s Name</string>
     <string name="placeholder_title">Title</string>
     <string name="placeholder_artist">Artist</string>
+    <string name="empty_list_message">No Gift Found!</string>
 
 </resources>

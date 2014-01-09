@@ -5,7 +5,6 @@
     tools:context=".MyGiftsActivity"
     android:orientation="vertical">
 
-
     <ListView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -19,5 +18,7 @@
             android:textSize="30sp"
             android:textColor="@color/red"
             android:layout_gravity="center"
-            android:id="@android:id/empty"/>
+            android:id="@android:id/empty"
+            android:text="@string/empty_list_message"/>
+
 </LinearLayout>

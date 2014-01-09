@@ -41,8 +41,8 @@
             android:paddingLeft="@dimen/activity_vertical_margin">
 
         <ImageView
-                android:layout_width="75dp"
-                android:layout_height="75dp"
+                android:layout_width="@dimen/cover_list_size"
+                android:layout_height="@dimen/cover_list_size"
                 android:id="@+id/list_item_cover"
                 android:src="@drawable/adele"
                 android:layout_gravity="center"/>

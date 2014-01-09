@@ -4,5 +4,6 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="splash_size">250dp</dimen>
     <dimen name="avatar_size">150dp</dimen>
+    <dimen name="cover_list_size">75dp</dimen>
 
     </resources>

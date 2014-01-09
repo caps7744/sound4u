@@ -10,6 +10,10 @@ import android.text.TextUtils;
  */
 public class User implements Parcelable{
 
+    private static final byte PRESENT = 1;
+
+    private static final byte NOT_PRESENT = 0;
+
     public static final Creator<User> CREATOR = new Creator<User>() {
         @Override
         public User createFromParcel(Parcel source) {
@@ -28,6 +32,8 @@ public class User implements Parcelable{
 
     private String password;
 
+    private String avatar;
+
     private User(final long id, final String username, final String password) {
         this.id = id;
         this.username = username;
@@ -38,6 +44,9 @@ public class User implements Parcelable{
         this.id = in.readLong();
         this.username = in.readString();
         this.password = in.readString();
+        if(in.readByte() == PRESENT) {
+            this.avatar = in.readString();
+        }
     }
 
     public static User create(final long id, final String username, final String password) {
@@ -57,6 +66,15 @@ public class User implements Parcelable{
         return password;
     }
 
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public User withAvatar(String avatar) {
+        this.avatar = avatar;
+        return this;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -67,5 +85,11 @@ public class User implements Parcelable{
         dest.writeLong(id);
         dest.writeString(username);
         dest.writeString(password);
+        if(!TextUtils.isEmpty(avatar)) {
+            dest.writeByte(PRESENT);
+            dest.writeString(avatar);
+        } else {
+            dest.writeByte(NOT_PRESENT);
+        }
     }
 }

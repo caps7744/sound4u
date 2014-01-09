@@ -37,16 +37,11 @@ public class Gift implements Parcelable{
 
     private Sound sound;
 
-    private String message;
-
-    private boolean viewed;
-
     private Gift(final long id, final User sender, final User receiver, final Sound sound) {
         this.id = id;
         this.sender= sender;
         this.receiver = receiver;
         this.sound = sound;
-        viewed = false;
     }
 
     private Gift(Parcel in) {
@@ -54,10 +49,6 @@ public class Gift implements Parcelable{
         this.sender = in.readParcelable(User.class.getClassLoader());
         this.receiver = in.readParcelable(User.class.getClassLoader());
         this.sound = in.readParcelable(Sound.class.getClassLoader());
-        if(in.readByte() == PRESENT) {
-            this.message = in.readString();
-        }
-        this.viewed = in.readByte() == VIEWED;
     }
 
     public static Gift create(final long id, final User sender, final User receiver, final Sound sound) {
@@ -80,30 +71,6 @@ public class Gift implements Parcelable{
         return sound;
     }
 
-    public String getMessage() {
-        return message;
-    }
-
-    public boolean isViewed() {
-        return viewed;
-    }
-
-    public Gift withMessage(final String message) {
-        if(message == null) {
-            throw new IllegalArgumentException("Message cannot be null!");
-        }
-        this.message = message;
-        return this;
-    }
-
-    public Gift markAsViewed() {
-        if(viewed) {
-            throw new IllegalStateException("Gift cannot be marked as viewed again!");
-        }
-        this.viewed = true;
-        return this;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -115,12 +82,5 @@ public class Gift implements Parcelable{
         dest.writeParcelable(sender, flags);
         dest.writeParcelable(receiver, flags);
         dest.writeParcelable(sound, flags);
-        if(!TextUtils.isEmpty(message)) {
-            dest.writeByte(PRESENT);
-            dest.writeString(message);
-        } else {
-            dest.writeByte(NOT_PRESENT);
-        }
-        dest.writeByte(viewed ? VIEWED : NOT_VIEWED);
     }
 }

@@ -37,17 +37,24 @@ public class DummyContent {
 
     static {
         // Create 3 sample Users
-        User user1 = User.create(1L, "dummy1", "dummy1");
-        User user2 = User.create(2L, "dummy2", "dummy2");
-        User user3 = User.create(3L, "dummy3", "dummy3");
+        User user1 = User.create(1L, "canidio-andrea", "canidio-andrea");
+        User user2 = User.create(2L, "Calico Jack (folk metal)", "calico-jack").withAvatar("https://i1.sndcdn.com/avatars-000056522945-ux8xxk-large.jpg?d53bf9f");
+        User user3 = User.create(3L, "caputo-paolo", "caputo-paolo");
+        User user4 = User.create(4L, "brambilla-davide", "brambilla-davide");
         // Add 3 sample Users
         addItem(user1);
         addItem(user2);
         addItem(user3);
         // Create 3 sample Sounds
-        Sound sound1 = Sound.create(1L, "dummysong1").withAuthor("dummyartist1");
-        Sound sound2 = Sound.create(2L, "dummysong2").withAuthor("dummyartist2");
-        Sound sound3 = Sound.create(3L, "dummysong3").withAuthor("dummyartist3");
+        Sound sound1 = Sound.create(113950405L, "Calico Jack - Deadly Day in Bounty Bay").withAuthor(user2)
+                .withCover("https://i1.sndcdn.com/artworks-000059391690-x9xipr-large.jpg?d53bf9f")
+                .withURLStream("https://api.soundcloud.com/tracks/113950405/stream");
+        Sound sound2 = Sound.create(113950124L, "Calico Jack - Grog Jolly Grog").withAuthor(user2)
+                .withCover("https://i1.sndcdn.com/artworks-000059391548-bgy0rc-large.jpg?d53bf9f")
+                .withURLStream("https://api.soundcloud.com/tracks/113950124/stream");
+        Sound sound3 = Sound.create(113949799L, "Calico Jack - House of Jewelry").withAuthor(user2)
+                .withCover("https://i1.sndcdn.com/artworks-000059391362-421y1d-large.jpg?d53bf9f")
+                .withURLStream("https://api.soundcloud.com/tracks/113949799/stream");
         // Add 3 sample Sounds
         addItem(sound1);
         addItem(sound2);

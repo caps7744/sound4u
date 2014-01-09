@@ -2,6 +2,8 @@ package it.polimi.dima.sound4u.activity;
 
 import android.app.ListActivity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -16,69 +18,77 @@ import it.polimi.dima.sound4u.model.Sound;
 import it.polimi.dima.sound4u.model.User;
 import it.polimi.dima.sound4u.service.GiftService;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
-public class MyGiftsActivity extends ActionBarActivity {
+public class MyGiftsActivity extends ListActivity {
 
     public static final String USER_EXTRA = Const.PKG + "action.USER_EXTRA";
 
+    private static final String[] FROM = {"sender", "receiver", "cover", "title", "artist"};
+
+    private static final int[] TO = {
+            R.id.list_item_sender,
+            R.id.list_item_receiver,
+            R.id.list_item_cover,
+            R.id.list_item_title,
+            R.id.list_item_artist
+    };
+
     private ListView mListView;
 
-    private ListAdapter mAdapter;
+    private SimpleAdapter mAdapter;
 
-    private List<Gift> mModel = new LinkedList<Gift>();
+    private List<Map<String, Object>> mModel = new LinkedList<Map<String, Object>>();
+
+    private List<Gift> mRealModel = new LinkedList<Gift>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_my_gifts);
-        mListView = (ListView) findViewById(android.R.id.list);
-        mAdapter = new BaseAdapter() {
+        mListView = getListView();
+        mAdapter = new SimpleAdapter(this, mModel, R.layout.gift_list_item, FROM, TO);
+        mAdapter.setViewBinder(new SimpleAdapter.ViewBinder() {
             @Override
-            public int getCount() {
-                return mModel.size();
-            }
-
-            @Override
-            public Object getItem(int position) {
-                return mModel.get(position);
-            }
-
-            @Override
-            public long getItemId(int position) {
-                Gift gift = (Gift) getItem(position);
-                return gift.getId();
-            }
-
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                if(convertView == null) {
-                    convertView = getLayoutInflater().inflate(R.layout.gift_list_item, null);
+            public boolean setViewValue(View view, Object data, String textRepresentation) {
+                switch(view.getId()) {
+                    case R.id.list_item_sender:
+                        String senderUsername = (String) data;
+                        TextView senderTextView = (TextView) view;
+                        senderTextView.setText(senderUsername);
+                        break;
+                    case R.id.list_item_receiver:
+                        String receiverUsername = (String) data;
+                        TextView receiverTextView = (TextView) view;
+                        receiverTextView.setText(receiverUsername);
+                        break;
+                    case R.id.list_item_cover:
+                        ImageView coverImageView = (ImageView) view;
+                        // TODO Manage the real cover as in tutorial saved
+                        break;
+                    case R.id.list_item_title:
+                        String title = (String) data;
+                        TextView titleTextView = (TextView) view;
+                        titleTextView.setText(title);
+                        break;
+                    case R.id.list_item_artist:
+                        String artist = (String) data;
+                        TextView artistTextView = (TextView) view;
+                        artistTextView.setText(artist);
+                        break;
                 }
-                final TextView senderTextView = (TextView) convertView.findViewById(R.id.list_item_sender);
-                final TextView receiverTextView = (TextView) convertView.findViewById(R.id.list_item_receiver);
-                // TODO Management of the cover
-                final TextView titleTextView = (TextView) convertView.findViewById(R.id.list_item_title);
-                final TextView artistTextView = (TextView) convertView.findViewById(R.id.list_item_artist);
-                final Gift item = (Gift) getItem(position);
-                senderTextView.setText(item.getSender().getUsername());
-                receiverTextView.setText(item.getReceiver().getUsername());
-                titleTextView.setText(item.getSound().getTitle());
-                artistTextView.setText(item.getSound().getAuthor());
-                return convertView;
-            }
-        };
-        mListView.setAdapter(mAdapter);
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent playIntent = new Intent(PlayerActivity.PLAYER_ACTION);
-                Sound extraSound = mModel.get(position).getSound();
-                playIntent.putExtra(PlayerActivity.SOUND_EXTRA, extraSound);
-                startActivity(playIntent);
+                return true;
             }
         });
+        mListView.setAdapter(mAdapter);
+    }
+
+    @Override
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+        playGift(position);
     }
 
     @Override
@@ -86,7 +96,19 @@ public class MyGiftsActivity extends ActionBarActivity {
         super.onStart();
         final List<Gift> result = GiftService.load();
         mModel.clear();
-        mModel.addAll(result);
+        mRealModel.clear();
+        mRealModel.addAll(result);
+        for(Gift gift: result) {
+            final Map<String, Object> item = new HashMap<String, Object>();
+            item.put("sender", gift.getSender().getUsername());
+            item.put("receiver", gift.getReceiver().getUsername());
+            item.put("cover", gift.getSound().getCover());
+            item.put("title", gift.getSound().getTitle());
+            item.put("artist", gift.getSound().getAuthor().getUsername());
+            mModel.add(item);
+        }
+        mAdapter.notifyDataSetChanged();
+        mListView.setAdapter(mAdapter);
     }
 
     @Override
@@ -123,7 +145,11 @@ public class MyGiftsActivity extends ActionBarActivity {
         // TODO
     }
 
-    public void playGift() {
-        // TODO
+    public void playGift(int position) {
+        Intent playIntent = new Intent(PlayerActivity.PLAYER_ACTION);
+        Sound extraSound = mRealModel.get(position).getSound();
+        playIntent.putExtra(PlayerActivity.SOUND_EXTRA, extraSound);
+        startActivity(playIntent);
     }
+
 }
