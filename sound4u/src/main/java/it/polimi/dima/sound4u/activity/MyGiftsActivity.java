@@ -1,5 +1,6 @@
 package it.polimi.dima.sound4u.activity;
 
+import android.app.ListActivity;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -7,13 +8,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.*;
 import it.polimi.dima.sound4u.R;
 import it.polimi.dima.sound4u.conf.Const;
 import it.polimi.dima.sound4u.model.Gift;
+import it.polimi.dima.sound4u.model.Sound;
 import it.polimi.dima.sound4u.model.User;
 import it.polimi.dima.sound4u.service.GiftService;
 
@@ -34,7 +33,7 @@ public class MyGiftsActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_my_gifts);
-        mListView = (ListView) findViewById(R.id.listView);
+        mListView = (ListView) findViewById(android.R.id.list);
         mAdapter = new BaseAdapter() {
             @Override
             public int getCount() {
@@ -48,8 +47,8 @@ public class MyGiftsActivity extends ActionBarActivity {
 
             @Override
             public long getItemId(int position) {
-                User user = (User) getItem(position);
-                return user.getId();
+                Gift gift = (Gift) getItem(position);
+                return gift.getId();
             }
 
             @Override
@@ -71,6 +70,15 @@ public class MyGiftsActivity extends ActionBarActivity {
             }
         };
         mListView.setAdapter(mAdapter);
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent playIntent = new Intent(PlayerActivity.PLAYER_ACTION);
+                Sound extraSound = mModel.get(position).getSound();
+                playIntent.putExtra(PlayerActivity.SOUND_EXTRA, extraSound);
+                startActivity(playIntent);
+            }
+        });
     }
 
     @Override

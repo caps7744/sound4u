@@ -7,10 +7,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import it.polimi.dima.sound4u.R;
+import it.polimi.dima.sound4u.conf.Const;
 import it.polimi.dima.sound4u.fragment.EqualizerFragment;
 import it.polimi.dima.sound4u.fragment.ThumbnailFragment;
 
 public class PlayerActivity extends ActionBarActivity {
+
+    public static final String PLAYER_ACTION = Const.PKG + ".action.PLAYER_ACTION";
+
+    public static final String SOUND_EXTRA = Const.PKG + ".extra.SOUND_EXTRA";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

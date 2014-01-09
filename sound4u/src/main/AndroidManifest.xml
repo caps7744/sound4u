@@ -38,6 +38,10 @@
         <activity
             android:name="it.polimi.dima.sound4u.activity.PlayerActivity"
             android:label="@string/title_activity_player" >
+            <intent-filter>
+                <action android:name="it.polimi.dima.sound4u.action.PLAYER_ACTION" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
         <activity
             android:name="it.polimi.dima.sound4u.activity.SoundSearchActivity"
