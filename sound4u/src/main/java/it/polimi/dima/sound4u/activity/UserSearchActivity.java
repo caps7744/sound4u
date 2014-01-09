@@ -15,7 +15,9 @@ import it.polimi.dima.sound4u.conf.Const;
 
 public class UserSearchActivity extends ActionBarActivity {
 
-    public static final String USERSEARCH_ACTION = Const.PKG + "action.USERSEARCH_ACTION";
+    public static final String USERSEARCH_ACTION = Const.PKG + ".action.USERSEARCH_ACTION";
+
+    public static final String SOUNDID_EXTRA = Const.PKG + ".extra.SOUNDID_EXTRA";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -25,8 +25,6 @@ import java.util.Map;
 
 public class MyGiftsActivity extends ListActivity {
 
-    public static final String USER_EXTRA = Const.PKG + "action.USER_EXTRA";
-
     private static final String[] FROM = {"sender", "receiver", "cover", "title", "artist"};
 
     private static final int[] TO = {
@@ -72,6 +70,7 @@ public class MyGiftsActivity extends ListActivity {
                         receiverTextView.setText(receiverUsername);
                         break;
                     case R.id.list_item_cover:
+                        String coverURL = (String) data;
                         ImageView coverImageView = (ImageView) view;
                         // TODO Manage the real cover as in tutorial saved
                         break;
