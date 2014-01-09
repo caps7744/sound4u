@@ -43,8 +43,8 @@ public class FirstAccessActivity extends ActionBarActivity implements FirstAcces
     public User doLogin(String username, String password) {
         final User user = LoginService.get().login(username, password);
         if(user != null) {
+            user.save(this);
             Intent giftsIntent = new Intent(this, MyGiftsActivity.class);
-            giftsIntent.putExtra(MyGiftsActivity.USER_EXTRA, user);
             startActivity(giftsIntent);
             finish();
         }
@@ -57,8 +57,8 @@ public class FirstAccessActivity extends ActionBarActivity implements FirstAcces
             switch (resultCode) {
                 case RESULT_OK:
                     final User user = (User) data.getParcelableExtra(FacebookLoginActivity.USER_EXTRA);
+                    user.save(this);
                     final Intent giftsIntent = new Intent(this, MyGiftsActivity.class);
-                    giftsIntent.putExtra(MyGiftsActivity.USER_EXTRA, user);
                     startActivity(giftsIntent);
                     finish();
                     break;

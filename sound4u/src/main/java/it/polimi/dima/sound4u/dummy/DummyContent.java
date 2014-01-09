@@ -37,10 +37,10 @@ public class DummyContent {
 
     static {
         // Create 3 sample Users
-        User user1 = User.create(1L, "canidio-andrea", "canidio-andrea");
-        User user2 = User.create(2L, "Calico Jack (folk metal)", "calico-jack").withAvatar("https://i1.sndcdn.com/avatars-000056522945-ux8xxk-large.jpg?d53bf9f");
-        User user3 = User.create(3L, "caputo-paolo", "caputo-paolo");
-        User user4 = User.create(4L, "brambilla-davide", "brambilla-davide");
+        User user1 = User.create(1L, "canidio-andrea").withPassword("canidio-andrea");
+        User user2 = User.create(2L, "Calico Jack (folk metal)").withPassword("calico-jack").withAvatar("https://i1.sndcdn.com/avatars-000056522945-ux8xxk-large.jpg?d53bf9f");
+        User user3 = User.create(3L, "caputo-paolo").withPassword("caputo-paolo");
+        User user4 = User.create(4L, "brambilla-davide").withPassword("brambilla-davide");
         // Add 3 sample Users
         addItem(user1);
         addItem(user2);

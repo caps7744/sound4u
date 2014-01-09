@@ -45,10 +45,16 @@ public class MyGiftsActivity extends ListActivity {
 
     private List<Gift> mRealModel = new LinkedList<Gift>();
 
+    private User mUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_my_gifts);
+        mUser = User.load(this);
+        if (mUser == null) {
+            finish();
+        }
         mListView = getListView();
         mAdapter = new SimpleAdapter(this, mModel, R.layout.gift_list_item, FROM, TO);
         mAdapter.setViewBinder(new SimpleAdapter.ViewBinder() {
@@ -142,7 +148,9 @@ public class MyGiftsActivity extends ListActivity {
     }
 
     private void doLogout() {
-        // TODO
+        mUser.logout(this);
+        final Intent firstAccessIntent = new Intent(this, FirstAccessActivity.class);
+        startActivity(firstAccessIntent);
     }
 
     public void playGift(int position) {

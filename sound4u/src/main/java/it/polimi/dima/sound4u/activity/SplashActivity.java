@@ -13,14 +13,15 @@ import android.view.View;
 import android.widget.ImageView;
 import it.polimi.dima.sound4u.R;
 import it.polimi.dima.sound4u.conf.Const;
+import it.polimi.dima.sound4u.model.User;
 
 import java.lang.ref.WeakReference;
 
 public class SplashActivity extends Activity {
 
-    private static final long MIN_WAIT_INTERVAL = 3000L;
+    private static final long MIN_WAIT_INTERVAL = 1500L;
 
-    private static final long MAX_WAIT_INTERVAL = 6000L;
+    private static final long MAX_WAIT_INTERVAL = 3000L;
 
     private static final int GO_AHEAD_WHAT = 1;
 
@@ -61,7 +62,14 @@ public class SplashActivity extends Activity {
     }
 
     private void goAhead() {
-        final Intent intent = new Intent(this, FirstAccessActivity.class);
+        final User user = User.load(this);
+        Class<? extends Activity> destinationActivity = null;
+        if (user == null) {
+            destinationActivity = FirstAccessActivity.class;
+        } else {
+            destinationActivity = MyGiftsActivity.class;
+        }
+        final Intent intent = new Intent(this, destinationActivity);
         startActivity(intent);
         finish();
     }

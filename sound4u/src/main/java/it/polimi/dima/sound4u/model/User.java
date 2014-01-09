@@ -1,9 +1,13 @@
 package it.polimi.dima.sound4u.model;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import it.polimi.dima.sound4u.conf.Const;
 
 /**
  * Created by canidio-andrea on 28/12/13.
@@ -26,6 +30,12 @@ public class User implements Parcelable{
         }
     };
 
+    private static final String ID_KEY = Const.PKG + ".key.ID_KEY";
+
+    private static final String USERNAME_KEY = Const.PKG + ".key.USERNAME_KEY";
+
+    private static final String AVATAR_KEY = Const.PKG + ".key.AVATAR_KEY";
+
     private long id;
 
     private String username;
@@ -34,10 +44,9 @@ public class User implements Parcelable{
 
     private String avatar;
 
-    private User(final long id, final String username, final String password) {
+    private User(final long id, final String username) {
         this.id = id;
         this.username = username;
-        this.password = password;
     }
 
     private User(Parcel in) {
@@ -49,8 +58,8 @@ public class User implements Parcelable{
         }
     }
 
-    public static User create(final long id, final String username, final String password) {
-        final User user = new User(id, username, password);
+    public static User create(final long id, final String username) {
+        final User user = new User(id, username);
         return user;
     }
 
@@ -70,7 +79,12 @@ public class User implements Parcelable{
         return avatar;
     }
 
-    public User withAvatar(String avatar) {
+    public User withPassword(final String password) {
+        this.password = password;
+        return this;
+    }
+
+    public User withAvatar(final String avatar) {
         this.avatar = avatar;
         return this;
     }
@@ -91,5 +105,30 @@ public class User implements Parcelable{
         } else {
             dest.writeByte(NOT_PRESENT);
         }
+    }
+
+    public void save(Context context) {
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putLong(ID_KEY, id);
+        editor.putString(USERNAME_KEY, username);
+        editor.putString(AVATAR_KEY, avatar);
+        editor.commit();
+    }
+
+    public static User load(Context context) {
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        long id = preferences.getLong(ID_KEY, 0);
+        String username = preferences.getString(USERNAME_KEY, null);
+        User user = null;
+        if (username != null) {
+            user = new User(id, username);
+            user.avatar = preferences.getString(AVATAR_KEY, null);
+        }
+        return user;
+    }
+
+    public void logout(Context context) {
+        PreferenceManager.getDefaultSharedPreferences(context).edit().clear().commit();
     }
 }
