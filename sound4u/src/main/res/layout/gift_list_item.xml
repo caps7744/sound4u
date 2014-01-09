@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:padding="@dimen/activity_vertical_margin">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/activity_vertical_margin">
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/placeholder_sender"
+                android:id="@+id/list_item_sender"
+                android:layout_gravity="center"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/placeholder_to"
+                android:layout_gravity="center"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/placeholder_receiver"
+                android:id="@+id/list_item_receiver"
+                android:layout_gravity="center"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/activity_vertical_margin">
+
+        <ImageView
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:id="@+id/list_item_cover"
+                android:src="@drawable/adele"
+                android:layout_gravity="center"/>
+
+        <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:padding="@dimen/activity_vertical_margin"
+                android:orientation="vertical">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/list_item_title"
+                    android:text="@string/placeholder_title"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:layout_gravity="center"/>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/list_item_artist"
+                    android:text="@string/placeholder_artist"
+                    android:layout_gravity="center"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -48,5 +48,11 @@
     <string name="title_activity_user_search">Users</string>
     <string name="logout_label">Logout</string>
     <string name="facebook_button_label">Facebook</string>
+    <!-- Gift List View -->
+    <string name="placeholder_sender">Sender\'s Name</string>
+    <string name="placeholder_to"> > </string>
+    <string name="placeholder_receiver">Receiver\'s Name</string>
+    <string name="placeholder_title">Title</string>
+    <string name="placeholder_artist">Artist</string>
 
 </resources>

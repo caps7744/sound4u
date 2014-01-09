@@ -2,37 +2,83 @@ package it.polimi.dima.sound4u.activity;
 
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.os.Build;
-import android.widget.Adapter;
+import android.widget.BaseAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import it.polimi.dima.sound4u.R;
 import it.polimi.dima.sound4u.conf.Const;
+import it.polimi.dima.sound4u.model.Gift;
 import it.polimi.dima.sound4u.model.User;
+import it.polimi.dima.sound4u.service.GiftService;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class MyGiftsActivity extends ActionBarActivity {
 
     public static final String USER_EXTRA = Const.PKG + "action.USER_EXTRA";
 
+    private ListView mListView;
+
+    private ListAdapter mAdapter;
+
+    private List<Gift> mModel = new LinkedList<Gift>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_gifts);
+        setContentView(R.layout.fragment_my_gifts);
+        mListView = (ListView) findViewById(R.id.listView);
+        mAdapter = new BaseAdapter() {
+            @Override
+            public int getCount() {
+                return mModel.size();
+            }
 
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new DummyFragment())
-                    .commit();
-        }
+            @Override
+            public Object getItem(int position) {
+                return mModel.get(position);
+            }
+
+            @Override
+            public long getItemId(int position) {
+                User user = (User) getItem(position);
+                return user.getId();
+            }
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                if(convertView == null) {
+                    convertView = getLayoutInflater().inflate(R.layout.gift_list_item, null);
+                }
+                final TextView senderTextView = (TextView) convertView.findViewById(R.id.list_item_sender);
+                final TextView receiverTextView = (TextView) convertView.findViewById(R.id.list_item_receiver);
+                // TODO Management of the cover
+                final TextView titleTextView = (TextView) convertView.findViewById(R.id.list_item_title);
+                final TextView artistTextView = (TextView) convertView.findViewById(R.id.list_item_artist);
+                final Gift item = (Gift) getItem(position);
+                senderTextView.setText(item.getSender().getUsername());
+                receiverTextView.setText(item.getReceiver().getUsername());
+                titleTextView.setText(item.getSound().getTitle());
+                artistTextView.setText(item.getSound().getAuthor());
+                return convertView;
+            }
+        };
+        mListView.setAdapter(mAdapter);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        final List<Gift> result = GiftService.load();
+        mModel.clear();
+        mModel.addAll(result);
     }
 
     @Override
@@ -69,20 +115,7 @@ public class MyGiftsActivity extends ActionBarActivity {
         // TODO
     }
 
-    /**
-     * A dummy fragment containing a simple view.
-     */
-    public static class DummyFragment extends Fragment {
-
-        public DummyFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_my_gifts, container, false);
-            return rootView;
-        }
+    public void playGift() {
+        // TODO
     }
-
 }
