@@ -11,8 +11,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
+import android.widget.Adapter;
+import android.widget.ListView;
 import it.polimi.dima.sound4u.R;
 import it.polimi.dima.sound4u.conf.Const;
+import it.polimi.dima.sound4u.model.User;
+
+import java.util.ArrayList;
 
 public class MyGiftsActivity extends ActionBarActivity {
 
@@ -29,7 +34,6 @@ public class MyGiftsActivity extends ActionBarActivity {
                     .commit();
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -57,7 +61,8 @@ public class MyGiftsActivity extends ActionBarActivity {
     }
 
     private void doSearchSound() {
-        Intent searchIntent = new Intent();
+        Intent searchIntent = new Intent(SoundSearchActivity.SOUNDSEARCH_ACTION);
+        startActivity(searchIntent);
     }
 
     private void doLogout() {

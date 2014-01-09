@@ -11,8 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
 import it.polimi.dima.sound4u.R;
+import it.polimi.dima.sound4u.conf.Const;
 
 public class UserSearchActivity extends ActionBarActivity {
+
+    public static final String USERSEARCH_ACTION = Const.PKG + "action.USERSEARCH_ACTION";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

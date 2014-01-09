@@ -32,7 +32,6 @@
             android:label="@string/title_activity_login" >
             <intent-filter>
                 <action android:name="it.polimi.dima.sound4u.action.LOGIN_ACTION" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -43,6 +42,10 @@
         <activity
             android:name="it.polimi.dima.sound4u.activity.SoundSearchActivity"
             android:label="@string/title_activity_sound_search" >
+            <intent-filter>
+                <action android:name="it.polimi.dima.sound4u.action.SOUNDSEARCH_ACTION" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
         <activity
             android:name="it.polimi.dima.sound4u.activity.MyGiftsActivity"
@@ -51,6 +54,10 @@
         <activity
             android:name="it.polimi.dima.sound4u.activity.UserSearchActivity"
             android:label="@string/title_activity_user_search" >
+            <intent-filter>
+                <action android:name="it.polimi.dima.sound4u.action.USERSEARCH_ACTION" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
     </application>
 

@@ -7,8 +7,11 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import it.polimi.dima.sound4u.R;
+import it.polimi.dima.sound4u.conf.Const;
 
 public class SoundSearchActivity extends ActionBarActivity {
+
+    public static final String SOUNDSEARCH_ACTION = Const.PKG + "action.SOUNDSEARCH_ACTION";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
