@@ -23,7 +23,7 @@ public class SoundSearchActivity extends ListActivity {
 
     public static final String SOUNDSEARCH_ACTION = Const.PKG + ".action.SOUNDSEARCH_ACTION";
 
-    private static final String[] FROM = {"cover", "title", "artist", "id"};
+    private static final String[] FROM = {"cover", "title", "artist", "sound"};
 
     private static final int[] TO = {
             R.id.list_item_cover,
@@ -73,12 +73,12 @@ public class SoundSearchActivity extends ListActivity {
                         artistTextView.setText(artist);
                         break;
                     case R.id.list_item_send:
-                        final long id = (Long) data;
+                        final Sound sound = (Sound) data;
                         view.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 Intent userSearchIntent = new Intent(UserSearchActivity.USERSEARCH_ACTION);
-                                userSearchIntent.putExtra(UserSearchActivity.SOUNDID_EXTRA, id);
+                                userSearchIntent.putExtra(UserSearchActivity.SOUND_EXTRA, sound);
                                 startActivity(userSearchIntent);
                             }
                         });
@@ -91,6 +91,7 @@ public class SoundSearchActivity extends ListActivity {
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l,v, position, id);
         playGift(position);
     }
 
@@ -106,7 +107,7 @@ public class SoundSearchActivity extends ListActivity {
             item.put("cover", sound.getCover());
             item.put("title", sound.getTitle());
             item.put("artist", sound.getAuthor().getUsername());
-            item.put("id", sound.getId());
+            item.put("sound", sound);
             mModel.add(item);
         }
         mAdapter.notifyDataSetChanged();

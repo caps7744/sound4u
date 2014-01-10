@@ -45,6 +45,7 @@ public class DummyContent {
         addItem(user1);
         addItem(user2);
         addItem(user3);
+        addItem(user4);
         // Create 3 sample Sounds
         Sound sound1 = Sound.create(113950405L, "Calico Jack - Deadly Day in Bounty Bay").withAuthor(user2)
                 .withCover("https://i1.sndcdn.com/artworks-000059391690-x9xipr-large.jpg?d53bf9f")
