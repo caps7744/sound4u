@@ -1,16 +1,21 @@
 package it.polimi.dima.sound4u.activity;
 
 import android.app.ListActivity;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.widget.*;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+import android.widget.SearchView;
 import it.polimi.dima.sound4u.R;
 import it.polimi.dima.sound4u.conf.Const;
 import it.polimi.dima.sound4u.model.Gift;
@@ -34,6 +39,7 @@ public class MyGiftsActivity extends ListActivity {
             R.id.list_item_title,
             R.id.list_item_artist
     };
+    private static final int SEARCH_SOUND_ID = 1;
 
     private ListView mListView;
 
@@ -99,7 +105,7 @@ public class MyGiftsActivity extends ListActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        final List<Gift> result = GiftService.load();
+        final List<Gift> result = GiftService.load(mUser);
         mModel.clear();
         mRealModel.clear();
         mRealModel.addAll(result);
@@ -125,31 +131,36 @@ public class MyGiftsActivity extends ListActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
-            case R.id.action_search_sound:
-                doSearchSound();
+            case R.id.search:
+                Intent searchIntent = new Intent(SoundSearchActivity.SOUNDSEARCH_ACTION);
+                startActivityForResult(searchIntent, SEARCH_SOUND_ID);
                 return true;
             case R.id.action_logout:
                 doLogout();
                 return true;
             case R.id.action_settings:
                 return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
-    private void doSearchSound() {
-        Intent searchIntent = new Intent(SoundSearchActivity.SOUNDSEARCH_ACTION);
-        startActivity(searchIntent);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SEARCH_SOUND_ID && resultCode == RESULT_OK) {
+            Toast.makeText(this, "Gift sent!", Toast.LENGTH_SHORT).show();
+        } else if (requestCode == SEARCH_SOUND_ID && resultCode == RESULT_CANCELED){
+            Toast.makeText(this, "Unable to send Gift!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void doLogout() {
         mUser.logout(this);
         final Intent firstAccessIntent = new Intent(this, FirstAccessActivity.class);
         startActivity(firstAccessIntent);
+        finish();
     }
 
     public void playGift(int position) {

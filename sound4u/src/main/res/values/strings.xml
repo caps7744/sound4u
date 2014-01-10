@@ -38,7 +38,7 @@
     <string name="title_activity_my_gifts">My Gifts</string>
     <string name="title_activity_player">My Gifts</string>
     <string name="action_search">search sound</string>
-    <string name="search_hint">sound name</string>
+    <string name="user_search_suggestion">User search</string>
     <string name="title_activity_sound_search_results">SoundSearchResultActivity</string>
     <string name="sound_search_suggestion">Sound search</string>
     <string name="string_constant_initializing">example</string>
@@ -55,6 +55,7 @@
     <string name="placeholder_title">Title</string>
     <string name="placeholder_artist">Artist</string>
     <string name="empty_list_message">No Gift Found!</string>
+    <string name="search_title">Search</string>
     <string name="search_content_description">search by title or author</string>
     <string name="btn_send">Send To</string>
     <!-- User List View -->

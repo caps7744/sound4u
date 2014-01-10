@@ -1,9 +1,13 @@
 package it.polimi.dima.sound4u.activity;
 
 import android.app.ListActivity;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +25,8 @@ import java.util.Map;
 
 public class SoundSearchActivity extends ListActivity {
 
+    private static final String TAG_LOG = SoundSearchActivity.class.getName();
+
     public static final String SOUNDSEARCH_ACTION = Const.PKG + ".action.SOUNDSEARCH_ACTION";
 
     private static final String[] FROM = {"cover", "title", "artist", "sound"};
@@ -31,6 +37,8 @@ public class SoundSearchActivity extends ListActivity {
             R.id.list_item_artist,
             R.id.list_item_send
     };
+
+    private static final int USER_REQUEST_ID = 1;
 
     private ListView mListView;
 
@@ -79,7 +87,7 @@ public class SoundSearchActivity extends ListActivity {
                             public void onClick(View v) {
                                 Intent userSearchIntent = new Intent(UserSearchActivity.USERSEARCH_ACTION);
                                 userSearchIntent.putExtra(UserSearchActivity.SOUND_EXTRA, sound);
-                                startActivity(userSearchIntent);
+                                startActivityForResult(userSearchIntent, USER_REQUEST_ID);
                             }
                         });
                 }
@@ -87,49 +95,83 @@ public class SoundSearchActivity extends ListActivity {
             }
         });
         mListView.setAdapter(mAdapter);
+        handleIntent(getIntent());
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == USER_REQUEST_ID) {
+            Intent resultIntent = new Intent();
+            setResult(resultCode, resultIntent);
+            finish();
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent) {
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            final List<Sound> result = SoundService.load(query);
+            mModel.clear();
+            mRealModel.clear();
+            mRealModel.addAll(result);
+            for(Sound sound: result) {
+                final Map<String, Object> item = new HashMap<String, Object>();
+                item.put("cover", sound.getCover());
+                item.put("title", sound.getTitle());
+                item.put("artist", sound.getAuthor().getUsername());
+                item.put("sound", sound);
+                mModel.add(item);
+            }
+            mAdapter.notifyDataSetChanged();
+            mListView.setAdapter(mAdapter);
+        }
     }
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l,v, position, id);
         playGift(position);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        final List<Sound> result = SoundService.load();
-        mModel.clear();
-        mRealModel.clear();
-        mRealModel.addAll(result);
-        for(Sound sound: result) {
-            final Map<String, Object> item = new HashMap<String, Object>();
-            item.put("cover", sound.getCover());
-            item.put("title", sound.getTitle());
-            item.put("artist", sound.getAuthor().getUsername());
-            item.put("sound", sound);
-            mModel.add(item);
-        }
-        mAdapter.notifyDataSetChanged();
-        mListView.setAdapter(mAdapter);
+        finish();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.sound_search, menu);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+            SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        }
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
+            case R.id.search:
+                onSearchRequested();
+                return true;
+            case R.id.action_logout:
+                doLogout();
+                return true;
             case R.id.action_settings:
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void doLogout() {
+        mUser.logout(this);
+        final Intent firstAccessIntent = new Intent(this, FirstAccessActivity.class);
+        startActivity(firstAccessIntent);
+        finish();
     }
 
     public void playGift(int position) {
