@@ -3,8 +3,8 @@
              android:layout_width="match_parent"
              android:layout_height="match_parent">
     <ImageView
-            android:layout_width="@dimen/splash_size"
-            android:layout_height="@dimen/splash_size"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:id="@+id/splash_imageview"
             android:src="@drawable/ic_launcher"
             android:layout_gravity="center"/>
