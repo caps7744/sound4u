@@ -1,6 +1,5 @@
 package it.polimi.dima.sound4u.model;
 
-import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
@@ -18,6 +17,10 @@ public class Sound implements Parcelable{
         @Override
         public Sound createFromParcel(Parcel source) {
             return new Sound(source);
+        }
+
+        public Sound createFromQueryResult(String queryResultSingle){
+            return new Sound(queryResultSingle);
         }
 
         @Override
@@ -54,6 +57,10 @@ public class Sound implements Parcelable{
         this.id = id;
         this.title = title;
         this.cover = null;
+    }
+
+    public Sound(String s) {
+
     }
 
     public static Sound create(final long id, final String title) {

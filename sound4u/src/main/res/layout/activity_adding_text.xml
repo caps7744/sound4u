@@ -1,0 +1,32 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AddingGiftTextActivity"
+    tools:ignore="MergeRootFrame" >
+    <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="87dp"
+            android:text="Gift Information Resuming"
+            android:id="@+id/textView2"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Add a message dude"
+            android:id="@+id/textView"/>
+    <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="156dp"
+            android:hint="Write here"
+            android:id="@+id/editText"/>
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Text"
+            android:id="@+id/btn_add_gift_text"
+            android:onClick="backToPlayer"
+            android:layout_gravity="right"/>
+</LinearLayout>
