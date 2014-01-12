@@ -35,8 +35,9 @@
     <string name="wrong_credential_error">Wrong credentials! Please try again.</string>
     <string name="passwords_equals">Passwords don\'t match</string>
     <string name="username_already_used">%1$s already exists in Sound4u</string>
+    <!-- To reorganize -->
     <string name="title_activity_my_gifts">My Gifts</string>
-    <string name="title_activity_player">My Gifts</string>
+    <string name="title_activity_player">Player</string>
     <string name="action_search">search sound</string>
     <string name="user_search_suggestion">User search</string>
     <string name="title_activity_sound_search_results">SoundSearchResultActivity</string>
@@ -48,6 +49,7 @@
     <string name="title_activity_user_search">Users</string>
     <string name="logout_label">Logout</string>
     <string name="facebook_button_label">Facebook</string>
+    <string name="client_id">1e9034524a004460783bb4d4ba024ffb</string>
     <!-- Gift List View -->
     <string name="placeholder_sender">Sender\'s Name</string>
     <string name="placeholder_to"> > </string>
@@ -60,5 +62,6 @@
     <string name="btn_send">Send To</string>
     <!-- User List View -->
     <string name="placeholder_username">Username</string>
+    <string name="title_activity_adding_gift_text">Adding Gift Text</string>
 
 </resources>

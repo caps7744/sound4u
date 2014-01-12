@@ -60,7 +60,7 @@ public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnC
     private int lengthOfAudio;
 
     // url stream example
-    private final String URL = "https://api.soundcloud.com/tracks/113949500/stream?client_id=5e96474adefe6378b0ec309d43d383c6";
+    private final String URL = "https://api.soundcloud.com/tracks/113949500/stream?client_id=1e9034524a004460783bb4d4ba024ffb";
 
     private final Handler handler = new Handler();
     private final Runnable r = new Runnable() {
@@ -172,6 +172,14 @@ public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnC
     public void doSoundSearch(View view) {
         Intent intent;
         intent = new Intent(this, SoundSearchActivity.class);
+        startActivity(intent);
+    }
+
+    /*
+    To delete - just for the interface
+     */
+    public void toAddingText(View view){
+        Intent intent = new Intent(this, AddingGiftTextActivity.class);
         startActivity(intent);
     }
 
