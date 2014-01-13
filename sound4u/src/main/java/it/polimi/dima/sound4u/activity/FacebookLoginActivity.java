@@ -13,6 +13,9 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.TextView;
+import com.soundcloud.api.ApiWrapper;
+import com.soundcloud.api.Endpoints;
+import com.soundcloud.api.Token;
 import it.polimi.dima.sound4u.R;
 import it.polimi.dima.sound4u.conf.Const;
 import it.polimi.dima.sound4u.conf.SoundCloudConst;
@@ -31,6 +34,12 @@ public class FacebookLoginActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_facebook_login);
+        ApiWrapper wrapper = new ApiWrapper(
+                SoundCloudConst.CLIENT_ID,
+                SoundCloudConst.CLIENT_SECRET,
+                SoundCloudConst.REDIRECT_URI,
+                null
+        );
         webView = (WebView) findViewById(R.id.webview);
         webView.setWebViewClient(new WebViewClient() {
             @Override
@@ -43,7 +52,8 @@ public class FacebookLoginActivity extends ActionBarActivity {
                 return true;
             }
         });
-        // webView.loadUrl(wrapper.authorizationCodeUrl(Endpoints.FACEBOOK_CONNECT.toString()), Token.SCOPE_NON_EXPIRING);
+
+        webView.loadUrl(wrapper.authorizationCodeUrl(Endpoints.FACEBOOK_CONNECT.toString(), Token.SCOPE_NON_EXPIRING).toString());
     }
 
     @Override

@@ -63,7 +63,6 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="it.polimi.dima.sound4u.action.SOUNDSEARCH_ACTION" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>

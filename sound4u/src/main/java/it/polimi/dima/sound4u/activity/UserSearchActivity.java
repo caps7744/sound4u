@@ -20,6 +20,7 @@ import it.polimi.dima.sound4u.R;
 import it.polimi.dima.sound4u.conf.Const;
 import it.polimi.dima.sound4u.model.Sound;
 import it.polimi.dima.sound4u.model.User;
+import it.polimi.dima.sound4u.service.DownloadImageTask;
 import it.polimi.dima.sound4u.service.GiftService;
 import it.polimi.dima.sound4u.service.UserService;
 
@@ -73,7 +74,9 @@ public class UserSearchActivity extends ListActivity {
                     case R.id.list_item_avatar:
                         String avatarURL = (String) data;
                         ImageView coverImageView = (ImageView) view;
-                        // TODO Manage the real avatar as in the tutorial saved
+                        if(avatarURL != null) {
+                            new DownloadImageTask(coverImageView).execute(avatarURL);
+                        }
                         break;
                     case R.id.list_item_username:
                         String username = (String) data;

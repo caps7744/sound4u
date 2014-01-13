@@ -5,11 +5,13 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.*;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,8 +23,14 @@ import it.polimi.dima.sound4u.conf.Const;
 import it.polimi.dima.sound4u.model.Gift;
 import it.polimi.dima.sound4u.model.Sound;
 import it.polimi.dima.sound4u.model.User;
+import it.polimi.dima.sound4u.service.DownloadImageTask;
 import it.polimi.dima.sound4u.service.GiftService;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -39,6 +47,7 @@ public class MyGiftsActivity extends ListActivity {
             R.id.list_item_title,
             R.id.list_item_artist
     };
+
     private static final int SEARCH_SOUND_ID = 1;
 
     private ListView mListView;
@@ -62,6 +71,7 @@ public class MyGiftsActivity extends ListActivity {
         mListView = getListView();
         mAdapter = new SimpleAdapter(this, mModel, R.layout.gift_list_item, FROM, TO);
         mAdapter.setViewBinder(new SimpleAdapter.ViewBinder() {
+
             @Override
             public boolean setViewValue(View view, Object data, String textRepresentation) {
                 switch(view.getId()) {
@@ -78,7 +88,9 @@ public class MyGiftsActivity extends ListActivity {
                     case R.id.list_item_cover:
                         String coverURL = (String) data;
                         ImageView coverImageView = (ImageView) view;
-                        // TODO Manage the real cover as in tutorial saved
+                        if(coverURL != null) {
+                            new DownloadImageTask(coverImageView).execute(coverURL);
+                        }
                         break;
                     case R.id.list_item_title:
                         String title = (String) data;
@@ -151,8 +163,6 @@ public class MyGiftsActivity extends ListActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SEARCH_SOUND_ID && resultCode == RESULT_OK) {
             Toast.makeText(this, "Gift sent!", Toast.LENGTH_SHORT).show();
-        } else if (requestCode == SEARCH_SOUND_ID && resultCode == RESULT_CANCELED){
-            Toast.makeText(this, "Unable to send Gift!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -169,5 +179,4 @@ public class MyGiftsActivity extends ListActivity {
         playIntent.putExtra(PlayerActivity.SOUND_EXTRA, extraSound);
         startActivity(playIntent);
     }
-
 }

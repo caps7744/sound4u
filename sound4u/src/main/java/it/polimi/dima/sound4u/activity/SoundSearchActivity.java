@@ -16,6 +16,7 @@ import it.polimi.dima.sound4u.R;
 import it.polimi.dima.sound4u.conf.Const;
 import it.polimi.dima.sound4u.model.Sound;
 import it.polimi.dima.sound4u.model.User;
+import it.polimi.dima.sound4u.service.DownloadImageTask;
 import it.polimi.dima.sound4u.service.SoundService;
 
 import java.util.HashMap;
@@ -38,7 +39,7 @@ public class SoundSearchActivity extends ListActivity {
             R.id.list_item_send
     };
 
-    private static final int USER_REQUEST_ID = 1;
+    private static final int USER_REQUEST_ID = 2;
 
     private ListView mListView;
 
@@ -68,7 +69,9 @@ public class SoundSearchActivity extends ListActivity {
                     case R.id.list_item_cover:
                         String coverURL = (String) data;
                         ImageView coverImageView = (ImageView) view;
-                        // TODO Manage the real cover as in the tutorial saved
+                        if(coverURL != null) {
+                            new DownloadImageTask(coverImageView).execute(coverURL);
+                        }
                         break;
                     case R.id.list_item_title:
                         String title = (String) data;
