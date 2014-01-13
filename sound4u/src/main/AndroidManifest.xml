@@ -87,10 +87,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="it.polimi.dima.sound4u.activity.AddingGiftTextActivity"
-            android:label="@string/title_activity_adding_gift_text" >
-        </activity>
     </application>
 
 </manifest>

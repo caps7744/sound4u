@@ -1,7 +1,7 @@
 package it.polimi.dima.sound4u.activity;
 
 import android.annotation.TargetApi;
-import android.content.Intent;
+import android.content.Context;
 import android.media.MediaPlayer;
 import android.media.audiofx.BassBoost;
 import android.media.audiofx.Equalizer;
@@ -16,6 +16,8 @@ import android.view.View;
 import android.widget.*;
 import it.polimi.dima.sound4u.R;
 import it.polimi.dima.sound4u.conf.Const;
+import it.polimi.dima.sound4u.model.Sound;
+import it.polimi.dima.sound4u.service.DownloadImageTask;
 
 public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnCompletionListener,
         MediaPlayer.OnBufferingUpdateListener, View.OnClickListener,
@@ -30,6 +32,11 @@ public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnC
     View thumbAndTxt = null;
     View equalizer = null;
 
+    Sound currentSound = null;
+    TextView song_title = null;
+    String coverURL = null;
+    ImageView thumbnail = null;
+    String streamURL = null;
     /*
     Equalizer Variables
      */
@@ -59,9 +66,6 @@ public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnC
     private MediaPlayer mediaPlayer;
     private int lengthOfAudio;
 
-    // url stream example
-    private final String URL = "https://api.soundcloud.com/tracks/113949500/stream?client_id=1e9034524a004460783bb4d4ba024ffb";
-
     private final Handler handler = new Handler();
     private final Runnable r = new Runnable() {
         @Override
@@ -76,6 +80,9 @@ public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
         init();
+
+        song_title = (TextView) findViewById(R.id.song_title);
+        thumbnail = (ImageView) findViewById(R.id.thumbnail);
 
         enabled = (CheckBox)findViewById(R.id.enabled);
         enabled.setOnCheckedChangeListener (this);
@@ -145,12 +152,29 @@ public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnC
         updateUI();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        currentSound = getIntent().getParcelableExtra(SOUND_EXTRA);
+        song_title.setText(currentSound.getTitle());
+        streamURL = currentSound.getURLStream().concat("?client_id=").concat(getString(R.string.client_id));
+
+        coverURL = currentSound.getCover();
+        Context c = thumbnail.getContext();
+        int id = c.getResources().getIdentifier("adele", "drawable", c.getPackageName());
+        try {
+            new DownloadImageTask(thumbnail).execute(coverURL);
+        } catch (NullPointerException e) {
+            thumbnail.setImageResource(id);
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.player, menu);
+        getMenuInflater().inflate(R.menu.sound_search, menu);
         return true;
     }
 
@@ -164,23 +188,6 @@ public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnC
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    /*
-    Not implemented yet, it works just for the interface
-     */
-    public void doSoundSearch(View view) {
-        Intent intent;
-        intent = new Intent(this, SoundSearchActivity.class);
-        startActivity(intent);
-    }
-
-    /*
-    To delete - just for the interface
-     */
-    public void toAddingText(View view){
-        Intent intent = new Intent(this, AddingGiftTextActivity.class);
-        startActivity(intent);
     }
 
     private void showEqualizer(boolean isChecked){
@@ -387,7 +394,7 @@ public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnC
     public void onClick(View view) {
 
         try {
-            mediaPlayer.setDataSource(URL);
+            mediaPlayer.setDataSource(streamURL);
             mediaPlayer.prepare();
             lengthOfAudio = mediaPlayer.getDuration();
         } catch (Exception e) {

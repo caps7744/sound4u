@@ -19,7 +19,7 @@ public class Sound implements Parcelable{
             return new Sound(source);
         }
 
-        public Sound createFromQueryResult(String queryResultSingle){
+        public Sound createFromJSOM(String queryResultSingle){
             return new Sound(queryResultSingle);
         }
 

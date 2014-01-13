@@ -35,5 +35,6 @@ dependencies {
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'com.google.guava:guava-jdk5:14.0.1'
     compile 'com.google.code.findbugs:jsr305:2.0.3'
+    compile 'com.eclipsesource.minimal-json:minimal-json:0.9.1'
     compile files('libs/sound4uendpoints-v1-1.17.0-rc-SNAPSHOT.jar')
 }
