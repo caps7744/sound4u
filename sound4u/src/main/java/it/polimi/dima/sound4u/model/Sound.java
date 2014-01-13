@@ -3,6 +3,8 @@ package it.polimi.dima.sound4u.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by canidio-andrea on 29/12/13.
@@ -19,8 +21,8 @@ public class Sound implements Parcelable{
             return new Sound(source);
         }
 
-        public Sound createFromJSOM(String queryResultSingle){
-            return new Sound(queryResultSingle);
+        public Sound createFromJSOM(JSONObject jsonObject){
+            return new Sound(jsonObject);
         }
 
         @Override
@@ -30,13 +32,9 @@ public class Sound implements Parcelable{
     };
 
     private long id;
-
     private String title;
-
     private User author;
-
     private String cover;
-
     private String urlStream;
 
     private Sound(Parcel in) {
@@ -59,8 +57,16 @@ public class Sound implements Parcelable{
         this.cover = null;
     }
 
-    public Sound(String s) {
-
+    public Sound(JSONObject s) {
+        try {
+            this.id = s.getLong("id");
+            this.title = s.getString("title");
+            this.cover = s.getString("waveform_url");
+            this.urlStream = s.getString("stream_url");
+        } catch (JSONException e) {
+            // TO IMPLEMENT
+            e.printStackTrace();
+        }
     }
 
     public static Sound create(final long id, final String title) {
