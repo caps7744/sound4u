@@ -24,7 +24,7 @@ public class FirstAccessFragment extends Fragment {
 
     public interface FirstAccessListener {
 
-        User doLogin(String username, String password);
+        void doLogin(String username, String password);
 
         void doFacebookLogin();
 
@@ -73,11 +73,7 @@ public class FirstAccessFragment extends Fragment {
                     }
                     final String username = usernameEditable.toString();
                     final String password = passwordEditable.toString();
-                    final User user = mListener.doLogin(username, password);
-                    if(user == null) {
-                        errorTextView.setText(R.string.wrong_credential_error);
-                        errorTextView.setVisibility(View.VISIBLE);
-                    }
+                    mListener.doLogin(username, password);
                 }
             }
         });
