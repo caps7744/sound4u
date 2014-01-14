@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.eclipsesource.json.JsonObject;
 import com.soundcloud.api.ApiWrapper;
 import com.soundcloud.api.Request;
 import com.soundcloud.api.Token;
@@ -23,6 +24,11 @@ import it.polimi.dima.sound4u.conf.SoundCloudConst;
 import it.polimi.dima.sound4u.fragment.FirstAccessFragment;
 import it.polimi.dima.sound4u.model.User;
 import it.polimi.dima.sound4u.service.LoginService;
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpMessage;
+import org.apache.http.HttpResponse;
+import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 
@@ -61,7 +67,7 @@ public class FirstAccessActivity extends ActionBarActivity implements FirstAcces
 
         private String password;
 
-        private ApiWrapper wrapper;
+        private ApiWrapper service;
 
         public LoginTask(String username, String password) {
             this.username = username;
@@ -71,7 +77,7 @@ public class FirstAccessActivity extends ActionBarActivity implements FirstAcces
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            wrapper = new ApiWrapper(
+            service = new ApiWrapper(
                     SoundCloudConst.CLIENT_ID,
                     SoundCloudConst.CLIENT_SECRET,
                     null,
@@ -83,14 +89,19 @@ public class FirstAccessActivity extends ActionBarActivity implements FirstAcces
         protected User doInBackground(Void... params) {
             User user = null;
             try {
-                wrapper.login(username, password, Token.SCOPE_DEFAULT);
-                String message = wrapper.get(Request.to("/me")).getEntity().toString();
-                Log.w(TAG_LOG, message);
-                user = User.create(1L, username).withPassword(password);
-                Toast.makeText(FirstAccessActivity.this, "Logged in as " + username, Toast.LENGTH_SHORT).show();
-            } catch (IOException e) {
+                service.login(username, password);
+                HttpResponse response = service.get(Request.to("/me"));
+                if (response.getStatusLine().getStatusCode() == 200) {
+                    HttpEntity entity = response.getEntity();
+                    if (entity != null) {
+                        String responseBody = EntityUtils.toString(entity);
+                        JsonObject jsonObject = JsonObject.readFrom(responseBody);
+                        long userID = jsonObject.get("id").asLong();
+                        user = User.create(userID, username).withPassword(password);
+                    }
+                }
+            } catch (Exception e) {
                 Log.w(TAG_LOG, e.getMessage());
-                Toast.makeText(FirstAccessActivity.this, "Wrong credentials" + username, Toast.LENGTH_SHORT).show();
             }
             return user;
         }
@@ -99,9 +110,12 @@ public class FirstAccessActivity extends ActionBarActivity implements FirstAcces
         protected void onPostExecute(User user) {
             if(user != null) {
                 user.save(FirstAccessActivity.this);
+                Toast.makeText(FirstAccessActivity.this, "Logged in as " + user.getId(), Toast.LENGTH_SHORT).show();
                 Intent giftsIntent = new Intent(FirstAccessActivity.this, MyGiftsActivity.class);
                 startActivity(giftsIntent);
                 finish();
+            } else {
+                Toast.makeText(FirstAccessActivity.this, "Wrong credentials", Toast.LENGTH_SHORT).show();
             }
         }
     }
