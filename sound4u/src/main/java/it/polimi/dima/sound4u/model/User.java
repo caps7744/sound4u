@@ -7,6 +7,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import com.eclipsesource.json.JsonObject;
 import it.polimi.dima.sound4u.conf.Const;
 
 /**
@@ -36,6 +37,12 @@ public class User implements Parcelable{
 
     private static final String AVATAR_KEY = Const.PKG + ".key.AVATAR_KEY";
 
+    private static final String ID = "id";
+
+    private static final String USERNAME = "username";
+
+    private static final String AVATAR = "avatar_url";
+
     private long id;
 
     private String username;
@@ -58,9 +65,20 @@ public class User implements Parcelable{
         }
     }
 
+    private User(String JsonString) {
+        JsonObject jsonObject = JsonObject.readFrom(JsonString);
+        this.id = jsonObject.get(ID).asLong();
+        this.username = jsonObject.get(USERNAME).asString();
+        this.avatar = jsonObject.get(AVATAR).asString();
+    }
+
     public static User create(final long id, final String username) {
         final User user = new User(id, username);
         return user;
+    }
+
+    public static User create(final String jsonString){
+        return new User(jsonString);
     }
 
     public long getId() {

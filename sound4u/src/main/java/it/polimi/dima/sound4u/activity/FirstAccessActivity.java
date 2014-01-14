@@ -1,5 +1,6 @@
 package it.polimi.dima.sound4u.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import it.polimi.dima.sound4u.conf.SoundCloudConst;
 import it.polimi.dima.sound4u.fragment.FirstAccessFragment;
 import it.polimi.dima.sound4u.model.User;
 import it.polimi.dima.sound4u.service.LoginService;
+import it.polimi.dima.sound4u.service.LoginTask;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpMessage;
@@ -38,7 +40,7 @@ public class FirstAccessActivity extends ActionBarActivity implements FirstAcces
 
     public static final String USER_EXTRA = Const.PKG + ".extra.USER_EXTRA";
 
-    private static final String TAG_LOG = FirstAccessActivity.class.getName();
+    public static final String TAG_LOG = FirstAccessActivity.class.getName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,66 +60,7 @@ public class FirstAccessActivity extends ActionBarActivity implements FirstAcces
 
     @Override
     public void doLogin(String username, String password) {
-        new LoginTask(username, password).execute();
-    }
-
-    private class LoginTask extends AsyncTask <Void, Void, User> {
-
-        private String username;
-
-        private String password;
-
-        private ApiWrapper service;
-
-        public LoginTask(String username, String password) {
-            this.username = username;
-            this.password = password;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            service = new ApiWrapper(
-                    SoundCloudConst.CLIENT_ID,
-                    SoundCloudConst.CLIENT_SECRET,
-                    null,
-                    null
-            );
-        }
-
-        @Override
-        protected User doInBackground(Void... params) {
-            User user = null;
-            try {
-                service.login(username, password);
-                HttpResponse response = service.get(Request.to("/me"));
-                if (response.getStatusLine().getStatusCode() == 200) {
-                    HttpEntity entity = response.getEntity();
-                    if (entity != null) {
-                        String responseBody = EntityUtils.toString(entity);
-                        JsonObject jsonObject = JsonObject.readFrom(responseBody);
-                        long userID = jsonObject.get("id").asLong();
-                        user = User.create(userID, username).withPassword(password);
-                    }
-                }
-            } catch (Exception e) {
-                Log.w(TAG_LOG, e.getMessage());
-            }
-            return user;
-        }
-
-        @Override
-        protected void onPostExecute(User user) {
-            if(user != null) {
-                user.save(FirstAccessActivity.this);
-                Toast.makeText(FirstAccessActivity.this, "Logged in as " + user.getId(), Toast.LENGTH_SHORT).show();
-                Intent giftsIntent = new Intent(FirstAccessActivity.this, MyGiftsActivity.class);
-                startActivity(giftsIntent);
-                finish();
-            } else {
-                Toast.makeText(FirstAccessActivity.this, "Wrong credentials", Toast.LENGTH_SHORT).show();
-            }
-        }
+        new LoginTask(this, username, password).execute();
     }
 
     @Override
