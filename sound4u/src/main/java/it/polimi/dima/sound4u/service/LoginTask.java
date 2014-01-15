@@ -1,9 +1,11 @@
 package it.polimi.dima.sound4u.service;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.widget.Toast;
+import com.eclipsesource.json.JsonObject;
 import com.soundcloud.api.ApiWrapper;
 import com.soundcloud.api.Request;
 import it.polimi.dima.sound4u.activity.MyGiftsActivity;
@@ -26,6 +28,8 @@ public class LoginTask extends AsyncTask<Void, Void, User> {
 
     private ApiWrapper service;
 
+    private ProgressDialog mProgressDialog;
+
     public LoginTask(Activity context, String username, String password) {
         this.username = username;
         this.password = password;
@@ -41,6 +45,7 @@ public class LoginTask extends AsyncTask<Void, Void, User> {
                 null,
                 null
         );
+        mProgressDialog = ProgressDialog.show(context, "", "Loading. Please wait...", true);
     }
 
     @Override
@@ -53,7 +58,8 @@ public class LoginTask extends AsyncTask<Void, Void, User> {
                 HttpEntity entity = response.getEntity();
                 if (entity != null) {
                     String responseBody = EntityUtils.toString(entity);
-                    user = User.create(responseBody).withPassword(password);
+                    JsonObject jsonObject = JsonObject.readFrom(responseBody);
+                    user = User.create(jsonObject).withPassword(password);
                 }
             }
         } catch (Exception e) { }
@@ -62,6 +68,7 @@ public class LoginTask extends AsyncTask<Void, Void, User> {
 
     @Override
     protected void onPostExecute(User user) {
+        mProgressDialog.dismiss();
         if(user != null) {
             user.save(context);
             Toast.makeText(context, "Logged in as " + user.getId(), Toast.LENGTH_SHORT).show();

@@ -66,8 +66,7 @@ public class User implements Parcelable{
         }
     }
 
-    private User(String JsonString) {
-        JsonObject jsonObject = JsonObject.readFrom(JsonString);
+    private User(JsonObject jsonObject) {
         this.id = jsonObject.get(ID).asLong();
         this.username = jsonObject.get(USERNAME).asString();
         this.avatar = jsonObject.get(AVATAR).asString();
@@ -78,7 +77,7 @@ public class User implements Parcelable{
         return user;
     }
 
-    public static User create(final String jsonString){
+    public static User create(final JsonObject jsonString){
         return new User(jsonString);
     }
 

@@ -3,6 +3,7 @@ package it.polimi.dima.sound4u.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
+import android.util.Log;
 import com.eclipsesource.json.JsonObject;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,6 +33,7 @@ public class Sound implements Parcelable{
     private static final String TITLE = "title";
     private static final String ARTWORK_URL = "artwork_url";
     private static final String STREAM_URL = "stream_url";
+    public static final String USER = "user";
 
     private long id;
     private String title;
@@ -64,10 +66,10 @@ public class Sound implements Parcelable{
             this.id = jsonObject.get(ID).asLong();
             this.title = jsonObject.get(TITLE).asString();
             this.cover = jsonObject.get(ARTWORK_URL).asString();
+            JsonObject jsonUser = jsonObject.get(USER).asObject();
+            this.author = User.create(jsonUser);
             this.urlStream = jsonObject.get(STREAM_URL).asString();
-        } catch (Exception e) {
-
-        }
+        } catch (Exception e) { }
     }
 
     public static Sound create(final long id, final String title) {
