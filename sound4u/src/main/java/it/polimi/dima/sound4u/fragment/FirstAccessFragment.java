@@ -1,21 +1,16 @@
 package it.polimi.dima.sound4u.fragment;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import it.polimi.dima.sound4u.R;
-import it.polimi.dima.sound4u.activity.MyGiftsActivity;
-import it.polimi.dima.sound4u.model.User;
-import it.polimi.dima.sound4u.service.LoginService;
 
 /**
  * Created by canidio-andrea on 06/01/14.

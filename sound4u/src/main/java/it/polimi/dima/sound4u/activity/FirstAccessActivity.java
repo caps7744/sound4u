@@ -1,38 +1,15 @@
 package it.polimi.dima.sound4u.activity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBarActivity;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
-import com.eclipsesource.json.JsonObject;
-import com.soundcloud.api.ApiWrapper;
-import com.soundcloud.api.Request;
-import com.soundcloud.api.Token;
 import it.polimi.dima.sound4u.R;
 import it.polimi.dima.sound4u.conf.Const;
-import it.polimi.dima.sound4u.conf.SoundCloudConst;
 import it.polimi.dima.sound4u.fragment.FirstAccessFragment;
 import it.polimi.dima.sound4u.model.User;
-import it.polimi.dima.sound4u.service.LoginService;
 import it.polimi.dima.sound4u.service.LoginTask;
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpMessage;
-import org.apache.http.HttpResponse;
-import org.apache.http.util.EntityUtils;
-
-import java.io.IOException;
 
 public class FirstAccessActivity extends ActionBarActivity implements FirstAccessFragment.FirstAccessListener {
 

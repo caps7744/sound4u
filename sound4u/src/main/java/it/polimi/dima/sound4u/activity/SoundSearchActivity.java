@@ -6,8 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,6 +15,7 @@ import it.polimi.dima.sound4u.conf.Const;
 import it.polimi.dima.sound4u.model.Sound;
 import it.polimi.dima.sound4u.model.User;
 import it.polimi.dima.sound4u.service.DownloadImageTask;
+import it.polimi.dima.sound4u.service.SoundSearchTask;
 import it.polimi.dima.sound4u.service.SoundService;
 
 import java.util.HashMap;
@@ -120,6 +119,7 @@ public class SoundSearchActivity extends ListActivity {
     private void handleIntent(Intent intent) {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
+            new SoundSearchTask(this, query).execute();
             final List<Sound> result = SoundService.load(query);
             mModel.clear();
             mRealModel.clear();

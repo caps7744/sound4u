@@ -3,6 +3,7 @@ package it.polimi.dima.sound4u.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
+import com.eclipsesource.json.JsonObject;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -21,15 +22,16 @@ public class Sound implements Parcelable{
             return new Sound(source);
         }
 
-        public Sound createFromJSOM(JSONObject jsonObject){
-            return new Sound(jsonObject);
-        }
-
         @Override
         public Sound[] newArray(int size) {
             return new Sound[size];
         }
     };
+
+    private static final String ID = "id";
+    private static final String TITLE = "title";
+    private static final String ARTWORK_URL = "artwork_url";
+    private static final String STREAM_URL = "stream_url";
 
     private long id;
     private String title;
@@ -57,20 +59,23 @@ public class Sound implements Parcelable{
         this.cover = null;
     }
 
-    public Sound(JSONObject s) {
-        try {
-            this.id = s.getLong("id");
-            this.title = s.getString("title");
-            this.cover = s.getString("waveform_url");
-            this.urlStream = s.getString("stream_url");
-        } catch (JSONException e) {
-            // TO IMPLEMENT
-            e.printStackTrace();
+    private Sound(JsonObject jsonObject) {
+        try{
+            this.id = jsonObject.get(ID).asLong();
+            this.title = jsonObject.get(TITLE).asString();
+            this.cover = jsonObject.get(ARTWORK_URL).asString();
+            this.urlStream = jsonObject.get(STREAM_URL).asString();
+        } catch (Exception e) {
+
         }
     }
 
     public static Sound create(final long id, final String title) {
         return new Sound(id, title);
+    }
+
+    public static Sound create(final JsonObject jsonObject) {
+        return new Sound(jsonObject);
     }
 
     public long getId() {

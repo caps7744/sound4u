@@ -1,14 +1,11 @@
 package it.polimi.dima.sound4u.service;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
 import com.soundcloud.api.ApiWrapper;
 import com.soundcloud.api.Request;
-import it.polimi.dima.sound4u.activity.FirstAccessActivity;
 import it.polimi.dima.sound4u.activity.MyGiftsActivity;
 import it.polimi.dima.sound4u.conf.SoundCloudConst;
 import it.polimi.dima.sound4u.model.User;

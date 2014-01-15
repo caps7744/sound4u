@@ -2,7 +2,6 @@ package it.polimi.dima.sound4u.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.text.TextUtils;
 
 /**
  * Created by canidio-andrea on 28/12/13.

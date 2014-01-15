@@ -2,7 +2,6 @@ package it.polimi.dima.sound4u.model;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
@@ -36,6 +35,8 @@ public class User implements Parcelable{
     private static final String USERNAME_KEY = Const.PKG + ".key.USERNAME_KEY";
 
     private static final String AVATAR_KEY = Const.PKG + ".key.AVATAR_KEY";
+
+    private static final String PASSWORD_KEY = Const.PKG + ".key.PASSWORD_KEY";
 
     private static final String ID = "id";
 
@@ -131,6 +132,7 @@ public class User implements Parcelable{
         editor.putLong(ID_KEY, id);
         editor.putString(USERNAME_KEY, username);
         editor.putString(AVATAR_KEY, avatar);
+        editor.putString(PASSWORD_KEY, password);
         editor.commit();
     }
 
@@ -142,6 +144,7 @@ public class User implements Parcelable{
         if (username != null) {
             user = new User(id, username);
             user.avatar = preferences.getString(AVATAR_KEY, null);
+            user.password = preferences.getString(PASSWORD_KEY, null);
         }
         return user;
     }
