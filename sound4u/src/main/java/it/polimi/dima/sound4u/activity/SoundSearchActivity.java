@@ -80,7 +80,7 @@ public class SoundSearchActivity extends ListActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == USER_REQUEST_ID) {
+        if (requestCode == USER_REQUEST_ID && resultCode == RESULT_OK) {
             Intent resultIntent = new Intent();
             setResult(resultCode, resultIntent);
             finish();
@@ -264,5 +264,4 @@ public class SoundSearchActivity extends ListActivity {
             mProgressDialog.dismiss();
         }
     }
-
 }
