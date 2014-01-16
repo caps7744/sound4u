@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -174,7 +175,7 @@ public class MyGiftsActivity extends ListActivity {
 
         @Override
         protected List<Gift> doInBackground(Long... params) {
-            List<Gift> myGifts = null;
+            List<Gift> myGifts = new LinkedList<Gift>();
             try {
                 List<com.appspot.sound4u_backend.sound4uendpoints.model.Gift> collection = service.list(params[0]).execute().getItems();
                 for (com.appspot.sound4u_backend.sound4uendpoints.model.Gift item: collection) {
@@ -213,7 +214,7 @@ public class MyGiftsActivity extends ListActivity {
             super.onPostExecute(gifts);
             mModel.clear();
             mRealModel.clear();
-            if (gifts != null) {
+            if (!gifts.isEmpty()) {
                 mRealModel.addAll(gifts);
                 for(Gift gift: gifts) {
                     final Map<String, Object> item = new HashMap<String, Object>();
