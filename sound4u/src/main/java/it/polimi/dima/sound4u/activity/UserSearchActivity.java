@@ -12,9 +12,11 @@ import android.view.View;
 import android.widget.*;
 import it.polimi.dima.sound4u.R;
 import it.polimi.dima.sound4u.conf.Const;
+import it.polimi.dima.sound4u.model.Gift;
 import it.polimi.dima.sound4u.model.Sound;
 import it.polimi.dima.sound4u.model.User;
 import it.polimi.dima.sound4u.service.DownloadImageTask;
+import it.polimi.dima.sound4u.service.GiftSenderTask;
 import it.polimi.dima.sound4u.service.GiftService;
 import it.polimi.dima.sound4u.service.UserService;
 
@@ -114,14 +116,9 @@ public class UserSearchActivity extends ListActivity {
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        Intent resultIntent = new Intent();
         User receiver = mRealModel.get(position);
-        if (GiftService.sendGift(mMe, receiver, mReceivedSound)) {
-            setResult(RESULT_OK, resultIntent);
-        } else {
-            setResult(RESULT_CANCELED, resultIntent);
-        }
-        finish();
+        Gift gift = Gift.create(1L, mMe, receiver, mReceivedSound);
+        new GiftSenderTask(this).execute(gift);
     }
 
     @Override
