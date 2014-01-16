@@ -63,5 +63,6 @@
     <!-- User List View -->
     <string name="placeholder_username">Username</string>
     <string name="title_activity_adding_gift_text">Adding Gift Text</string>
+    <string name="placeholder_full_name">Full Name</string>
 
 </resources>

@@ -14,7 +14,7 @@ public class UserService {
     public static List<User> load(String query) {
         List<User> results = new LinkedList<User>();
         for(User item: DummyContent.USERS) {
-            if (item.getUsername().toLowerCase().matches("(.*)" + query.toLowerCase() + "(.*)")) {
+            if(item.getFullName().toLowerCase().matches("(.*)" + query.toLowerCase() + "(.*)")) {
                 results.add(item);
             }
         }

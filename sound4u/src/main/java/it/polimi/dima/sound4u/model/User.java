@@ -42,11 +42,15 @@ public class User implements Parcelable{
 
     private static final String USERNAME = "username";
 
+    private static final String FULLNAME = "full_name";
+
     private static final String AVATAR = "avatar_url";
 
     private long id;
 
     private String username;
+
+    private String full_name;
 
     private String password;
 
@@ -69,6 +73,11 @@ public class User implements Parcelable{
     private User(JsonObject jsonObject) {
         this.id = jsonObject.get(ID).asLong();
         this.username = jsonObject.get(USERNAME).asString();
+        if(!(jsonObject.get(FULLNAME)==null)){
+        this.full_name = jsonObject.get(FULLNAME).asString();
+        } else {
+            this.full_name = "";
+        }
         this.avatar = jsonObject.get(AVATAR).asString();
     }
 
@@ -87,6 +96,10 @@ public class User implements Parcelable{
 
     public String getUsername() {
         return username;
+    }
+
+    public String getFullName() {
+        return full_name;
     }
 
     public String getPassword() {
