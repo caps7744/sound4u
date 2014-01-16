@@ -21,8 +21,6 @@ public class FirstAccessFragment extends Fragment {
 
         void doLogin(String username, String password);
 
-        void doFacebookLogin();
-
     }
 
     private FirstAccessListener mListener;
@@ -69,14 +67,6 @@ public class FirstAccessFragment extends Fragment {
                     final String username = usernameEditable.toString();
                     final String password = passwordEditable.toString();
                     mListener.doLogin(username, password);
-                }
-            }
-        });
-        firstAccessView.findViewById(R.id.facebook_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mListener != null) {
-                    mListener.doFacebookLogin();
                 }
             }
         });

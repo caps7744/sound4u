@@ -1,12 +1,18 @@
 package it.polimi.dima.sound4u.activity;
 
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
+import com.appspot.sound4u_backend.sound4uendpoints.Sound4uendpoints;
+import com.appspot.sound4u_backend.sound4uendpoints.model.GiftCollection;
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.json.gson.GsonFactory;
 import it.polimi.dima.sound4u.R;
 import it.polimi.dima.sound4u.model.Gift;
 import it.polimi.dima.sound4u.model.Sound;
@@ -14,6 +20,7 @@ import it.polimi.dima.sound4u.model.User;
 import it.polimi.dima.sound4u.service.DownloadImageTask;
 import it.polimi.dima.sound4u.service.GiftService;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,13 +40,13 @@ public class MyGiftsActivity extends ListActivity {
 
     private static final int SEARCH_SOUND_ID = 1;
 
-    private ListView mListView;
-
-    private SimpleAdapter mAdapter;
-
     private List<Map<String, Object>> mModel = new LinkedList<Map<String, Object>>();
 
     private List<Gift> mRealModel = new LinkedList<Gift>();
+
+    private ListView mListView;
+
+    private SimpleAdapter mAdapter;
 
     private User mUser;
 
@@ -51,45 +58,10 @@ public class MyGiftsActivity extends ListActivity {
         if (mUser == null) {
             finish();
         }
+        mAdapter = new MyGiftsAdapter();
         mListView = getListView();
-        mAdapter = new SimpleAdapter(this, mModel, R.layout.gift_list_item, FROM, TO);
-        mAdapter.setViewBinder(new SimpleAdapter.ViewBinder() {
-
-            @Override
-            public boolean setViewValue(View view, Object data, String textRepresentation) {
-                switch(view.getId()) {
-                    case R.id.list_item_sender:
-                        String senderUsername = (String) data;
-                        TextView senderTextView = (TextView) view;
-                        senderTextView.setText(senderUsername);
-                        break;
-                    case R.id.list_item_receiver:
-                        String receiverUsername = (String) data;
-                        TextView receiverTextView = (TextView) view;
-                        receiverTextView.setText(receiverUsername);
-                        break;
-                    case R.id.list_item_cover:
-                        String coverURL = (String) data;
-                        ImageView coverImageView = (ImageView) view;
-                        if(coverURL != null) {
-                            new DownloadImageTask(coverImageView).execute(coverURL);
-                        }
-                        break;
-                    case R.id.list_item_title:
-                        String title = (String) data;
-                        TextView titleTextView = (TextView) view;
-                        titleTextView.setText(title);
-                        break;
-                    case R.id.list_item_artist:
-                        String artist = (String) data;
-                        TextView artistTextView = (TextView) view;
-                        artistTextView.setText(artist);
-                        break;
-                }
-                return true;
-            }
-        });
         mListView.setAdapter(mAdapter);
+        new MyGiftsTasks().execute(mUser.getId());
     }
 
     @Override
@@ -100,21 +72,7 @@ public class MyGiftsActivity extends ListActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        final List<Gift> result = GiftService.load(mUser);
-        mModel.clear();
-        mRealModel.clear();
-        mRealModel.addAll(result);
-        for(Gift gift: result) {
-            final Map<String, Object> item = new HashMap<String, Object>();
-            item.put("sender", gift.getSender().getUsername());
-            item.put("receiver", gift.getReceiver().getUsername());
-            item.put("cover", gift.getSound().getCover());
-            item.put("title", gift.getSound().getTitle());
-            item.put("artist", gift.getSound().getAuthor().getUsername());
-            mModel.add(item);
-        }
-        mAdapter.notifyDataSetChanged();
-        mListView.setAdapter(mAdapter);
+        new MyGiftsTasks().execute(mUser.getId());
     }
 
     @Override
@@ -161,5 +119,115 @@ public class MyGiftsActivity extends ListActivity {
         Sound extraSound = mRealModel.get(position).getSound();
         playIntent.putExtra(PlayerActivity.SOUND_EXTRA, extraSound);
         startActivity(playIntent);
+    }
+
+    private class MyGiftsAdapter extends SimpleAdapter {
+
+        public MyGiftsAdapter() {
+            super(MyGiftsActivity.this, mModel, R.layout.gift_list_item, FROM, TO);
+            this.setViewBinder(new SimpleAdapter.ViewBinder() {
+
+                @Override
+                public boolean setViewValue(View view, Object data, String textRepresentation) {
+                    switch (view.getId()) {
+                        case R.id.list_item_sender:
+                            String senderUsername = (String) data;
+                            TextView senderTextView = (TextView) view;
+                            senderTextView.setText(senderUsername);
+                            break;
+                        case R.id.list_item_receiver:
+                            String receiverUsername = (String) data;
+                            TextView receiverTextView = (TextView) view;
+                            receiverTextView.setText(receiverUsername);
+                            break;
+                        case R.id.list_item_cover:
+                            String coverURL = (String) data;
+                            ImageView coverImageView = (ImageView) view;
+                            if (coverURL != null) {
+                                new DownloadImageTask(coverImageView).execute(coverURL);
+                            }
+                            break;
+                        case R.id.list_item_title:
+                            String title = (String) data;
+                            TextView titleTextView = (TextView) view;
+                            titleTextView.setText(title);
+                            break;
+                        case R.id.list_item_artist:
+                            String artist = (String) data;
+                            TextView artistTextView = (TextView) view;
+                            artistTextView.setText(artist);
+                            break;
+                    }
+                    return true;
+                }
+            });
+        }
+    }
+
+    private class MyGiftsTasks extends AsyncTask<Long, Void, List<Gift>> {
+
+        private Sound4uendpoints service;
+
+        private ProgressDialog mProgressDialog;
+
+        public MyGiftsTasks() { }
+
+        @Override
+        protected List<Gift> doInBackground(Long... params) {
+            List<Gift> myGifts = null;
+            try {
+                List<com.appspot.sound4u_backend.sound4uendpoints.model.Gift> collection = service.list(params[0]).execute().getItems();
+                for (com.appspot.sound4u_backend.sound4uendpoints.model.Gift item: collection) {
+                    User sender = User.create(item.getSenderID(), item.getSenderUsername());
+                    User receiver = User.create(item.getReceiverID(), item.getReceiverUsername());
+                    User author = User.create(item.getSoundArtistID(), item.getSoundArtistUsername());
+                    Sound sound = Sound.create(item.getSoundID(), item.getSoundTitle())
+                            .withCover(item.getCoverURL())
+                            .withAuthor(author)
+                            .withURLStream(item.getStreamURL());
+                    Gift giftItem = Gift.create(
+                            item.getId(),
+                            sender,
+                            receiver,
+                            sound
+                    );
+                    myGifts.add(giftItem);
+                }
+            } catch (IOException e) {
+
+            }
+            return myGifts;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mProgressDialog = ProgressDialog.show(MyGiftsActivity.this, "", "Loading. Please wait...", true);
+            Sound4uendpoints.Builder builder = new Sound4uendpoints.Builder(
+                    AndroidHttp.newCompatibleTransport(), new GsonFactory(), null);
+            service = builder.build();
+        }
+
+        @Override
+        protected void onPostExecute(List<Gift> gifts) {
+            super.onPostExecute(gifts);
+            mModel.clear();
+            mRealModel.clear();
+            if (gifts != null) {
+                mRealModel.addAll(gifts);
+                for(Gift gift: gifts) {
+                    final Map<String, Object> item = new HashMap<String, Object>();
+                    item.put("sender", gift.getSender().getUsername());
+                    item.put("receiver", gift.getReceiver().getUsername());
+                    item.put("cover", gift.getSound().getCover());
+                    item.put("title", gift.getSound().getTitle());
+                    item.put("artist", gift.getSound().getAuthor().getUsername());
+                    mModel.add(item);
+                }
+            }
+            mAdapter.notifyDataSetChanged();
+            mListView.setAdapter(mAdapter);
+            mProgressDialog.dismiss();
+        }
     }
 }

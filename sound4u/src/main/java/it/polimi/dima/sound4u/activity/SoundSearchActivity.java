@@ -259,8 +259,9 @@ public class SoundSearchActivity extends ListActivity {
                 item.put("sound", sound);
                 mModel.add(item);
             }
-            SoundSearchActivity.this.getListView().setAdapter(new SoundAdapter());
-            SoundSearchActivity.this.mRealModel.addAll(list);
+            mRealModel.addAll(list);
+            mAdapter.notifyDataSetChanged();
+            mListView.setAdapter(mAdapter);
             mProgressDialog.dismiss();
         }
     }

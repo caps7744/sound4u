@@ -30,31 +30,8 @@ public class FirstAccessActivity extends ActionBarActivity implements FirstAcces
     }
 
     @Override
-    public void doFacebookLogin() {
-        final Intent loginIntent = new Intent(FacebookLoginActivity.LOGIN_ACTION);
-        startActivityForResult(loginIntent, LOGIN_REQUEST_ID);
-    }
-
-    @Override
     public void doLogin(String username, String password) {
         new LoginTask(this, username, password).execute();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == LOGIN_REQUEST_ID) {
-            switch (resultCode) {
-                case RESULT_OK:
-                    final User user = (User) data.getParcelableExtra(FacebookLoginActivity.USER_EXTRA);
-                    user.save(this);
-                    final Intent giftsIntent = new Intent(this, MyGiftsActivity.class);
-                    startActivity(giftsIntent);
-                    finish();
-                    break;
-                case RESULT_CANCELED:
-                    break;
-            }
-        }
     }
 
     @Override
