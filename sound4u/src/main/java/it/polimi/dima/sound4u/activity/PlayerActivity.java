@@ -2,6 +2,7 @@ package it.polimi.dima.sound4u.activity;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.audiofx.BassBoost;
 import android.media.audiofx.Equalizer;
@@ -31,12 +32,14 @@ public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnC
     CheckBox btn_equalizer = null;
     View thumbAndTxt = null;
     View equalizer = null;
+    Button btn_send = null;
 
     Sound currentSound = null;
     TextView song_title = null;
     String coverURL = null;
     ImageView thumbnail = null;
     String streamURL = null;
+
     /*
     Equalizer Variables
      */
@@ -92,6 +95,9 @@ public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnC
 
         btn_equalizer = (CheckBox)findViewById(R.id.btn_equalizer);
         btn_equalizer.setOnCheckedChangeListener (this);
+
+        btn_send = (Button)findViewById(R.id.btn_send);
+        btn_send.setOnClickListener(this);
 
         flat = (Button)findViewById(R.id.flat);
         flat.setOnClickListener(this);
@@ -201,11 +207,16 @@ public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnC
     }
 
     /*
+    To delete - just for the interface
+     */
+    private void toUserSearch() {
+        Intent intent = new Intent(this, UserSearchActivity.class);
+        startActivity(intent);
+    }
+
+    /*
     Equalizer Methods
      */
-    /*=============================================================================
-    onProgressChanged
-=============================================================================*/
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     @Override
     public void onProgressChanged (SeekBar seekBar, int level,
@@ -231,33 +242,21 @@ public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnC
         }
     }
 
-    /*=============================================================================
-        onStartTrackingTouch
-    =============================================================================*/
     @Override
     public void onStartTrackingTouch(SeekBar seekBar)
     {
     }
 
-    /*=============================================================================
-        onStopTrackingTouch
-    =============================================================================*/
     @Override
     public void onStopTrackingTouch(SeekBar seekBar)
     {
     }
 
-    /*=============================================================================
-        formatBandLabel
-    =============================================================================*/
     public String formatBandLabel (int[] band)
     {
         return milliHzToString(band[0]) + "-" + milliHzToString(band[1]);
     }
 
-    /*=============================================================================
-        milliHzToString
-    =============================================================================*/
     public String milliHzToString (int milliHz)
     {
         if (milliHz < 1000) return "";
@@ -267,9 +266,6 @@ public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnC
             return "" + (milliHz / 1000000) + "kHz";
     }
 
-    /*=============================================================================
-        updateSliders
-    =============================================================================*/
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     public void updateSliders ()
     {
@@ -285,9 +281,6 @@ public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnC
         }
     }
 
-    /*=============================================================================
-        updateBassBoost
-    =============================================================================*/
     public void updateBassBoost ()
     {
         if (bb != null)
@@ -296,9 +289,6 @@ public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnC
             bass_boost.setProgress (0);
     }
 
-    /*=============================================================================
-        onCheckedChange
-    =============================================================================*/
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     @Override
     public void onCheckedChanged (CompoundButton view, boolean isChecked)
@@ -313,9 +303,6 @@ public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnC
         }
     }
 
-    /*=============================================================================
-    updateUI
-=============================================================================*/
     public void updateUI ()
     {
         updateSliders();
@@ -323,9 +310,6 @@ public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnC
         enabled.setChecked (eq.getEnabled());
     }
 
-    /*=============================================================================
-        setFlat
-    =============================================================================*/
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     public void setFlat ()
     {
@@ -349,7 +333,6 @@ public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnC
     /*
     Streaming player methods
      */
-
     private void init() {
         btn_play = (Button)findViewById(R.id.btn_play);
         btn_play.setOnClickListener(this);
@@ -413,6 +396,8 @@ public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnC
                 break;
             case R.id.flat:
                 setFlat();
+            case R.id.btn_send:
+                toUserSearch();
             default:
                 break;
         }
