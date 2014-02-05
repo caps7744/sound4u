@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="style_list_item" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:background">@drawable/list_item_bg</item>
+    </style>
+</resources>

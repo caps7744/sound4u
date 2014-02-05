@@ -3,37 +3,41 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="@dimen/activity_vertical_margin">
+        android:padding="2dp">
 
         <ImageView
                 android:layout_width="@dimen/cover_list_size"
                 android:layout_height="@dimen/cover_list_size"
                 android:id="@+id/list_item_cover"
                 android:src="@drawable/adele"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center"
+                android:layout_margin="5dp"
+                android:padding="1dp"
+                android:background="#000000"/>
 
         <LinearLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:layout_gravity="center"
-                android:padding="@dimen/activity_vertical_margin"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginRight="2dp">
 
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/list_item_title"
                     android:text="@string/placeholder_title"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:layout_gravity="center"/>
+                    android:textSize="15dp"
+                    android:textColor="#FFFFFF"/>
 
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/list_item_artist"
                     android:text="@string/placeholder_artist"
-                    android:layout_gravity="center"/>
+                    android:textSize="10dp"
+                    android:textColor="#FFFFFF"/>
 
         </LinearLayout>
 
@@ -42,6 +46,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/list_item_send"
                 android:src="@drawable/ic_action_send"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center"
+                android:visibility="gone"/>
 
 </LinearLayout>

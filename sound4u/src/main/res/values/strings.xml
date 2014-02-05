@@ -5,7 +5,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <!-- First Access Activity -->
-    <string name="title_activity_first_access">First Access</string>
+    <string name="title_activity_first_access">Login</string>
     <string name="login_button">Login</string>
     <string name="signup_button">Sign Up</string>
     <!-- Login Activity -->
@@ -36,16 +36,16 @@
     <string name="passwords_equals">Passwords don\'t match</string>
     <string name="username_already_used">%1$s already exists in Sound4u</string>
     <!-- To reorganize -->
-    <string name="title_activity_my_gifts">My Gifts</string>
+    <string name="title_activity_my_gifts"></string>
     <string name="title_activity_player">Player</string>
     <string name="action_search">search sound</string>
     <string name="user_search_suggestion">User search</string>
     <string name="title_activity_sound_search_results">SoundSearchResultActivity</string>
-    <string name="sound_search_suggestion">Sound search</string>
+    <string name="sound_search_suggestion">Title or Artist</string>
     <string name="string_constant_initializing">example</string>
     <string name="title_gift_list">Gifts</string>
     <string name="title_gift_detail">Gift Detail</string>
-    <string name="title_activity_sound_search">Sounds</string>
+    <string name="title_activity_sound_search">Soundcloud Search</string>
     <string name="title_activity_user_search">Users</string>
     <string name="logout_label">Logout</string>
     <string name="facebook_button_label">Facebook</string>
@@ -57,12 +57,15 @@
     <string name="placeholder_title">Title</string>
     <string name="placeholder_artist">Artist</string>
     <string name="empty_list_message">No Gift Found!</string>
-    <string name="search_title">Search</string>
+    <string name="search_title">Search in Soundcloud</string>
     <string name="search_content_description">search by title or author</string>
     <string name="btn_send">Send To</string>
     <!-- User List View -->
     <string name="placeholder_username">Username</string>
     <string name="title_activity_adding_gift_text">Adding Gift Text</string>
     <string name="placeholder_full_name">Full Name</string>
+    <string name="empty_gift_list_message">You have no gifts!</string>
+    <string name="before_gift_sender_name">Gift by</string>
+    <string name="search_zero_results">No results found.</string>
 
 </resources>

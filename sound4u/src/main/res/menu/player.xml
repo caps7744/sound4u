@@ -1,5 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/to_sound_search_from_player"
+          android:title="@string/search_title"
+          android:icon="@drawable/search_soundcloud"
+          android:showAsAction="always" />
+
+    <item android:id="@+id/action_settings"
+          android:title="@string/action_settings"
+          android:showAsAction="never" />
+
+    <item android:id="@+id/action_logout"
+          android:title="@string/logout_label"
+          android:orderInCategory="100"
+          android:showAsAction="never" />
 </menu>
 
 

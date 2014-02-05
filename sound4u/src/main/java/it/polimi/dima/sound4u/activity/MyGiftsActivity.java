@@ -5,13 +5,11 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 import com.appspot.sound4u_backend.sound4uendpoints.Sound4uendpoints;
-import com.appspot.sound4u_backend.sound4uendpoints.model.GiftCollection;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.json.gson.GsonFactory;
 import it.polimi.dima.sound4u.R;
@@ -19,7 +17,6 @@ import it.polimi.dima.sound4u.model.Gift;
 import it.polimi.dima.sound4u.model.Sound;
 import it.polimi.dima.sound4u.model.User;
 import it.polimi.dima.sound4u.service.DownloadImageTask;
-import it.polimi.dima.sound4u.service.GiftService;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -54,7 +51,7 @@ public class MyGiftsActivity extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_my_gifts);
+        setContentView(R.layout.activity_my_gifts);
         mUser = User.load(this);
         if (mUser == null) {
             finish();
@@ -86,14 +83,13 @@ public class MyGiftsActivity extends ListActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.search:
-                Intent searchIntent = new Intent(SoundSearchActivity.SOUNDSEARCH_ACTION);
-                startActivityForResult(searchIntent, SEARCH_SOUND_ID);
-                return true;
             case R.id.action_logout:
                 doLogout();
                 return true;
             case R.id.action_settings:
+                return true;
+            case R.id.to_sound_search:
+                toSoundSearch();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -115,6 +111,11 @@ public class MyGiftsActivity extends ListActivity {
         finish();
     }
 
+    public void toSoundSearch(){
+        Intent intent = new Intent(this, SoundSearchActivity.class);
+        startActivity(intent);
+    }
+
     public void playGift(int position) {
         Intent playIntent = new Intent(PlayerActivity.PLAYER_ACTION);
         Sound extraSound = mRealModel.get(position).getSound();
@@ -134,7 +135,7 @@ public class MyGiftsActivity extends ListActivity {
                         case R.id.list_item_sender:
                             String senderUsername = (String) data;
                             TextView senderTextView = (TextView) view;
-                            senderTextView.setText(senderUsername);
+                            senderTextView.setText(getString(R.string.before_gift_sender_name).concat(senderUsername));
                             break;
                         case R.id.list_item_receiver:
                             String receiverUsername = (String) data;
@@ -193,9 +194,18 @@ public class MyGiftsActivity extends ListActivity {
                             sound
                     );
                     myGifts.add(giftItem);
+
+                    if(myGifts.isEmpty()){
+                        TextView no_gifts = (TextView) findViewById(R.id.no_gifts);
+                        no_gifts.setVisibility(View.VISIBLE);
+                    } else {
+                        TextView no_gifts = (TextView) findViewById(R.id.no_gifts);
+                        no_gifts.setVisibility(View.GONE);
+                    }
+
                 }
             } catch (IOException e) {
-
+                e.printStackTrace();
             }
             return myGifts;
         }

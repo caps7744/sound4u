@@ -102,6 +102,10 @@ public class UserSearchActivity extends ListActivity {
     private void handleIntent(Intent intent) {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
+
+            TextView no_result_msg = (TextView) findViewById(R.id.no_users_found);
+            no_result_msg.setVisibility(View.GONE);
+
             new UserSearchTask().execute(query);
         }
     }
@@ -188,6 +192,10 @@ public class UserSearchActivity extends ListActivity {
                         for (JsonValue item: jsonArray.values()) {
                             User userItem = User.create((JsonObject) item);
                             userList.add(userItem);
+                        }
+                        if (jsonArray.isEmpty()){
+                            TextView no_result_msg = (TextView) findViewById(R.id.no_users_found);
+                            no_result_msg.setVisibility(View.VISIBLE);
                         }
                     }
                 } else if (response.getStatusLine().getStatusCode() == 403) {

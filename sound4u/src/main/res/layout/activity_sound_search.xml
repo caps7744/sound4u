@@ -2,6 +2,7 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              style="@style/style_container"
               tools:context=".SoundSearchActivity"
               android:orientation="vertical">
 
@@ -15,10 +16,11 @@
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="30sp"
-            android:textColor="@color/red"
             android:layout_gravity="center"
-            android:id="@android:id/empty"
-            android:text="@string/empty_list_message"/>
+            android:id="@+id/no_sound_results"
+            android:text="@string/search_zero_results"
+            android:layout_margin="25dp"
+            android:visibility="invisible"
+            style="@style/style_textview"/>
 
 </LinearLayout>

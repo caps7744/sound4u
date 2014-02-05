@@ -3,29 +3,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:padding="@dimen/activity_vertical_margin">
+              android:layout_height="wrap_content"
+        android:padding="2dp">
 
     <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingBottom="8dp">
+            android:orientation="horizontal">
 
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/placeholder_sender"
-                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:id="@+id/list_item_sender"
-                android:layout_gravity="center"/>
-
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/placeholder_to"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center"
+                style="@style/style_label"/>
 
         <TextView
                 android:layout_width="wrap_content"
@@ -33,46 +25,39 @@
                 android:text="@string/placeholder_receiver"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:id="@+id/list_item_receiver"
-                android:layout_gravity="center"/>
-
+                android:layout_gravity="center"
+                android:visibility="gone"/>
     </LinearLayout>
-
     <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-
         <ImageView
                 android:layout_width="@dimen/cover_list_size"
                 android:layout_height="@dimen/cover_list_size"
                 android:id="@+id/list_item_cover"
                 android:src="@drawable/adele"
-                android:layout_gravity="center"/>
-
+                android:layout_gravity="center"
+                android:padding="1dp"
+                android:background="#000000"/>
         <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:padding="@dimen/activity_vertical_margin"
-                android:orientation="vertical">
-
+                android:orientation="vertical"
+                android:layout_margin="5dp">
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/list_item_title"
                     android:text="@string/placeholder_title"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:layout_gravity="center"/>
-
+                    style="@style/style_label"/>
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/list_item_artist"
                     android:text="@string/placeholder_artist"
-                    android:layout_gravity="center"/>
-
+                    style="@style/style_little_label"/>
         </LinearLayout>
-
     </LinearLayout>
-
 </LinearLayout>

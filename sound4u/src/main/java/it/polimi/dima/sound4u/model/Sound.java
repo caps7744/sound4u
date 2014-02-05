@@ -62,7 +62,7 @@ public class Sound implements Parcelable{
         try{
             this.id = jsonObject.get(ID).asLong();
             this.title = jsonObject.get(TITLE).asString();
-            if(!(jsonObject.get(ARTWORK_URL)==null)){
+            if(!(jsonObject.get(ARTWORK_URL)==null))  {
             this.cover = jsonObject.get(ARTWORK_URL).asString();
             } else {
                 this.cover = "";

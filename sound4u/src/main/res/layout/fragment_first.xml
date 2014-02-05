@@ -7,49 +7,51 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context=".FirstAccessActivity"
-    android:orientation="vertical">
-
+    android:orientation="vertical"
+    android:gravity="center"
+        style="@style/style_container">
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:visibility="invisible"
+            android:id="@+id/error_message_label"
+            style="@style/style_error_textview"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="@string/username_label"
-            android:id="@+id/textView" />
+            android:id="@+id/textViewUsername"
+            style="@style/style_label"/>
 
     <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/username_edittext"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            style="@style/style_edit_text"/>
 
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="@string/password_label"
-            android:id="@+id/textView" />
+            android:id="@+id/textViewPassword"
+            style="@style/style_label"/>
 
     <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
             android:id="@+id/password_edittext"
-            android:layout_gravity="center" />
-
-    <TextView
+            android:layout_gravity="center"
+            style="@style/style_edit_text"/>
+    <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@string/error_message_color"
-            android:visibility="invisible"
-            android:id="@+id/error_message_label" />
-
-    <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/login_button_label"
+            android:text="@string/login_button"
             android:id="@+id/login_button"
             android:onClick="doLogin"
-            android:layout_gravity="center" />
+            android:layout_gravity="right"
+            style="@style/style_button_flat"
+            android:layout_margin="10dp"/>
 
 </LinearLayout>

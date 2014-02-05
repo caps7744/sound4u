@@ -96,6 +96,10 @@ public class SoundSearchActivity extends ListActivity {
     private void handleIntent(Intent intent) {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
+
+            TextView no_result_msg = (TextView) findViewById(R.id.no_sound_results);
+            no_result_msg.setVisibility(View.GONE);
+
             new SoundSearchTask().execute(query);
         }
     }
@@ -114,7 +118,7 @@ public class SoundSearchActivity extends ListActivity {
             SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
             SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
             searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        }
+    }
         return true;
     }
 
@@ -123,6 +127,8 @@ public class SoundSearchActivity extends ListActivity {
         switch (item.getItemId()) {
             case R.id.search:
                 onSearchRequested();
+                Intent i = new Intent(this, SoundSearchActivity.class);
+                startActivity(i);
                 return true;
             case R.id.action_logout:
                 doLogout();
@@ -217,6 +223,10 @@ public class SoundSearchActivity extends ListActivity {
                         for (JsonValue item: jsonArray.values()) {
                             Sound soundItem = Sound.create((JsonObject) item);
                             soundList.add(soundItem);
+                        }
+                        if (jsonArray.isEmpty()){
+                        TextView no_result_msg = (TextView) findViewById(R.id.no_sound_results);
+                        no_result_msg.setVisibility(View.VISIBLE);
                         }
                     }
                 } else if (response.getStatusLine().getStatusCode() == 403) {

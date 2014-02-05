@@ -73,7 +73,7 @@ public class User implements Parcelable{
     private User(JsonObject jsonObject) {
         this.id = jsonObject.get(ID).asLong();
         this.username = jsonObject.get(USERNAME).asString();
-        if(!(jsonObject.get(FULLNAME)==null)){
+        if(!(jsonObject.get(FULLNAME)==null)) {
         this.full_name = jsonObject.get(FULLNAME).asString();
         } else {
             this.full_name = "";

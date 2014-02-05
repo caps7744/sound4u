@@ -12,22 +12,24 @@ import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.*;
 import it.polimi.dima.sound4u.R;
+import it.polimi.dima.sound4u.Utilities.Utilities;
 import it.polimi.dima.sound4u.conf.Const;
 import it.polimi.dima.sound4u.model.Sound;
 import it.polimi.dima.sound4u.service.DownloadImageTask;
 
 public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnCompletionListener,
         MediaPlayer.OnBufferingUpdateListener, View.OnClickListener,
-        View.OnTouchListener, SeekBar.OnSeekBarChangeListener,
+        SeekBar.OnSeekBarChangeListener,
         CompoundButton.OnCheckedChangeListener {
 
     public static final String PLAYER_ACTION = Const.PKG + ".action.PLAYER_ACTION";
 
     public static final String SOUND_EXTRA = Const.PKG + ".extra.SOUND_EXTRA";
+
+    private Utilities utils;
 
     CheckBox btn_equalizer = null;
     View thumbAndTxt = null;
@@ -36,6 +38,8 @@ public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnC
 
     Sound currentSound = null;
     TextView song_title = null;
+    private TextView songCurrentDurationLabel;
+    private TextView songTotalDurationLabel;
     String coverURL = null;
     ImageView thumbnail = null;
     String streamURL = null;
@@ -62,9 +66,8 @@ public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnC
     /*
     Streaming player variables
      */
-    private Button btn_play,
-            btn_pause,
-            btn_stop;
+    private ImageButton btn_play,
+            btn_pause;
     private SeekBar seekBar;
     private MediaPlayer mediaPlayer;
     private int lengthOfAudio;
@@ -81,7 +84,12 @@ public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_player);
+        try {
+            setContentView(R.layout.activity_player);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         init();
 
         song_title = (TextView) findViewById(R.id.song_title);
@@ -123,6 +131,8 @@ public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnC
         sliders[7] = (SeekBar)findViewById(R.id.slider_8);
         slider_labels[7] = (TextView)findViewById(R.id.slider_label_8);
 
+
+
         eq = new Equalizer (0, 0);
         if (eq != null)
         {
@@ -163,8 +173,7 @@ public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnC
         super.onStart();
 
         currentSound = getIntent().getParcelableExtra(SOUND_EXTRA);
-        song_title.setText(currentSound.getTitle());
-        streamURL = currentSound.getURLStream().concat("?client_id=").concat(getString(R.string.client_id));
+        song_title.setText(currentSound.getTitle());                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          streamURL = currentSound.getURLStream().concat("?client_id=").concat(getString(R.string.client_id));
 
         coverURL = currentSound.getCover();
         Context c = thumbnail.getContext();
@@ -180,7 +189,7 @@ public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnC
     public boolean onCreateOptionsMenu(Menu menu) {
         
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.sound_search, menu);
+        getMenuInflater().inflate(R.menu.player, menu);
         return true;
     }
 
@@ -191,6 +200,9 @@ public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnC
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
             case R.id.action_settings:
+                return true;
+            case R.id.to_sound_search_from_player:
+                toSoundSearch();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -204,6 +216,16 @@ public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnC
             equalizer.setVisibility(View.GONE);
             thumbAndTxt.setVisibility(View.VISIBLE);
         }
+    }
+
+    public void toSoundSearch(){
+        Intent intent = new Intent(this, SoundSearchActivity.class);
+        startActivity(intent);
+    }
+
+    public void toMyGifts(){
+        Intent intent = new Intent(this, MyGiftsActivity.class);
+        startActivity(intent);
     }
 
     /*
@@ -224,7 +246,7 @@ public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnC
     {
         if (seekBar == bass_boost)
         {
-            bb.setEnabled (level > 0 ? true : false);
+            bb.setEnabled (level > 0);
             bb.setStrength ((short)level); // Already in the right range 0-1000
         }
         else if (eq != null)
@@ -245,11 +267,21 @@ public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnC
     @Override
     public void onStartTrackingTouch(SeekBar seekBar)
     {
+        handler.removeCallbacks(mUpdateTimeTask);
     }
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar)
     {
+        handler.removeCallbacks(mUpdateTimeTask);
+        int totalDuration = mediaPlayer.getDuration();
+        int currentPosition = utils.progressToTimer(seekBar.getProgress(), totalDuration);
+
+        // forward or backward to certain seconds
+        mediaPlayer.seekTo(currentPosition);
+
+        // update timer progress again
+        updateSeekProgress();
     }
 
     public String formatBandLabel (int[] band)
@@ -334,17 +366,18 @@ public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnC
     Streaming player methods
      */
     private void init() {
-        btn_play = (Button)findViewById(R.id.btn_play);
-        btn_play.setOnClickListener(this);
-        btn_pause = (Button)findViewById(R.id.btn_pause);
-        btn_pause.setOnClickListener(this);
-        btn_pause.setEnabled(false);
-        btn_stop = (Button)findViewById(R.id.btn_stop);
-        btn_stop.setOnClickListener(this);
-        btn_stop.setEnabled(false);
+        utils = new Utilities();
 
-        seekBar = (SeekBar)findViewById(R.id.seek_bar);
-        seekBar.setOnTouchListener(this);
+        songCurrentDurationLabel = (TextView) findViewById(R.id.current_duration_label);
+        songTotalDurationLabel = (TextView) findViewById(R.id.total_duration_label);
+        btn_play = (ImageButton)findViewById(R.id.btn_play);
+        btn_play.setOnClickListener(this);
+        btn_pause = (ImageButton)findViewById(R.id.btn_pause);
+        btn_pause.setOnClickListener(this);
+        btn_pause.setVisibility(View.GONE);
+
+        seekBar = (SeekBar)findViewById(R.id.songProgressBar);
+        seekBar.setOnSeekBarChangeListener(this);
 
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setOnBufferingUpdateListener(this);
@@ -359,18 +392,8 @@ public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnC
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        btn_play.setEnabled(true);
-        btn_pause.setEnabled(false);
-        btn_stop.setEnabled(false);
-    }
-
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        if (mediaPlayer.isPlaying()) {
-            SeekBar tmpSeekBar = (SeekBar)v;
-            mediaPlayer.seekTo((lengthOfAudio / 100) * tmpSeekBar.getProgress() );
-        }
-        return false;
+        btn_play.setVisibility(View.VISIBLE);
+        btn_pause.setVisibility(View.GONE);
     }
 
     @Override
@@ -391,45 +414,51 @@ public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnC
             case R.id.btn_pause:
                 pauseAudio();
                 break;
-            case R.id.btn_stop:
-                stopAudio();
-                break;
             case R.id.flat:
                 setFlat();
+                break;
             case R.id.btn_send:
                 toUserSearch();
+                break;
             default:
                 break;
         }
-
         updateSeekProgress();
     }
 
-    private void updateSeekProgress() {
-        if (mediaPlayer.isPlaying()) {
-            seekBar.setProgress((int)(((float)mediaPlayer.getCurrentPosition() / lengthOfAudio) * 100));
-            handler.postDelayed(r, 1000);
-        }
-    }
+    private Runnable mUpdateTimeTask = new Runnable() {
+        public void run() {
+            long totalDuration = mediaPlayer.getDuration();
+            long currentDuration = mediaPlayer.getCurrentPosition();
 
-    private void stopAudio() {
-        mediaPlayer.stop();
-        btn_play.setEnabled(true);
-        btn_pause.setEnabled(false);
-        btn_stop.setEnabled(false);
-        seekBar.setProgress(0);
+            // Displaying Total Duration time
+            songTotalDurationLabel.setText(""+utils.milliSecondsToTimer(totalDuration));
+            // Displaying time completed playing
+            songCurrentDurationLabel.setText(""+utils.milliSecondsToTimer(currentDuration));
+
+            // Updating progress bar
+            seekBar.setProgress((int)(((float)mediaPlayer.getCurrentPosition() / lengthOfAudio) * 100));
+
+            // Running this thread after 100 milliseconds
+            handler.postDelayed(this, 100);
+        }
+    };
+
+    private void updateSeekProgress() {
+            handler.postDelayed(mUpdateTimeTask, 1000);
     }
 
     private void pauseAudio() {
         mediaPlayer.pause();
-        btn_play.setEnabled(true);
-        btn_pause.setEnabled(false);
+        btn_play.setVisibility(View.VISIBLE);
+        btn_pause.setVisibility(View.GONE);
     }
 
     private void playAudio() {
         mediaPlayer.start();
-        btn_play.setEnabled(false);
-        btn_pause.setEnabled(true);
-        btn_stop.setEnabled(true);
+        btn_play.setVisibility(View.GONE);
+        btn_pause.setVisibility(View.VISIBLE);
+
+        updateSeekProgress();
     }
 }

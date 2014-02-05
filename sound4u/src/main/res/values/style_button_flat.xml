@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="style_button_flat" parent="Theme.AppCompat.Light.DarkActionBar">
+    <item name="android:background">@drawable/button_flat</item>
+    <item name="android:textColor">#FFFFFF</item>
+    <item name="android:textSize">15dp</item>
+    <item name="android:shadowRadius">1</item>
+    <item name="android:shadowDy">1</item>
+    <item name="android:shadowDx">1</item>
+    <item name="android:shadowColor">@color/black</item>
+    </style>
+</resources>

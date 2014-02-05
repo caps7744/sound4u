@@ -2,43 +2,54 @@
                     android:id="@+id/playerContainer"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@color/grey"
-                    android:orientation="vertical">
-
-    <!-- Player Header -->
+                    android:orientation="vertical"
+                    style="@style/style_container">
     <LinearLayout
-            android:id="@+id/player_header_bg"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        <!-- Song Title -->
-        <TextView
-                android:id="@+id/song_title"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+        <Button
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="#04b3d2"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:text="The Good, The Bad And The Ugly"/>
-    </LinearLayout>
-
+                android:layout_height="match_parent"
+                android:id="@+id/to_my_gifts"
+                android:text="My Gifts"
+                android:layout_weight="1"
+                style="@style/style_button_flat"
+                android:layout_marginRight="1dp"/>
+        <Button
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/btn_send"
+                android:text="@string/btn_send"
+                android:layout_weight="1"
+                style="@style/style_button_flat"/>
+            </LinearLayout>
 <LinearLayout
                 android:id="@+id/thumbnail_equalizer_container"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:name="it.polimi.dima.sound4u.ThumbnailFragment">
-
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:animateLayoutChanges="true"
+                android:name="it.polimi.dima.sound4u.ThumbnailFragment"
+                android:background="#33000000">
+    <TextView
+            android:id="@+id/song_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/style_label"
+            android:text="The Good, The Bad And The Ugly"/>
     <!-- Thumbnail Container -->
     <LinearLayout android:id="@+id/thumbnail_and_gift_text_container"
-                  android:layout_width="match_parent"
-                  android:layout_height="match_parent"
-                  android:gravity="center"
-                  android:layout_below="@id/player_header_bg">
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:gravity="center">
         <!-- Thumbnail -->
-        <ImageView android:layout_width="match_parent"
-                   android:layout_height="match_parent"
+        <ImageView android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
                    android:layout_weight="4"
-                   android:id="@+id/thumbnail"/>
+                   android:id="@+id/thumbnail"
+                android:layout_gravity="center"/>
         </LinearLayout>
 
     <!-- Equalizer Container -->
@@ -47,7 +58,8 @@
                   android:layout_width="match_parent"
                   android:layout_height="match_parent"
                   android:paddingLeft="20dp"
-                  android:paddingRight="20dp">
+                  android:paddingRight="20dp"
+                  android:visibility="gone">
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                       android:orientation="horizontal"
@@ -57,7 +69,9 @@
             <CheckBox android:id="@+id/enabled"
                       android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
-                      android:text="Enabled"/>
+                      android:text="Enabled"
+                    android:textColor="#FFFFFF"
+                    android:button="@drawable/checkbox"/>
 
             <View
                     android:layout_width="0dp"
@@ -68,238 +82,273 @@
             <Button android:id="@+id/flat"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
-                    android:text="Flat"/>
+                    android:text="Flat"
+                    android:layout_margin="3dp"
+                    style="@style/style_button_flat"/>
 
         </LinearLayout>
 
-        <TextView
-                android:id="@+id/bass_boost_label"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Bass Boots"/>
-        <SeekBar android:id="@+id/bass_boost"
+<ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+<LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+    <TextView
+            android:id="@+id/bass_boost_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/style_little_label"
+            android:text="Bass Boost"/>
+        <SeekBar
+                android:id="@+id/bass_boost"
                  android:layout_width="match_parent"
                  android:layout_height="wrap_content"
                  android:max="1000"
                  android:progress="0"
-                 android:thumb="@drawable/seek_handler"
-                 android:progressDrawable="@drawable/img_seekbar_progress_blue"
+                 android:thumb="@drawable/triangle_handler"
+                 android:progressDrawable="@drawable/seekbar_player_bg"
                  android:secondaryProgress="0" />
 
-        <TextView
-                android:id="@+id/slider_label_1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text=""/>
-        <SeekBar android:id="@+id/slider_1"
+    <TextView
+            android:id="@+id/slider_label_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/style_little_label"
+            android:text=""/>
+        <SeekBar
+                android:id="@+id/slider_1"
                  android:layout_width="match_parent"
                  android:layout_height="wrap_content"
                  android:max="100"
                  android:progress="50"
-                 android:thumb="@drawable/seek_handler"
-                 android:progressDrawable="@drawable/img_seekbar_progress_blue"
+                 android:thumb="@drawable/triangle_handler"
+                 android:progressDrawable="@drawable/seekbar_player_bg"
                  android:secondaryProgress="50" />
 
-        <TextView
-                android:id="@+id/slider_label_2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text=""/>
-        <SeekBar android:id="@+id/slider_2"
+    <TextView
+            android:id="@+id/slider_label_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/style_little_label"
+            android:text=""/>
+        <SeekBar
+                android:id="@+id/slider_2"
                  android:layout_width="match_parent"
                  android:layout_height="wrap_content"
                  android:max="100"
                  android:progress="50"
-                 android:thumb="@drawable/seek_handler"
-                 android:progressDrawable="@drawable/img_seekbar_progress_blue"
+                 android:thumb="@drawable/triangle_handler"
+                 android:progressDrawable="@drawable/seekbar_player_bg"
                  android:secondaryProgress="50" />
 
-        <TextView
-                android:id="@+id/slider_label_3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text=""/>
-        <SeekBar android:id="@+id/slider_3"
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
+    <TextView
+            android:id="@+id/slider_label_3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/style_little_label"
+            android:text=""/>
+    <SeekBar
+            android:id="@+id/slider_3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
                  android:max="100"
                  android:progress="50"
-                 android:thumb="@drawable/seek_handler"
-                 android:progressDrawable="@drawable/img_seekbar_progress_blue"
+                 android:thumb="@drawable/triangle_handler"
+                 android:progressDrawable="@drawable/seekbar_player_bg"
                  android:secondaryProgress="50" />
 
-        <TextView
-                android:id="@+id/slider_label_4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text=""/>
-        <SeekBar android:id="@+id/slider_4"
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
+    <TextView
+            android:id="@+id/slider_label_4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/style_little_label"
+            android:text=""/>
+    <SeekBar
+            android:id="@+id/slider_4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
                  android:max="100"
                  android:progress="50"
-                 android:thumb="@drawable/seek_handler"
-                 android:progressDrawable="@drawable/img_seekbar_progress_blue"
+                 android:thumb="@drawable/triangle_handler"
+                 android:progressDrawable="@drawable/seekbar_player_bg"
                  android:secondaryProgress="50" />
 
-        <TextView
-                android:id="@+id/slider_label_5"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text=""/>
-        <SeekBar android:id="@+id/slider_5"
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
+    <TextView
+            android:id="@+id/slider_label_5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/style_little_label"
+            android:text=""/>
+    <SeekBar
+            android:id="@+id/slider_5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
                  android:max="100"
                  android:progress="50"
-                 android:thumb="@drawable/seek_handler"
-                 android:progressDrawable="@drawable/img_seekbar_progress_blue"
+                 android:thumb="@drawable/triangle_handler"
+                 android:progressDrawable="@drawable/seekbar_player_bg"
                  android:secondaryProgress="50" />
 
-        <TextView
-                android:id="@+id/slider_label_6"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text=""/>
-        <SeekBar android:id="@+id/slider_6"
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
+    <TextView
+            android:id="@+id/slider_label_6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/style_little_label"
+            android:text=""/>
+    <SeekBar
+            android:id="@+id/slider_6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
                  android:max="100"
                  android:progress="50"
-                 android:thumb="@drawable/seek_handler"
-                 android:progressDrawable="@drawable/img_seekbar_progress_blue"
+                 android:thumb="@drawable/triangle_handler"
+                 android:progressDrawable="@drawable/seekbar_player_bg"
                  android:secondaryProgress="50" />
 
-        <TextView
-                android:id="@+id/slider_label_7"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text=""/>
-        <SeekBar android:id="@+id/slider_7"
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
+    <TextView
+            android:id="@+id/slider_label_7"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/style_little_label"
+            android:text=""/>
+    <SeekBar
+            android:id="@+id/slider_7"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
                  android:max="100"
                  android:progress="50"
-                 android:thumb="@drawable/seek_handler"
-                 android:progressDrawable="@drawable/img_seekbar_progress_blue"
+                 android:thumb="@drawable/triangle_handler"
+                 android:progressDrawable="@drawable/seekbar_player_bg"
                  android:secondaryProgress="50" />
 
-        <TextView
-                android:id="@+id/slider_label_8"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text=""/>
-        <SeekBar android:id="@+id/slider_8"
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
+    <TextView
+            android:id="@+id/slider_label_8"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/style_little_label"
+            android:text=""/>
+    <SeekBar
+            android:id="@+id/slider_8"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
                  android:max="100"
                  android:progress="50"
-                 android:thumb="@drawable/seek_handler"
-                 android:progressDrawable="@drawable/img_seekbar_progress_blue"
+                 android:thumb="@drawable/triangle_handler"
+                 android:progressDrawable="@drawable/seekbar_player_bg"
                  android:secondaryProgress="50" />
 
-        <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Back to Player"
-                android:onClick="showThumbnail"
-                android:id="@+id/backtoplayerbutton" android:layout_gravity="right|bottom"/>
+</LinearLayout>
+</ScrollView>
     </LinearLayout>
+
 </LinearLayout>
 
     <!-- Player Buttons Container -->
-    <LinearLayout android:layout_width="fill_parent"
+    <LinearLayout android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:orientation="horizontal">
-        <!-- Play Button -->
-        <Button
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Play"
-                android:id="@+id/btn_play"/>
-        <!-- Play Button -->
-        <Button
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Pause"
-                android:id="@+id/btn_pause"/>
-        <!-- Play Button -->
-        <Button
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Stop"
-                android:id="@+id/btn_stop"/>
-    </LinearLayout>
-    <!-- Player Footer -->
-    <LinearLayout
-            android:id="@+id/player_footer_bg"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical">
-
-        <!-- Progress Bar/Seek bar -->
-        <SeekBar
-                android:id="@+id/seek_bar"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:thumb="@drawable/seek_handler"
-                android:progressDrawable="@drawable/img_seekbar_progress_blue"
-                android:paddingLeft="30dp"
-                android:paddingRight="30dp"/>
-
-        <!-- Timer Display -->
+                  android:orientation="vertical"
+            android:layout_marginBottom="10dp">
+        <!-- Player Footer -->
         <LinearLayout
-                android:id="@+id/timer_display"
-                android:layout_width="fill_parent"
+                android:id="@+id/player_footer_bg"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="20dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginBottom="10dp">
-            <!-- Current Duration Label -->
-            <TextView
-                    android:id="@+id/current_duration_label"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:background="#33000000">
+
+            <!-- Progress Bar/Seek bar -->
+            <SeekBar
+                    android:id="@+id/songProgressBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:thumb="@drawable/handler"
+                    android:progressDrawable="@drawable/seekbar_progress"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"/>
+            <!-- Timer Display -->
+            <LinearLayout
+                    android:id="@+id/timer_display"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="left"
-                    android:textColor="#eeeeee"
-                    android:textStyle="bold"/>
-            <!-- Total Duration Label -->
-            <TextView
-                    android:id="@+id/total_duration_label"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="right"
-                    android:textColor="#04cbde"
-                    android:textStyle="bold"/>
+                    android:layout_marginRight="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginBottom="10dp">
+                <!-- Current Duration Label -->
+                <TextView
+                        android:id="@+id/current_duration_label"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="left"
+                        android:text="00:00"
+                        style="@style/style_little_label"/>
+                <!-- Total Duration Label -->
+                <TextView
+                        android:id="@+id/total_duration_label"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:text="00:00"
+                        style="@style/style_little_label"/>
+            </LinearLayout>
         </LinearLayout>
-        <!-- Download / Equalizer buttons -->
-        <LinearLayout
-                android:layout_width="fill_parent"
+        <FrameLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:orientation="horizontal"
                 android:gravity="center">
-            <!-- Download Button -->
-            <Button
+            <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/download_button"
-                    android:id="@+id/btn_download"/>
-            <!-- Equalizer Button -->
-            <CheckBox
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_gravity="center">
+            <ImageButton
+                    android:id="@+id/btn_previous"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/button_previous"/>
+        <!-- Play Button -->
+        <ImageButton
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:id="@+id/btn_play"
+                android:background="@drawable/button_play"/>
+        <!-- Pause Button -->
+        <ImageButton
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:id="@+id/btn_pause"
+                android:background="@drawable/button_pause"
+                android:visibility="gone"/>
+            <ImageButton
+                    android:id="@+id/btn_next"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/button_next"/>
+            </LinearLayout>
+            <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/equalizer_button"
-                    android:id="@+id/btn_equalizer"/>
-            <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/btn_send"
-                    android:id="@+id/btn_send"/>
-        </LinearLayout>
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_margin="10dp"
+                    android:layout_gravity="right">
+
+        <!-- Equalizer Button -->
+        <CheckBox
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:text=""
+                android:id="@+id/btn_equalizer"
+                android:button="@drawable/eq_button_selector"/>
+            </LinearLayout>
+        </FrameLayout>
     </LinearLayout>
 </LinearLayout>
