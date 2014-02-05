@@ -17,5 +17,5 @@
             android:id="@+id/no_gifts"
             android:text="@string/empty_gift_list_message"
             style="@style/style_textview"
-            android:visibility="gone"/>
+            android:visibility="invisible"/>
 </LinearLayout>

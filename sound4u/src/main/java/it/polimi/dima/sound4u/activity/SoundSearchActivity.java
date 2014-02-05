@@ -225,8 +225,8 @@ public class SoundSearchActivity extends ListActivity {
                             soundList.add(soundItem);
                         }
                         if (jsonArray.isEmpty()){
-                        TextView no_result_msg = (TextView) findViewById(R.id.no_sound_results);
-                        no_result_msg.setVisibility(View.VISIBLE);
+                            TextView no_result_msg = (TextView) findViewById(R.id.no_sound_results);
+                            no_result_msg.setVisibility(View.VISIBLE);
                         }
                     }
                 } else if (response.getStatusLine().getStatusCode() == 403) {

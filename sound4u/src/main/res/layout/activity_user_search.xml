@@ -18,8 +18,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:id="@+id/no_users_found"
-            android:text="No results found"
+            android:text="@string/search_zero_results"
             style="@style/style_textview"
-            android:visibility="gone"/>
+            android:visibility="invisible"/>
 
 </LinearLayout>

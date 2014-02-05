@@ -194,15 +194,6 @@ public class MyGiftsActivity extends ListActivity {
                             sound
                     );
                     myGifts.add(giftItem);
-
-                    if(myGifts.isEmpty()){
-                        TextView no_gifts = (TextView) findViewById(R.id.no_gifts);
-                        no_gifts.setVisibility(View.VISIBLE);
-                    } else {
-                        TextView no_gifts = (TextView) findViewById(R.id.no_gifts);
-                        no_gifts.setVisibility(View.GONE);
-                    }
-
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -217,6 +208,9 @@ public class MyGiftsActivity extends ListActivity {
             Sound4uendpoints.Builder builder = new Sound4uendpoints.Builder(
                     AndroidHttp.newCompatibleTransport(), new GsonFactory(), null);
             service = builder.build();
+
+            TextView no_gifts = (TextView) findViewById(R.id.no_gifts);
+            no_gifts.setVisibility(View.GONE);
         }
 
         @Override
@@ -235,6 +229,9 @@ public class MyGiftsActivity extends ListActivity {
                     item.put("artist", gift.getSound().getAuthor().getUsername());
                     mModel.add(item);
                 }
+            } else if (gifts.isEmpty()){
+                TextView no_gifts = (TextView) findViewById(R.id.no_gifts);
+                no_gifts.setVisibility(View.VISIBLE);
             }
             mAdapter.notifyDataSetChanged();
             mListView.setAdapter(mAdapter);

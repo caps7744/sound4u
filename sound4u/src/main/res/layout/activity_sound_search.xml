@@ -19,7 +19,6 @@
             android:layout_gravity="center"
             android:id="@+id/no_sound_results"
             android:text="@string/search_zero_results"
-            android:layout_margin="25dp"
             android:visibility="invisible"
             style="@style/style_textview"/>
 
