@@ -165,4 +165,14 @@ public class Sound implements Parcelable{
             dest.writeByte(NOT_PRESENT);
         }
     }
+
+    public JsonObject toJsonObject() {
+        JsonObject object = new JsonObject();
+        object.add(ID, id);
+        object.add(TITLE, title);
+        object.add(ARTWORK_URL, cover);
+        object.add(STREAM_URL, urlStream);
+        object.add(USER, author.toJsonObject());
+        return object;
+    }
 }

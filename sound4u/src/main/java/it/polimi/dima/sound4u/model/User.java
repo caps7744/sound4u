@@ -73,12 +73,11 @@ public class User implements Parcelable{
     private User(JsonObject jsonObject) {
         this.id = jsonObject.get(ID).asLong();
         this.username = jsonObject.get(USERNAME).asString();
-        if(!(jsonObject.get(FULLNAME)==null)) {
-        this.full_name = jsonObject.get(FULLNAME).asString();
+        if(!(jsonObject.get(AVATAR)==null)) {
+            this.avatar = jsonObject.get(AVATAR).asString();
         } else {
-            this.full_name = "";
+            this.avatar = "";
         }
-        this.avatar = jsonObject.get(AVATAR).asString();
     }
 
     public static User create(final long id, final String username) {
@@ -163,5 +162,12 @@ public class User implements Parcelable{
 
     public void logout(Context context) {
         PreferenceManager.getDefaultSharedPreferences(context).edit().clear().commit();
+    }
+
+    public JsonObject toJsonObject() {
+        JsonObject object = new JsonObject();
+        object.add(ID, id);
+        object.add(USERNAME, username);
+        return object;
     }
 }

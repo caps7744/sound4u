@@ -38,6 +38,8 @@ public class MyGiftsActivity extends ListActivity {
 
     private static final int SEARCH_SOUND_ID = 1;
 
+    private static final String MODEL_KEY = "it.polimi.dima.sound4u.key.MODEL_KEY";
+
     private List<Map<String, Object>> mModel = new LinkedList<Map<String, Object>>();
 
     private List<Gift> mRealModel = new LinkedList<Gift>();
@@ -59,18 +61,14 @@ public class MyGiftsActivity extends ListActivity {
         mAdapter = new MyGiftsAdapter();
         mListView = getListView();
         mListView.setAdapter(mAdapter);
-        new MyGiftsTasks().execute(mUser.getId());
+        if (savedInstanceState == null || savedInstanceState.getString(MODEL_KEY) == null){
+            new MyGiftsTasks().execute(mUser.getId());
+        }
     }
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         playGift(position);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        new MyGiftsTasks().execute(mUser.getId());
     }
 
     @Override
@@ -236,6 +234,44 @@ public class MyGiftsActivity extends ListActivity {
             mAdapter.notifyDataSetChanged();
             mListView.setAdapter(mAdapter);
             mProgressDialog.dismiss();
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(MODEL_KEY, Gift.listToJson(mRealModel));
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle state) {
+        super.onRestoreInstanceState(state);
+        String model = state.getString(MODEL_KEY);
+        if (model != null) {
+            mUser = User.load(this);
+            if (mUser == null) {
+                finish();
+            }
+            mAdapter = new MyGiftsAdapter();
+            mListView = getListView();
+            mListView.setAdapter(mAdapter);
+            mRealModel = Gift.jsonToList(model);
+            if (!mRealModel.isEmpty()) {
+                for(Gift gift: mRealModel) {
+                    final Map<String, Object> item = new HashMap<String, Object>();
+                    item.put("sender", gift.getSender().getUsername());
+                    item.put("receiver", gift.getReceiver().getUsername());
+                    item.put("cover", gift.getSound().getCover());
+                    item.put("title", gift.getSound().getTitle());
+                    item.put("artist", gift.getSound().getAuthor().getUsername());
+                    mModel.add(item);
+                }
+            } else if (mRealModel.isEmpty()){
+                TextView no_gifts = (TextView) findViewById(R.id.no_gifts);
+                no_gifts.setVisibility(View.VISIBLE);
+            }
+            mAdapter.notifyDataSetChanged();
+            mListView.setAdapter(mAdapter);
         }
     }
 }

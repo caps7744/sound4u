@@ -51,7 +51,6 @@ public class GiftSenderTask extends AsyncTask<Gift, Void, Boolean>{
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        super.onPreExecute();
         mProgressDialog = ProgressDialog.show(context, "", "Loading. Please wait...", true);
         Sound4uendpoints.Builder builder = new Sound4uendpoints.Builder(
                 AndroidHttp.newCompatibleTransport(), new GsonFactory(), null);
