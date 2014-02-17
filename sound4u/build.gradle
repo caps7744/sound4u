@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.6.1+'
+        classpath 'com.android.tools.build:gradle:0.8.3+'
     }
 }
 apply plugin: 'android'
@@ -19,6 +19,19 @@ android {
     defaultConfig {
         minSdkVersion 7
         targetSdkVersion 19
+    }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/dependencies.txt'
+        exclude 'META-INF/LGPL2.1'
     }
 }
 
@@ -36,6 +49,5 @@ dependencies {
     compile 'com.google.guava:guava-jdk5:14.0.1'
     compile 'com.google.code.findbugs:jsr305:2.0.3'
     compile 'com.eclipsesource.minimal-json:minimal-json:0.9.1'
-    compile 'com.soundcloud:java-api-wrapper:1.3.1'
     compile files('libs/sound4uendpoints-v1-1.17.0-rc-SNAPSHOT.jar')
 }

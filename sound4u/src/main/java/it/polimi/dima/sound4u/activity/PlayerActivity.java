@@ -233,6 +233,7 @@ public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnC
      */
     private void toUserSearch() {
         Intent intent = new Intent(this, UserSearchActivity.class);
+        intent.putExtra(UserSearchActivity.SOUND_EXTRA, currentSound);
         startActivity(intent);
     }
 
