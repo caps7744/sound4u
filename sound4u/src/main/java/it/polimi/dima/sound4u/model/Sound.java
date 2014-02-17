@@ -67,7 +67,7 @@ public class Sound implements Parcelable{
             this.id = jsonObject.get(ID).asLong();
             this.title = jsonObject.get(TITLE).asString();
             if(!(jsonObject.get(ARTWORK_URL)==null))  {
-            this.cover = jsonObject.get(ARTWORK_URL).asString();
+                this.cover = jsonObject.get(ARTWORK_URL).asString();
                 this.cover_big = this.cover.replace("large","t500x500");
             } else {
                 this.cover = "";
@@ -118,6 +118,11 @@ public class Sound implements Parcelable{
 
     public Sound withCover(String cover) {
         this.cover = cover;
+        if(this.cover!=null){
+        this.cover_big = cover.replace("large","t500x500");
+        } else {
+            this.cover_big = null;
+        }
         return this;
     }
 
