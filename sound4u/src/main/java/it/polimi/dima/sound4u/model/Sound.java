@@ -3,7 +3,12 @@ package it.polimi.dima.sound4u.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
+import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by canidio-andrea on 29/12/13.
@@ -174,5 +179,29 @@ public class Sound implements Parcelable{
         object.add(STREAM_URL, urlStream);
         object.add(USER, author.toJsonObject());
         return object;
+    }
+
+    public static String listToJson(List<Sound> soundList) {
+        JsonArray array = new JsonArray();
+        for(Sound item: soundList) {
+            JsonObject object = new JsonObject();
+            object.add(ID, item.getId());
+            object.add(TITLE, item.getTitle());
+            object.add(USER, item.getAuthor().toJsonObject());
+            object.add(ARTWORK_URL, item.getCover());
+            object.add(STREAM_URL, item.getURLStream());
+            array.add(object);
+        }
+        return array.toString();
+    }
+
+    public static List<Sound> jsonToList(String jsonString) {
+        List<Sound> list = new LinkedList<Sound>();
+        JsonArray array = JsonArray.readFrom(jsonString);
+        for(JsonValue item: array) {
+            Sound soundItem = Sound.create((JsonObject) item);
+            list.add(soundItem);
+        }
+        return list;
     }
 }

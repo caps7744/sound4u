@@ -107,7 +107,7 @@ public class SoundSearchActivity extends ListActivity {
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l,v, position, id);
+        super.onListItemClick(l, v, position, id);
         playGift(position);
         finish();
     }
@@ -280,5 +280,39 @@ public class SoundSearchActivity extends ListActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putString(MODEL_KEY, Sound.listToJson(mRealModel));
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle state) {
+        super.onRestoreInstanceState(state);
+        String model = state.getString(MODEL_KEY);
+        mUser = User.load(this);
+        if (mUser == null) {
+            finish();
+        }
+        mListView = getListView();
+        mModel = new LinkedList<Map<String, Object>>();
+        mRealModel = new LinkedList<Sound>();
+        mAdapter = new SoundAdapter();
+
+        if(model!=null){
+            mRealModel = Sound.jsonToList(model);
+
+            for(Sound sound: mRealModel) {
+                final Map<String, Object> item = new HashMap<String, Object>();
+                item.put("cover", sound.getCover());
+                item.put("title", sound.getTitle());
+                if (sound.getAuthor() != null) {
+                   item.put("artist", sound.getAuthor().getUsername());
+                } else {
+                    item.put("artist", "");
+                }
+                item.put("sound", sound);
+                mModel.add(item);
+                mAdapter.notifyDataSetChanged();
+                mListView.setAdapter(mAdapter);
+            }
+        }
     }
 }
