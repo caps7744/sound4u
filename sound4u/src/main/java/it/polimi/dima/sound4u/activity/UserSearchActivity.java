@@ -45,6 +45,8 @@ public class UserSearchActivity extends ListActivity {
 
     public static final String SOUND_EXTRA = Const.PKG + ".extra.SOUND_EXTRA";
 
+    private static final String MODEL_KEY = "it.polimi.dima.sound4u.key.MODEL_KEY";
+
     private static final String[] FROM = {"avatar", "username", "full_name"};
 
     private static final int[] TO = {
@@ -52,6 +54,8 @@ public class UserSearchActivity extends ListActivity {
             R.id.list_item_username,
             R.id.list_item_full_name
     };
+
+    private static final String SOUND_KEY = "it.polimi.dima.sound4u.key.SOUND_KEY";
 
     private ListView mListView;
 
@@ -73,13 +77,14 @@ public class UserSearchActivity extends ListActivity {
         if (mMe == null) {
             finish();
         }
-        mReceivedSound = getIntent().getParcelableExtra(SOUND_EXTRA);
+        if (savedInstanceState == null || savedInstanceState.getString(SOUND_KEY) == null) {
+            mReceivedSound = getIntent().getParcelableExtra(SOUND_EXTRA);
+        }
         mListView = getListView();
         mModel = new LinkedList<Map<String, Object>>();
         mRealModel = new LinkedList<User>();
         mAdapter = new UserAdapter();
         mListView.setAdapter(mAdapter);
-        mModel = new LinkedList<Map<String, Object>>();
         handleIntent(getIntent());
     }
 
@@ -257,6 +262,37 @@ public class UserSearchActivity extends ListActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(MODEL_KEY, User.listToJson(mRealModel));
+        outState.putString(SOUND_KEY, mReceivedSound.toJsonObject().toString());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle state) {
+        super.onRestoreInstanceState(state);
+        JsonObject jsonObject = JsonObject.readFrom(state.getString(SOUND_KEY));
+        mReceivedSound = Sound.create(jsonObject);
+        String model = state.getString(MODEL_KEY);
+        if (model != null) {
+            mRealModel = User.jsonToList(model);
+            for(User user: mRealModel) {
+                final Map<String, Object> item = new HashMap<String, Object>();
+                item.put("avatar", user.getAvatar());
+                item.put("username", user.getUsername());
+                if (user.getFullName() != null) {
+                    item.put("artist", user.getFullName());
+                } else {
+                    item.put("full_name", "");
+                }
+                item.put("user", user);
+                mModel.add(item);
+            }
+            this.getListView().setAdapter(new UserAdapter());
+        }
     }
 }
 

@@ -6,8 +6,13 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 import it.polimi.dima.sound4u.conf.Const;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by canidio-andrea on 28/12/13.
@@ -73,6 +78,11 @@ public class User implements Parcelable{
     private User(JsonObject jsonObject) {
         this.id = jsonObject.get(ID).asLong();
         this.username = jsonObject.get(USERNAME).asString();
+        if(!(jsonObject.get(FULLNAME)==null)) {
+            this.full_name = jsonObject.get(FULLNAME).asString();
+        } else {
+            this.full_name = "";
+        }
         if(!(jsonObject.get(AVATAR)==null)) {
             this.avatar = jsonObject.get(AVATAR).asString();
         } else {
@@ -168,6 +178,33 @@ public class User implements Parcelable{
         JsonObject object = new JsonObject();
         object.add(ID, id);
         object.add(USERNAME, username);
-        return object;
+        object.add(FULLNAME, full_name);
+        object.add(AVATAR, avatar);
+        return  object;
     }
+
+    public static List<User> jsonToList(String jsonString) {
+        List<User> list = new LinkedList<User>();
+        JsonArray array = JsonArray.readFrom(jsonString);
+        for (JsonValue item: array) {
+            User user = User.create((JsonObject) item);
+            list.add(user);
+        }
+        return list;
+    }
+
+    public static String listToJson(List<User> list) {
+        JsonArray array = new JsonArray();
+        for(User item: list) {
+            JsonObject object = new JsonObject();
+            object.add(ID, item.getId());
+            object.add(USERNAME, item.getUsername());
+            object.add(FULLNAME, item.getFullName());
+            object.add(AVATAR, item.getAvatar());
+            array.add(object);
+        }
+        return array.toString();
+    }
+
+
 }
