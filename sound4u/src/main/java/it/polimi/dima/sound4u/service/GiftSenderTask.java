@@ -41,7 +41,7 @@ public class GiftSenderTask extends AsyncTask<Gift, Void, Boolean>{
         sendGift.setSoundArtistID(gift.getSound().getAuthor().getId());
         sendGift.setSoundArtistUsername(gift.getSound().getAuthor().getUsername());
         try {
-            service.add(sendGift);
+            service.add(sendGift).execute();
         } catch (IOException e) {
             return false;
         }
@@ -61,6 +61,7 @@ public class GiftSenderTask extends AsyncTask<Gift, Void, Boolean>{
     @Override
     protected void onPostExecute(Boolean result) {
         super.onPostExecute(result);
+        mProgressDialog.dismiss();
         Intent resultIntent = new Intent();
         if (result == true) {
             context.setResult(context.RESULT_OK, resultIntent);
