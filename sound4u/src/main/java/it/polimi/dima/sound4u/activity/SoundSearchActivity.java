@@ -40,6 +40,7 @@ public class SoundSearchActivity extends ListActivity {
     public static final String SOUNDSEARCH_ACTION = Const.PKG + ".action.SOUNDSEARCH_ACTION";
 
     public static final int USER_REQUEST_ID = 2;
+    public static final String MODEL_KEY = "it.polimi.dima.sound4u.key.MODEL_KEY";
 
     private final String[] FROM = {"cover", "title", "artist", "sound"};
 
@@ -274,5 +275,10 @@ public class SoundSearchActivity extends ListActivity {
             mListView.setAdapter(mAdapter);
             mProgressDialog.dismiss();
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 }
