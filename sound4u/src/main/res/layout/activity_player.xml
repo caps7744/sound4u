@@ -37,11 +37,12 @@
             android:id="@+id/song_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             style="@style/style_label"
             android:text="The Good, The Bad And The Ugly"/>
     <!-- Thumbnail Container -->
     <LinearLayout android:id="@+id/thumbnail_and_gift_text_container"
-                  android:layout_width="wrap_content"
+                  android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:gravity="center">
         <!-- Thumbnail -->
@@ -49,7 +50,8 @@
                    android:layout_height="wrap_content"
                    android:layout_weight="4"
                    android:id="@+id/thumbnail"
-                android:layout_gravity="center"/>
+                   android:src="@drawable/adele"
+                android:textAlignment="center"/>
         </LinearLayout>
 
     <!-- Equalizer Container -->

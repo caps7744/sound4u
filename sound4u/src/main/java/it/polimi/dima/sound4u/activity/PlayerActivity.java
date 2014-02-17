@@ -1,7 +1,6 @@
 package it.polimi.dima.sound4u.activity;
 
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.audiofx.BassBoost;
@@ -175,13 +174,12 @@ public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnC
         currentSound = getIntent().getParcelableExtra(SOUND_EXTRA);
         song_title.setText(currentSound.getTitle());                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          streamURL = currentSound.getURLStream().concat("?client_id=").concat(getString(R.string.client_id));
 
-        coverURL = currentSound.getCover();
-        Context c = thumbnail.getContext();
-        int id = c.getResources().getIdentifier("adele", "drawable", c.getPackageName());
+        coverURL = currentSound.getCoverBig();
         try {
-            new DownloadImageTask(thumbnail).execute(coverURL);
-        } catch (NullPointerException e) {
-            thumbnail.setImageResource(id);
+            if (coverURL != null) {
+                new DownloadImageTask(thumbnail).execute(coverURL);
+            }
+        } catch (Exception e) {
         }
     }
 

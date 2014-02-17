@@ -36,6 +36,7 @@ public class Sound implements Parcelable{
     private String title;
     private User author;
     private String cover;
+    private String cover_big;
     private String urlStream;
 
     private Sound(Parcel in) {
@@ -46,6 +47,9 @@ public class Sound implements Parcelable{
         }
         if(in.readByte() == PRESENT) {
             this.cover = in.readString();
+        }
+        if(in.readByte() == PRESENT) {
+            this.cover_big = in.readString();
         }
         if(in.readByte() == PRESENT) {
             this.urlStream = in.readString();
@@ -64,8 +68,10 @@ public class Sound implements Parcelable{
             this.title = jsonObject.get(TITLE).asString();
             if(!(jsonObject.get(ARTWORK_URL)==null))  {
             this.cover = jsonObject.get(ARTWORK_URL).asString();
+                this.cover_big = this.cover.replace("large","t500x500");
             } else {
                 this.cover = "";
+                this.cover_big = "";
             }
             JsonObject jsonUser = jsonObject.get(USER).asObject();
             this.author = User.create(jsonUser);
@@ -98,6 +104,8 @@ public class Sound implements Parcelable{
     public String getCover() {
         return cover;
     }
+
+    public String getCoverBig() { return cover_big; }
 
     public String getURLStream() {
         return urlStream;
@@ -136,6 +144,12 @@ public class Sound implements Parcelable{
         if(!TextUtils.isEmpty(cover)) {
             dest.writeByte(PRESENT);
             dest.writeString(cover);
+        } else {
+            dest.writeByte(NOT_PRESENT);
+        }
+        if(!TextUtils.isEmpty(cover_big)) {
+            dest.writeByte(PRESENT);
+            dest.writeString(cover_big);
         } else {
             dest.writeByte(NOT_PRESENT);
         }
