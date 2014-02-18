@@ -1,6 +1,7 @@
 package it.polimi.dima.sound4u.activity;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.audiofx.BassBoost;
@@ -8,7 +9,6 @@ import android.media.audiofx.Equalizer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,7 +19,7 @@ import it.polimi.dima.sound4u.conf.Const;
 import it.polimi.dima.sound4u.model.Sound;
 import it.polimi.dima.sound4u.service.DownloadImageTask;
 
-public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnCompletionListener,
+public class PlayerActivity extends Activity implements MediaPlayer.OnCompletionListener,
         MediaPlayer.OnBufferingUpdateListener, View.OnClickListener,
         SeekBar.OnSeekBarChangeListener,
         CompoundButton.OnCheckedChangeListener {
@@ -28,12 +28,15 @@ public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnC
 
     public static final String SOUND_EXTRA = Const.PKG + ".extra.SOUND_EXTRA";
 
+    private static final int USER_SEARCH_ID = 1;
+
     private Utilities utils;
 
     CheckBox btn_equalizer = null;
     View thumbAndTxt = null;
     View equalizer = null;
     Button btn_send = null;
+    Button btn_to_gifts = null;
 
     Sound currentSound = null;
     TextView song_title = null;
@@ -105,6 +108,9 @@ public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnC
 
         btn_send = (Button)findViewById(R.id.btn_send);
         btn_send.setOnClickListener(this);
+
+        btn_to_gifts = (Button)findViewById(R.id.to_my_gifts);
+        btn_to_gifts.setOnClickListener(this);
 
         flat = (Button)findViewById(R.id.flat);
         flat.setOnClickListener(this);
@@ -186,7 +192,7 @@ public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnC
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        
+        super.onCreateOptionsMenu(menu);
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.player, menu);
         return true;
@@ -205,6 +211,16 @@ public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnC
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == USER_SEARCH_ID && resultCode == RESULT_OK) {
+            Toast.makeText(this, "Gift sent!", Toast.LENGTH_SHORT).show();
+        } else if (requestCode == USER_SEARCH_ID && resultCode == RESULT_CANCELED){
+            Toast.makeText(this, "Unable to send the gift.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void showEqualizer(boolean isChecked){
@@ -233,7 +249,7 @@ public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnC
     private void toUserSearch() {
         Intent intent = new Intent(this, UserSearchActivity.class);
         intent.putExtra(UserSearchActivity.SOUND_EXTRA, currentSound);
-        startActivity(intent);
+        startActivityForResult(intent, USER_SEARCH_ID);
     }
 
     /*
@@ -420,6 +436,8 @@ public class PlayerActivity extends ActionBarActivity implements MediaPlayer.OnC
             case R.id.btn_send:
                 toUserSearch();
                 break;
+            case R.id.to_my_gifts:
+                toMyGifts();
             default:
                 break;
         }

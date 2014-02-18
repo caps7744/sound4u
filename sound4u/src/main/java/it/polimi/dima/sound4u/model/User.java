@@ -71,6 +71,9 @@ public class User implements Parcelable{
         this.username = in.readString();
         this.password = in.readString();
         if(in.readByte() == PRESENT) {
+            this.full_name = in.readString();
+        }
+        if(in.readByte() == PRESENT) {
             this.avatar = in.readString();
         }
     }
@@ -139,6 +142,12 @@ public class User implements Parcelable{
         dest.writeLong(id);
         dest.writeString(username);
         dest.writeString(password);
+        if(!TextUtils.isEmpty(full_name)) {
+            dest.writeByte(PRESENT);
+            dest.writeString(full_name);
+        } else {
+            dest.writeByte(NOT_PRESENT);
+        }
         if(!TextUtils.isEmpty(avatar)) {
             dest.writeByte(PRESENT);
             dest.writeString(avatar);

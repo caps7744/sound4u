@@ -94,14 +94,6 @@ public class MyGiftsActivity extends ListActivity {
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == SEARCH_SOUND_ID && resultCode == RESULT_OK) {
-            Toast.makeText(this, "Gift sent!", Toast.LENGTH_SHORT).show();
-        }
-    }
-
     private void doLogout() {
         mUser.logout(this);
         final Intent firstAccessIntent = new Intent(this, FirstAccessActivity.class);

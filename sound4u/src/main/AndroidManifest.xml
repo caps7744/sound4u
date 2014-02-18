@@ -5,7 +5,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="9"
+        android:minSdkVersion="11"
         android:targetSdkVersion="19" />
 
     <uses-library android:name="com.soundcloud:java-api-wrapper:1.3.1" />
@@ -37,13 +37,13 @@
         </activity>
         <activity
             android:name="it.polimi.dima.sound4u.activity.PlayerActivity"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
             android:label="@string/title_activity_player" >
-            <intent-filter>
-                <action android:name="it.polimi.dima.sound4u.action.PLAYER_ACTION" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
+        <intent-filter>
+            <action android:name="it.polimi.dima.sound4u.action.PLAYER_ACTION" />
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
+    </activity>
         <activity
             android:name="it.polimi.dima.sound4u.activity.SoundSearchActivity"
             android:label="@string/title_activity_sound_search"
@@ -77,13 +77,11 @@
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/user_searchable" />
-
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
             <intent-filter>
                 <action android:name="it.polimi.dima.sound4u.action.USERSEARCH_ACTION" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>

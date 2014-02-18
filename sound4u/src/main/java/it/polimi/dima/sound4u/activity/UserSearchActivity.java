@@ -160,11 +160,16 @@ public class UserSearchActivity extends ListActivity {
                             String full_name = (String) data;
                             TextView fullNameTextView = (TextView) view;
                             fullNameTextView.setText(full_name);
+
+
+                            Log.w(UserSearchActivity.class.getName(), "fullname:"+full_name);
+
+
                             break;
                         case R.id.list_item_username:
-                            String artist = (String) data;
+                            String username = (String) data;
                             TextView usernameTextView = (TextView) view;
-                            usernameTextView.setText(artist);
+                            usernameTextView.setText(username);
                             break;
                     }
                     return true;
@@ -236,7 +241,7 @@ public class UserSearchActivity extends ListActivity {
                 item.put("avatar", user.getAvatar());
                 item.put("username", user.getUsername());
                 if (user.getFullName() != null) {
-                    item.put("artist", user.getFullName());
+                    item.put("full_name", user.getFullName());
                 } else {
                     item.put("full_name", "");
                 }
@@ -284,7 +289,7 @@ public class UserSearchActivity extends ListActivity {
                 item.put("avatar", user.getAvatar());
                 item.put("username", user.getUsername());
                 if (user.getFullName() != null) {
-                    item.put("artist", user.getFullName());
+                    item.put("full_name", user.getFullName());
                 } else {
                     item.put("full_name", "");
                 }
