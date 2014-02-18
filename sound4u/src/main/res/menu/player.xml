@@ -18,9 +18,10 @@
           android:icon="@drawable/search_soundcloud"
           android:showAsAction="always"/>
 
-    <item android:id="@+id/action_settings"
-          android:title="@string/action_settings"
-          android:showAsAction="never" />
+    <item
+            android:id="@+id/action_help"
+            android:title="Help"
+            android:showAsAction="never"/>
 
     <item android:id="@+id/action_logout"
           android:title="@string/logout_label"

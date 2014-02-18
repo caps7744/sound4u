@@ -67,5 +67,6 @@
     <string name="empty_gift_list_message">You have no gifts!</string>
     <string name="before_gift_sender_name">Gift by</string>
     <string name="search_zero_results">No results found.</string>
+    <string name="title_activity_help">Help</string>
 
 </resources>

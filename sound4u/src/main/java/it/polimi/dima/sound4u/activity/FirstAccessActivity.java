@@ -1,5 +1,6 @@
 package it.polimi.dima.sound4u.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -40,13 +41,17 @@ public class FirstAccessActivity extends ActionBarActivity implements FirstAcces
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        /*
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                return true;
+            case R.id.action_help:
+                toHelp();
+                break;
         }
-        */
         return super.onOptionsItemSelected(item);
+    }
+
+    private void toHelp() {
+        Intent i = new Intent(this, HelpActivity.class);
+        startActivity(i);
     }
 
 }

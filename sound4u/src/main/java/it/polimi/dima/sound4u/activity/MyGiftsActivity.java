@@ -84,7 +84,8 @@ public class MyGiftsActivity extends ListActivity {
             case R.id.action_logout:
                 doLogout();
                 return true;
-            case R.id.action_settings:
+            case R.id.action_help:
+                toHelp();
                 return true;
             case R.id.to_sound_search:
                 toSoundSearch();
@@ -265,5 +266,10 @@ public class MyGiftsActivity extends ListActivity {
             mAdapter.notifyDataSetChanged();
             mListView.setAdapter(mAdapter);
         }
+    }
+
+    private void toHelp() {
+        Intent i = new Intent(this, HelpActivity.class);
+        startActivity(i);
     }
 }

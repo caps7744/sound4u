@@ -204,7 +204,8 @@ public class PlayerActivity extends Activity implements MediaPlayer.OnCompletion
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
-            case R.id.action_settings:
+            case R.id.action_help:
+                toHelp();
                 return true;
             case R.id.to_sound_search_from_player:
                 toSoundSearch();
@@ -478,5 +479,10 @@ public class PlayerActivity extends Activity implements MediaPlayer.OnCompletion
         btn_pause.setVisibility(View.VISIBLE);
 
         updateSeekProgress();
+    }
+
+    private void toHelp() {
+        Intent i = new Intent(this, HelpActivity.class);
+        startActivity(i);
     }
 }

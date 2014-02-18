@@ -263,7 +263,8 @@ public class UserSearchActivity extends ListActivity {
             case R.id.action_logout:
                 doLogout();
                 return true;
-            case R.id.action_settings:
+            case R.id.action_help:
+                toHelp();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -298,6 +299,11 @@ public class UserSearchActivity extends ListActivity {
             }
             this.getListView().setAdapter(new UserAdapter());
         }
+    }
+
+    private void toHelp() {
+        Intent i = new Intent(this, HelpActivity.class);
+        startActivity(i);
     }
 }
 
