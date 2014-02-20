@@ -9,8 +9,10 @@ import android.text.TextUtils;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
+import com.soundcloud.api.Token;
 import it.polimi.dima.sound4u.conf.Const;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -26,7 +28,12 @@ public class User implements Parcelable{
     public static final Creator<User> CREATOR = new Creator<User>() {
         @Override
         public User createFromParcel(Parcel source) {
-            return new User(source);
+            try {
+                return new User(source);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
 
         @Override
@@ -57,7 +64,7 @@ public class User implements Parcelable{
 
     private String full_name;
 
-    private String password;
+    private Token token;
 
     private String avatar;
 
@@ -66,10 +73,10 @@ public class User implements Parcelable{
         this.username = username;
     }
 
-    private User(Parcel in) {
+    private User(Parcel in) throws IOException {
         this.id = in.readLong();
         this.username = in.readString();
-        this.password = in.readString();
+        this.token = new Token(in.readString(),null);
         if(in.readByte() == PRESENT) {
             this.full_name = in.readString();
         }
@@ -114,16 +121,16 @@ public class User implements Parcelable{
         return full_name;
     }
 
-    public String getPassword() {
-        return password;
+    public Token getToken() {
+        return token;
     }
 
     public String getAvatar() {
         return avatar;
     }
 
-    public User withPassword(final String password) {
-        this.password = password;
+    public User withToken(final Token token) {
+        this.token = token;
         return this;
     }
 
@@ -141,7 +148,7 @@ public class User implements Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(id);
         dest.writeString(username);
-        dest.writeString(password);
+        dest.writeString(token.toString());
         if(!TextUtils.isEmpty(full_name)) {
             dest.writeByte(PRESENT);
             dest.writeString(full_name);
@@ -162,7 +169,7 @@ public class User implements Parcelable{
         editor.putLong(ID_KEY, id);
         editor.putString(USERNAME_KEY, username);
         editor.putString(AVATAR_KEY, avatar);
-        editor.putString(PASSWORD_KEY, password);
+        editor.putString(PASSWORD_KEY, token.toString());
         editor.commit();
     }
 
@@ -174,7 +181,7 @@ public class User implements Parcelable{
         if (username != null) {
             user = new User(id, username);
             user.avatar = preferences.getString(AVATAR_KEY, null);
-            user.password = preferences.getString(PASSWORD_KEY, null);
+            user.token = new Token(preferences.getString(PASSWORD_KEY, null), null);
         }
         return user;
     }
