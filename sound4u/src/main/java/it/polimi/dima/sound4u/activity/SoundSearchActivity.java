@@ -207,6 +207,8 @@ public class SoundSearchActivity extends ListActivity {
 
         private ApiWrapper wrapper;
 
+        private User me;
+
         public SoundSearchTask() {
         }
 
@@ -214,8 +216,6 @@ public class SoundSearchActivity extends ListActivity {
         protected List<Sound> doInBackground(String... params) {
             List<Sound> soundList = new LinkedList<Sound>();
             try {
-                User user = User.load(SoundSearchActivity.this);
-                wrapper.login(user.getUsername(), user.getPassword());
                 HttpResponse response = wrapper.get(Request.to("/tracks.json?q=\"title='(.*)" + params[0] + "(.*)'\""));
                 if(response.getStatusLine().getStatusCode() == 200) {
                     HttpEntity entity = response.getEntity();
@@ -232,7 +232,7 @@ public class SoundSearchActivity extends ListActivity {
                         }
                     }
                 } else if (response.getStatusLine().getStatusCode() == 403) {
-                    user.logout(SoundSearchActivity.this);
+                    me.logout(SoundSearchActivity.this);
                     Intent accessIntent = new Intent(SoundSearchActivity.this, FirstAccessActivity.class);
                     SoundSearchActivity.this.startActivity(accessIntent);
                     SoundSearchActivity.this.finish();
@@ -246,11 +246,12 @@ public class SoundSearchActivity extends ListActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            me = User.load(SoundSearchActivity.this);
             wrapper = new ApiWrapper(
                     SoundCloudConst.CLIENT_ID,
                     SoundCloudConst.CLIENT_SECRET,
                     null,
-                    null
+                    me.getToken()
             );
             mProgressDialog = ProgressDialog.show(SoundSearchActivity.this, "", "Loading. Please wait...", true);
         }

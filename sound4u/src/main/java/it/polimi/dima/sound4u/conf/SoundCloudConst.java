@@ -11,6 +11,6 @@ public class SoundCloudConst {
 
     public static final String CLIENT_SECRET = "C6o8jc517b6PIw0RKtcfQsbOK3BjGpxWFLg977UiguY";
 
-    public static final URI REDIRECT_URI = URI.create("http://localhost:8000");
+    public static final URI REDIRECT_URI = URI.create("sound4u://soundcloud/callback");
 
 }

@@ -184,6 +184,8 @@ public class UserSearchActivity extends ListActivity {
 
         private ApiWrapper wrapper;
 
+        private User me;
+
         public UserSearchTask() {
         }
 
@@ -191,8 +193,6 @@ public class UserSearchActivity extends ListActivity {
         protected List<User> doInBackground(String... params) {
             List<User> userList = new LinkedList<User>();
             try {
-                User user = User.load(UserSearchActivity.this);
-                wrapper.login(user.getUsername(), user.getPassword());
                 HttpResponse response = wrapper.get(Request.to("/users").with("[q]", params[0]));
                 if(response.getStatusLine().getStatusCode() == 200) {
                     HttpEntity entity = response.getEntity();
@@ -209,7 +209,7 @@ public class UserSearchActivity extends ListActivity {
                         }
                     }
                 } else if (response.getStatusLine().getStatusCode() == 403) {
-                    user.logout(UserSearchActivity.this);
+                    me.logout(UserSearchActivity.this);
                     Intent accessIntent = new Intent(UserSearchActivity.this, FirstAccessActivity.class);
                     UserSearchActivity.this.startActivity(accessIntent);
                     UserSearchActivity.this.finish();
@@ -223,11 +223,12 @@ public class UserSearchActivity extends ListActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            me = User.load(UserSearchActivity.this);
             wrapper = new ApiWrapper(
                     SoundCloudConst.CLIENT_ID,
                     SoundCloudConst.CLIENT_SECRET,
                     null,
-                    null
+                    me.getToken()
             );
             mProgressDialog = ProgressDialog.show(UserSearchActivity.this, "", "Loading. Please wait...", true);
         }
