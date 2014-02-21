@@ -49,9 +49,7 @@ dependencies {
     compile 'com.google.http-client:google-http-client-android:1.17.0-rc'
     compile 'com.google.http-client:google-http-client-gson:1.17.0-rc'
     compile 'com.google.oauth-client:google-oauth-client:1.17.0-rc'
-    
-    
-    
-    
+
     compile files('libs/sound4uendpoints-v1-1.17.0-rc-SNAPSHOT.jar')
+    compile files('libs/easyfacebookandroidsdk_2.3.jar')
 }

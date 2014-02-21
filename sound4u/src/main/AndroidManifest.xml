@@ -98,6 +98,14 @@
             android:name="it.polimi.dima.sound4u.activity.HelpActivity"
             android:label="@string/title_activity_help" >
         </activity>
+        <activity
+            android:name="it.polimi.dima.sound4u.activity.SharingGiftActivity"
+            android:label="@string/title_activity_sharing_gift" >
+        </activity>
+        <activity
+            android:name="it.polimi.dima.sound4u.activity.FacebookConnect"
+            android:label="@string/title_activity_facebook_connect" >
+        </activity>
     </application>
 
 </manifest>

@@ -2,6 +2,7 @@ package it.polimi.dima.sound4u.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
@@ -55,9 +56,13 @@ public class Gift implements Parcelable{
 
     private Gift(Parcel in) {
         this.id = in.readLong();
+        Log.w(Gift.class.getName(), "letto id");
         this.sender = in.readParcelable(User.class.getClassLoader());
+        Log.w(Gift.class.getName(), "letto sender");
         this.receiver = in.readParcelable(User.class.getClassLoader());
+        Log.w(Gift.class.getName(), "letto receiver");
         this.sound = in.readParcelable(Sound.class.getClassLoader());
+        Log.w(Gift.class.getName(), "letto sound");
     }
 
     public static Gift create(final long id, final User sender, final User receiver, final Sound sound) {
@@ -88,9 +93,13 @@ public class Gift implements Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(id);
+        Log.w(Gift.class.getName(), "scritto id");
         dest.writeParcelable(sender, flags);
+        Log.w(Gift.class.getName(), "scritto sender");
         dest.writeParcelable(receiver, flags);
+        Log.w(Gift.class.getName(), "scritto receiver");
         dest.writeParcelable(sound, flags);
+        Log.w(Gift.class.getName(), "scritto sound");
     }
 
     public static String listToJson(List<Gift> giftList) {

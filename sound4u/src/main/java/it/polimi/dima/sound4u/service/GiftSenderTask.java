@@ -16,11 +16,15 @@ import java.io.IOException;
  */
 public class GiftSenderTask extends AsyncTask<Gift, Void, Boolean>{
 
+    public static final String SHARED_GIFT_EXTRA = "it.polimi.dima.sound4u.extra.SHARED_GIFT_EXTRA";
+
     private Activity context;
 
     private ProgressDialog mProgressDialog;
 
     private Sound4uendpoints service;
+
+    private Gift gift;
 
     public GiftSenderTask(Activity context) {
         this.context = context;
@@ -28,7 +32,7 @@ public class GiftSenderTask extends AsyncTask<Gift, Void, Boolean>{
 
     @Override
     protected Boolean doInBackground(Gift... params) {
-        Gift gift = params[0];
+        gift = params[0];
         com.appspot.sound4u_backend.sound4uendpoints.model.Gift sendGift = new com.appspot.sound4u_backend.sound4uendpoints.model.Gift();
         sendGift.setSenderID(gift.getSender().getId());
         sendGift.setSenderUsername(gift.getSender().getUsername());
@@ -63,10 +67,12 @@ public class GiftSenderTask extends AsyncTask<Gift, Void, Boolean>{
         mProgressDialog.dismiss();
         Intent resultIntent = new Intent();
         if (result == true) {
+            resultIntent.putExtra(SHARED_GIFT_EXTRA, gift);
             context.setResult(context.RESULT_OK, resultIntent);
+
         } else {
             context.setResult(context.RESULT_CANCELED, resultIntent);
         }
         context.finish();
     }
-}
+    }

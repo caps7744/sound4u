@@ -68,5 +68,8 @@
     <string name="before_gift_sender_name">Gift by</string>
     <string name="search_zero_results">No results found.</string>
     <string name="title_activity_help">Help</string>
+    <string name="title_activity_sharing_gift">SharingGiftActivity</string>
+    <string name="title_activity_facebook_connect">FacebookConnect</string>
+    <string name="app_id">1379605065621911</string>
 
 </resources>

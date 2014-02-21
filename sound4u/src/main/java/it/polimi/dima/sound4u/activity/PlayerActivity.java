@@ -9,6 +9,7 @@ import android.media.audiofx.Equalizer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,8 +17,10 @@ import android.widget.*;
 import it.polimi.dima.sound4u.R;
 import it.polimi.dima.sound4u.Utilities.Utilities;
 import it.polimi.dima.sound4u.conf.Const;
+import it.polimi.dima.sound4u.model.Gift;
 import it.polimi.dima.sound4u.model.Sound;
 import it.polimi.dima.sound4u.service.DownloadImageTask;
+import it.polimi.dima.sound4u.service.GiftSenderTask;
 
 public class PlayerActivity extends Activity implements MediaPlayer.OnCompletionListener,
         MediaPlayer.OnBufferingUpdateListener, View.OnClickListener,
@@ -27,6 +30,8 @@ public class PlayerActivity extends Activity implements MediaPlayer.OnCompletion
     public static final String PLAYER_ACTION = Const.PKG + ".action.PLAYER_ACTION";
 
     public static final String SOUND_EXTRA = Const.PKG + ".extra.SOUND_EXTRA";
+
+    public static final String SHARING_GIFT_EXTRA = "it.polimi.dima.sound4u.extra.SHARING_GIFT_EXTRA";
 
     private static final int USER_SEARCH_ID = 1;
 
@@ -86,11 +91,7 @@ public class PlayerActivity extends Activity implements MediaPlayer.OnCompletion
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        try {
-            setContentView(R.layout.activity_player);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        setContentView(R.layout.activity_player);
 
         init();
 
@@ -215,10 +216,17 @@ public class PlayerActivity extends Activity implements MediaPlayer.OnCompletion
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    protected void onActivityResult(int requestCode, int resultCode, Intent resultIntent) {
+        super.onActivityResult(requestCode, resultCode, resultIntent);
         if (requestCode == USER_SEARCH_ID && resultCode == RESULT_OK) {
             Toast.makeText(this, "Gift sent!", Toast.LENGTH_SHORT).show();
+
+            Gift gift = resultIntent.getParcelableExtra(GiftSenderTask.SHARED_GIFT_EXTRA);
+
+            Intent intent = new Intent(this, SharingGiftActivity.class);
+            intent.putExtra(SHARING_GIFT_EXTRA, gift);
+            startActivity(intent);
+
         } else if (requestCode == USER_SEARCH_ID && resultCode == RESULT_CANCELED){
             Toast.makeText(this, "Unable to send the gift.", Toast.LENGTH_SHORT).show();
         }
@@ -439,6 +447,7 @@ public class PlayerActivity extends Activity implements MediaPlayer.OnCompletion
                 break;
             case R.id.to_my_gifts:
                 toMyGifts();
+                break;
             default:
                 break;
         }
