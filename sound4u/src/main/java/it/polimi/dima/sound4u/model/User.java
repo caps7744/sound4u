@@ -48,7 +48,7 @@ public class User implements Parcelable{
 
     private static final String AVATAR_KEY = Const.PKG + ".key.AVATAR_KEY";
 
-    private static final String PASSWORD_KEY = Const.PKG + ".key.PASSWORD_KEY";
+    private static final String TOKEN_KEY = Const.PKG + ".key.TOKEN_KEY";
 
     private static final String ID = "id";
 
@@ -76,7 +76,6 @@ public class User implements Parcelable{
     private User(Parcel in) throws IOException {
         this.id = in.readLong();
         this.username = in.readString();
-        this.token = new Token(in.readString(),null);
         if(in.readByte() == PRESENT) {
             this.full_name = in.readString();
         }
@@ -148,7 +147,6 @@ public class User implements Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(id);
         dest.writeString(username);
-        dest.writeString(token.toString());
         if(!TextUtils.isEmpty(full_name)) {
             dest.writeByte(PRESENT);
             dest.writeString(full_name);
@@ -169,7 +167,7 @@ public class User implements Parcelable{
         editor.putLong(ID_KEY, id);
         editor.putString(USERNAME_KEY, username);
         editor.putString(AVATAR_KEY, avatar);
-        editor.putString(PASSWORD_KEY, token.toString());
+        editor.putString(TOKEN_KEY, token.access);
         editor.commit();
     }
 
@@ -181,7 +179,7 @@ public class User implements Parcelable{
         if (username != null) {
             user = new User(id, username);
             user.avatar = preferences.getString(AVATAR_KEY, null);
-            user.token = new Token(preferences.getString(PASSWORD_KEY, null), null);
+            user.token = new Token(preferences.getString(TOKEN_KEY, null), null, Token.SCOPE_NON_EXPIRING);
         }
         return user;
     }

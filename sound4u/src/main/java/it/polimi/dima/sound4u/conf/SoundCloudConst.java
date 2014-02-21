@@ -7,9 +7,9 @@ import java.net.URI;
  */
 public class SoundCloudConst {
 
-    public static final String CLIENT_ID = "yH1Jv2C5fhIbZfGTpKtujQ";
+    public static final String CLIENT_ID = "1e9034524a004460783bb4d4ba024ffb";
 
-    public static final String CLIENT_SECRET = "C6o8jc517b6PIw0RKtcfQsbOK3BjGpxWFLg977UiguY";
+    public static final String CLIENT_SECRET = "8dbf80ea13e88ce2cd2b92f326ec15fd";
 
     public static final URI REDIRECT_URI = URI.create("sound4u://soundcloud/callback");
 
