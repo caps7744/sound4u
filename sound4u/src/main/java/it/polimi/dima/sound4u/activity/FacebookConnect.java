@@ -131,7 +131,6 @@ public class FacebookConnect extends Activity implements LoginListener {
                 graphApi.setStatus(message, pictureUrl, null, null, null, songTitle);
 
             } catch (EasyFacebookError e){
-                e.printStackTrace();
             }
             return null;
         }
