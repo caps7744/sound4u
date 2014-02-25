@@ -261,7 +261,7 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
         int currentMillisDuration = information.getCurrentMillisDuration();
         songCurrentDurationLabel.setText("" + Utilities.milliSecondsToTimer(currentMillisDuration));
         // Updating progress bar
-        seekBar.setSecondaryProgress((int)(((float)currentMillisDuration/totalMillisDuration)*100));
+        seekBar.setProgress((int)(((float)currentMillisDuration/totalMillisDuration)*100));
     }
 
     public void onEventMainThread(MusicService.SeekBarPercentage event) {
