@@ -3,13 +3,10 @@ package it.polimi.dima.sound4u.activity;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.media.audiofx.BassBoost;
 import android.media.audiofx.Equalizer;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,14 +14,13 @@ import android.widget.*;
 import com.google.common.eventbus.EventBus;
 import it.polimi.dima.sound4u.R;
 import it.polimi.dima.sound4u.model.DurationInformation;
+import it.polimi.dima.sound4u.service.MusicService;
 import it.polimi.dima.sound4u.utilities.Utilities;
 import it.polimi.dima.sound4u.conf.Const;
 import it.polimi.dima.sound4u.model.Gift;
 import it.polimi.dima.sound4u.model.Sound;
 import it.polimi.dima.sound4u.service.DownloadImageTask;
 import it.polimi.dima.sound4u.service.GiftSenderTask;
-
-import java.io.IOException;
 
 public class PlayerActivity extends Activity implements View.OnClickListener,
         SeekBar.OnSeekBarChangeListener, CompoundButton.OnCheckedChangeListener {
@@ -44,15 +40,15 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
         Exit
     }
 
-    public class SeekBarTouchPosition {
-        private int position;
+    public class SeekBarTouchProgress {
+        private int progress;
 
-        public SeekBarTouchPosition(int position) {
-            this.position = position;
+        public SeekBarTouchProgress(int progress) {
+            this.progress = progress;
         }
 
-        public int getPosition() {
-            return position;
+        public int getProgress() {
+            return progress;
         }
     }
 
@@ -99,16 +95,6 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
             btn_pause,
             btn_stop;
     private SeekBar seekBar;
-    private MediaPlayer mediaPlayer;
-    private int lengthOfAudio;
-
-    private final Handler handler = new Handler();
-    private final Runnable r = new Runnable() {
-        @Override
-        public void run() {
-            updateSeekProgress();
-        }
-    };
 
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     @Override
@@ -249,11 +235,35 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
 
 
 
-
-    public void onEvent(String string){
-        if(string.equals("ok")){
-            btn_play.setEnabled(true);
+    public void onEventMainThread(MusicService.State event) {
+        switch (event) {
+            case Retriving:
+                onRetriving();
+                break;
+            case Prepared:
+                onPrepared();
+                break;
+            case Playing:
+                onPlaying();
+                break;
+            case Paused:
+                onPaused();
+                break;
+            default:
         }
+    }
+
+    public void onEventMainThread(DurationInformation event) {
+        information = event;
+        // Displaying Total Duration time
+        songTotalDurationLabel.setText(""+Utilities.milliSecondsToTimer(information.getTotalMillisDuration()));
+        // Displaying time completed playing
+        songCurrentDurationLabel.setText("" + Utilities.milliSecondsToTimer(information.getCurrentMillisDuration()));
+    }
+
+    public void onEventMainThread(MusicService.SeekBarPercentage event) {
+        // Updating progress bar
+        seekBar.setProgress(event.getPercentage());
     }
 
     private void initializeMediaPlayerVariables() {
@@ -269,42 +279,19 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
         btn_pause.setOnClickListener(this);
         btn_stop.setOnClickListener(this);
         seekBar.setOnSeekBarChangeListener(this);
-
-        btn_pause.setVisibility(View.GONE);
-        btn_stop.setEnabled(false);
-        btn_play.setEnabled(false);
-
-        mediaPlayer = new MediaPlayer();
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-
-        mediaPlayer.reset();
-        try {
-            try {
-                mediaPlayer.setDataSource(streamURL);
-            } catch (IllegalStateException e){
-                mediaPlayer.reset();
-                mediaPlayer.setDataSource(streamURL);
-            }
-        } catch (IOException e){
-            e.printStackTrace();
-        }
-        mediaPlayer.prepareAsync();
     }
+
 
     @Override
     public void onClick(View view) {
-
         switch (view.getId()) {
             case R.id.btn_play:
-                    lengthOfAudio = mediaPlayer.getDuration();
-                    playAudio();
+                playAudio();
                 break;
             case R.id.btn_pause:
-                lengthOfAudio = mediaPlayer.getDuration();
                 pauseAudio();
                 break;
             case R.id.btn_stop:
-                lengthOfAudio = mediaPlayer.getDuration();
                 stopAudio();
                 break;
             case R.id.flat:
@@ -316,68 +303,55 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
             default:
                 break;
         }
-
-        if(view.getId()!=R.id.btn_stop){
-            updateSeekProgress();
-        }
-    }
-
-    private Runnable mUpdateTimeTask = new Runnable() {
-        public void run() {
-            long totalDuration = mediaPlayer.getDuration();
-            long currentDuration = mediaPlayer.getCurrentPosition();
-
-            // Displaying Total Duration time
-            songTotalDurationLabel.setText(""+Utilities.milliSecondsToTimer(totalDuration));
-            // Displaying time completed playing
-            songCurrentDurationLabel.setText("" + Utilities.milliSecondsToTimer(currentDuration));
-
-            // Updating progress bar
-            seekBar.setProgress((int)(((float)mediaPlayer.getCurrentPosition() / lengthOfAudio) * 100));
-
-            // Running this thread after 100 milliseconds
-            handler.postDelayed(this, 100);
-        }
-    };
-
-    private void updateSeekProgress() {
-            handler.postDelayed(mUpdateTimeTask, 100);
     }
 
     private void pauseAudio() {
-        btn_play.setVisibility(View.VISIBLE);
-        btn_pause.setVisibility(View.GONE);
         Command command = Command.Pause;
         eventBus.post(command);
     }
 
     private void stopAudio(){
-        btn_play.setVisibility(View.VISIBLE);
-        btn_pause.setVisibility(View.GONE);
         Command command = Command.Stop;
         eventBus.post(command);
     }
 
     private void playAudio() {
-        btn_play.setVisibility(View.GONE);
-        btn_pause.setVisibility(View.VISIBLE);
         Command command = Command.Play;
         eventBus.post(command);
+    }
+
+    private void onRetriving() {
+        btn_play.setEnabled(false);
+        btn_stop.setEnabled(false);
+        btn_pause.setVisibility(View.GONE);
+        btn_play.setVisibility(View.VISIBLE);
+    }
+
+    private void onPrepared() {
+        btn_pause.setVisibility(View.GONE);
+        btn_play.setVisibility(View.VISIBLE);
+        btn_play.setEnabled(true);
+        btn_stop.setEnabled(true);
+    }
+
+    private void onPlaying() {
+        btn_play.setVisibility(View.GONE);
+        btn_pause.setVisibility(View.VISIBLE);
+    }
+
+    private void onPaused() {
+        btn_play.setVisibility(View.VISIBLE);
+        btn_pause.setVisibility(View.GONE);
     }
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
         if(this.seekBar == seekBar){
-            int currentPosition = Utilities.progressToTimer(seekBar.getProgress(), information.getTotalMillisDuration());
-            SeekBarTouchPosition seekPosition = new SeekBarTouchPosition(currentPosition);
+            SeekBarTouchProgress seekPosition = new SeekBarTouchProgress(seekBar.getProgress());
             eventBus.post(seekPosition);
 
         }
     }
-
-
-
-
 
     /*
     Equalizer Methods_____________________________________________________________________________________________________________________

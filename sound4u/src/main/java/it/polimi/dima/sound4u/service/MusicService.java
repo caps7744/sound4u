@@ -6,11 +6,11 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.SeekBar;
 import com.google.common.eventbus.EventBus;
 import it.polimi.dima.sound4u.activity.PlayerActivity;
 import it.polimi.dima.sound4u.conf.Const;
 import it.polimi.dima.sound4u.model.DurationInformation;
+import it.polimi.dima.sound4u.utilities.Utilities;
 
 import java.io.IOException;
 
@@ -21,7 +21,6 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         Prepared,       // After onPrepared
         Playing,        // After start() and before onCompleted()
         Paused,         // After pause() and before new start()
-        Completed       // After onCompleted()
     };
 
     public class SeekBarPercentage {
@@ -116,7 +115,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        mState = State.Completed;
+        mState = State.Prepared;
         eventBus.post(mState);
     }
 
@@ -163,4 +162,10 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         mState = State.Playing;
         eventBus.post(mState);
     }
+
+    public void onEvent(PlayerActivity.SeekBarTouchProgress event) {
+        int currentPosition = Utilities.progressToTimer(event.getProgress(), mMediaPlayer.getDuration());
+        mMediaPlayer.seekTo(currentPosition);
+    }
+
 }
