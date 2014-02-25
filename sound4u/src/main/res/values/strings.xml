@@ -71,5 +71,6 @@
     <string name="title_activity_sharing_gift">SharingGiftActivity</string>
     <string name="title_activity_facebook_connect">FacebookConnect</string>
     <string name="app_id">1379605065621911</string>
+    <string name="notification_player_message">Sound4u is playing...</string>
 
 </resources>

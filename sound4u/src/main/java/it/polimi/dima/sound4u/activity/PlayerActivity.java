@@ -33,6 +33,9 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
 
     private static final int USER_SEARCH_ID = 1;
 
+    private static final String PLAY_BUTTON_VISIBILITY_KEY = "it.polimi.dima.sound4u.key.PLAY_BUTTON_VISIBILITY_KEY";
+    private static final String PAUSE_BUTTON_VISIBILITY_KEY = "it.polimi.dima.sound4u.key.PAUSE_BUTTON_VISIBILITY_KEY";
+
     public static enum Command {
         Play,
         Pause,
@@ -119,6 +122,20 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(PLAY_BUTTON_VISIBILITY_KEY, btn_play.getVisibility());
+        outState.putInt(PAUSE_BUTTON_VISIBILITY_KEY, btn_pause.getVisibility());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        btn_play.setVisibility(savedInstanceState.getInt(PLAY_BUTTON_VISIBILITY_KEY));
+        btn_pause.setVisibility(savedInstanceState.getInt(PAUSE_BUTTON_VISIBILITY_KEY));
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
@@ -140,7 +157,6 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
                 new DownloadImageTask(thumbnail).execute(coverURL);
             }
         } catch (Exception e) {
-
         }
 
         try {

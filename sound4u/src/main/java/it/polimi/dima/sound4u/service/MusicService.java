@@ -63,15 +63,6 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     public static final String MUSICPLAYER_SOUND_ACTION = Const.PKG + ".action.MUSICPLAYER_SOUND_ACTION";
     public static final String MUSICPLAYER_STREAM_URL_EXTRA = Const.PKG + ".extra.MUSICPLAYER_STREAM_URL_EXTRA";
 
-    public static MusicService myMusicService;
-
-    public static MusicService getMyMusicService() {
-        if(myMusicService==null){
-            myMusicService = new MusicService();
-        }
-            return myMusicService;
-    }
-
     private MediaPlayer mMediaPlayer;
     private State mState;
     private NotificationManager notificationManager;
@@ -91,8 +82,8 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         Notification notification = new Notification();
-        notification.icon = R.drawable.btn_play_grey;
-        notification.tickerText = "Notification Test";
+        notification.icon = R.drawable.app_launcher;
+        notification.tickerText = getString(R.string.notification_player_message);
         notification.flags |= Notification.FLAG_ONGOING_EVENT;
         RemoteViews layout = new RemoteViews(getPackageName(), R.layout.notification);
         notification.contentView = layout;
