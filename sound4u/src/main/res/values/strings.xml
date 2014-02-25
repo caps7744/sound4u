@@ -59,7 +59,7 @@
     <string name="empty_list_message">No Gift Found!</string>
     <string name="search_title">Search in Soundcloud</string>
     <string name="search_content_description">search by title or author</string>
-    <string name="btn_send">Send To</string>
+    <string name="btn_send">Send To..</string>
     <!-- User List View -->
     <string name="placeholder_username">Username</string>
     <string name="title_activity_adding_gift_text">Adding Gift Text</string>

@@ -107,6 +107,11 @@
             android:label="@string/title_activity_facebook_connect" >
         </activity>
 
+        <service
+            android:name="it.polimi.dima.sound4u.service.MusicService"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
     </application>
 
 </manifest>

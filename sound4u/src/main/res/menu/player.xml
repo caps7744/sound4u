@@ -8,11 +8,6 @@
             android:title="My Gifts"
             android:showAsAction="always"/>
 
-    <item
-            android:id="@+id/action_send"
-            android:title="Send to.."
-            android:showAsAction="always"/>
-
     <item android:id="@+id/to_sound_search_from_player"
           android:title="@string/search_title"
           android:icon="@drawable/search_soundcloud"

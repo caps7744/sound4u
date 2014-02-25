@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
+import com.google.common.eventbus.EventBus;
 import it.polimi.dima.sound4u.R;
 import it.polimi.dima.sound4u.Utilities.Utilities;
 import it.polimi.dima.sound4u.conf.Const;
@@ -38,12 +39,12 @@ public class PlayerActivity extends Activity implements MediaPlayer.OnCompletion
     private static final int USER_SEARCH_ID = 1;
 
     private Utilities utils;
+    private EventBus eventBus;
 
     CheckBox btn_equalizer = null;
     View thumbAndTxt = null;
     View equalizer = null;
     Button btn_send = null;
-    Button btn_to_gifts = null;
 
     Sound currentSound = null;
     TextView song_title = null;
@@ -93,6 +94,9 @@ public class PlayerActivity extends Activity implements MediaPlayer.OnCompletion
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        eventBus = new EventBus();
+        eventBus.register(this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
 
@@ -108,10 +112,13 @@ public class PlayerActivity extends Activity implements MediaPlayer.OnCompletion
         btn_send = (Button)findViewById(R.id.btn_send);
         btn_send.setOnClickListener(this);
 
-        btn_to_gifts = (Button)findViewById(R.id.to_my_gifts);
-        btn_to_gifts.setOnClickListener(this);
-
         initializeEqualizerVariables();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        eventBus.unregister(this);
     }
 
     @Override
@@ -154,6 +161,9 @@ public class PlayerActivity extends Activity implements MediaPlayer.OnCompletion
                 return true;
             case R.id.to_sound_search_from_player:
                 toSoundSearch();
+                return true;
+            case R.id.action_to_gifts:
+                toMyGifts();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -216,7 +226,11 @@ public class PlayerActivity extends Activity implements MediaPlayer.OnCompletion
 
 
 
-
+    public void onEvent(String string){
+        if(string.equals("ok")){
+            btn_play.setEnabled(true);
+        }
+    }
 
     private void initializeMediaPlayerVariables() {
         utils = new Utilities();
@@ -290,9 +304,6 @@ public class PlayerActivity extends Activity implements MediaPlayer.OnCompletion
             case R.id.btn_send:
                 toUserSearch();
                 break;
-            case R.id.to_my_gifts:
-                toMyGifts();
-                break;
             default:
                 break;
         }
@@ -353,7 +364,9 @@ public class PlayerActivity extends Activity implements MediaPlayer.OnCompletion
 
 
 
-     /*
+
+
+    /*
     Equalizer Methods_____________________________________________________________________________________________________________________
      */
 
@@ -534,13 +547,11 @@ public class PlayerActivity extends Activity implements MediaPlayer.OnCompletion
                 eq.setBandLevel ((short)i, (short)0);
             }
         }
-
         if (bb != null)
         {
             bb.setEnabled (false);
             bb.setStrength ((short)0);
         }
-
         updateUI();
     }
 }

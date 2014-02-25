@@ -5,12 +5,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import it.polimi.dima.sound4u.R;
 import it.polimi.dima.sound4u.model.Gift;
 
 public class SharingGiftActivity extends Activity implements View.OnClickListener {
 
-    private Button btn_share_facebook, btn_share_google_plus, btn_done_sharing;
+    private ImageButton btn_share_facebook;
+    private Button btn_done_sharing;
 
     private Gift gift;
 
@@ -19,12 +21,10 @@ public class SharingGiftActivity extends Activity implements View.OnClickListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sharing_gift);
 
-        btn_share_facebook = (Button)findViewById(R.id.btn_share_facebook);
-        btn_share_google_plus = (Button)findViewById(R.id.btn_share_google_plus);
+        btn_share_facebook = (ImageButton)findViewById(R.id.btn_share_facebook);
         btn_done_sharing = (Button)findViewById(R.id.btn_done_sharing);
 
         btn_share_facebook.setOnClickListener(this);
-        btn_share_google_plus.setOnClickListener(this);
         btn_done_sharing.setOnClickListener(this);
 
         gift = getIntent().getParcelableExtra(PlayerActivity.SHARING_GIFT_EXTRA);

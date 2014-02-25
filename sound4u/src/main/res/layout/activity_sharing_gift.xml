@@ -8,25 +8,34 @@
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center">
-        <Button
+            android:layout_gravity="center"
+            style="@style/style_textview">
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/style_label"
+                android:text="Share your gift with your friends!"/>
+        <ImageButton
                 android:id="@+id/btn_share_facebook"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Share on Facebook"
+                android:src="@drawable/btn_share_facebook"
+                android:text=""
                 android:layout_gravity="center"/>
         <Button
                 android:id="@+id/btn_share_google_plus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Share on G+"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center"
+                android:visibility="gone"/>
         <Button
                 android:id="@+id/btn_done_sharing"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Done"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center"
+                style="@style/style_button_round_red"/>
     </LinearLayout>
 </FrameLayout>
 
