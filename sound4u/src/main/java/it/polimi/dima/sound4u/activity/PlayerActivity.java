@@ -16,7 +16,8 @@ import android.view.View;
 import android.widget.*;
 import com.google.common.eventbus.EventBus;
 import it.polimi.dima.sound4u.R;
-import it.polimi.dima.sound4u.Utilities.Utilities;
+import it.polimi.dima.sound4u.model.DurationInformation;
+import it.polimi.dima.sound4u.utilities.Utilities;
 import it.polimi.dima.sound4u.conf.Const;
 import it.polimi.dima.sound4u.model.Gift;
 import it.polimi.dima.sound4u.model.Sound;
@@ -25,10 +26,8 @@ import it.polimi.dima.sound4u.service.GiftSenderTask;
 
 import java.io.IOException;
 
-public class PlayerActivity extends Activity implements MediaPlayer.OnCompletionListener,
-        MediaPlayer.OnBufferingUpdateListener, View.OnClickListener,
-        SeekBar.OnSeekBarChangeListener,
-        CompoundButton.OnCheckedChangeListener, MediaPlayer.OnPreparedListener {
+public class PlayerActivity extends Activity implements View.OnClickListener,
+        SeekBar.OnSeekBarChangeListener, CompoundButton.OnCheckedChangeListener {
 
     public static final String PLAYER_ACTION = Const.PKG + ".action.PLAYER_ACTION";
 
@@ -38,8 +37,28 @@ public class PlayerActivity extends Activity implements MediaPlayer.OnCompletion
 
     private static final int USER_SEARCH_ID = 1;
 
-    private Utilities utils;
+    public static enum Command {
+        Play,
+        Pause,
+        Stop,
+        Exit
+    }
+
+    public class SeekBarTouchPosition {
+        private int position;
+
+        public SeekBarTouchPosition(int position) {
+            this.position = position;
+        }
+
+        public int getPosition() {
+            return position;
+        }
+    }
+
     private EventBus eventBus;
+
+    private DurationInformation information;
 
     CheckBox btn_equalizer = null;
     View thumbAndTxt = null;
@@ -97,6 +116,8 @@ public class PlayerActivity extends Activity implements MediaPlayer.OnCompletion
         eventBus = new EventBus();
         eventBus.register(this);
 
+        information = new DurationInformation(0,0);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
 
@@ -107,7 +128,7 @@ public class PlayerActivity extends Activity implements MediaPlayer.OnCompletion
         equalizer = findViewById(R.id.equalizer_container);
 
         btn_equalizer = (CheckBox)findViewById(R.id.btn_equalizer);
-        btn_equalizer.setOnCheckedChangeListener (this);
+        btn_equalizer.setOnCheckedChangeListener(this);
 
         btn_send = (Button)findViewById(R.id.btn_send);
         btn_send.setOnClickListener(this);
@@ -126,7 +147,8 @@ public class PlayerActivity extends Activity implements MediaPlayer.OnCompletion
         super.onStart();
 
         currentSound = getIntent().getParcelableExtra(SOUND_EXTRA);
-        song_title.setText(currentSound.getTitle());                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          streamURL = currentSound.getURLStream().concat("?client_id=").concat(getString(R.string.client_id));
+        song_title.setText(currentSound.getTitle());
+        streamURL = currentSound.getURLStream().concat("?client_id=").concat(getString(R.string.client_id));
 
         coverURL = currentSound.getCoverBig();
 
@@ -226,6 +248,8 @@ public class PlayerActivity extends Activity implements MediaPlayer.OnCompletion
 
 
 
+
+
     public void onEvent(String string){
         if(string.equals("ok")){
             btn_play.setEnabled(true);
@@ -233,7 +257,6 @@ public class PlayerActivity extends Activity implements MediaPlayer.OnCompletion
     }
 
     private void initializeMediaPlayerVariables() {
-        utils = new Utilities();
 
         songCurrentDurationLabel = (TextView) findViewById(R.id.current_duration_label);
         songTotalDurationLabel = (TextView) findViewById(R.id.total_duration_label);
@@ -253,9 +276,6 @@ public class PlayerActivity extends Activity implements MediaPlayer.OnCompletion
 
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        mediaPlayer.setOnBufferingUpdateListener(this);
-        mediaPlayer.setOnPreparedListener(this);
-        mediaPlayer.setOnCompletionListener(this);
 
         mediaPlayer.reset();
         try {
@@ -269,17 +289,6 @@ public class PlayerActivity extends Activity implements MediaPlayer.OnCompletion
             e.printStackTrace();
         }
         mediaPlayer.prepareAsync();
-    }
-
-    @Override
-    public void onBufferingUpdate(MediaPlayer mediaPlayer, int percent) {
-        seekBar.setSecondaryProgress(percent);
-    }
-
-    @Override
-    public void onCompletion(MediaPlayer mp) {
-        btn_play.setVisibility(View.VISIBLE);
-        btn_pause.setVisibility(View.GONE);
     }
 
     @Override
@@ -319,9 +328,9 @@ public class PlayerActivity extends Activity implements MediaPlayer.OnCompletion
             long currentDuration = mediaPlayer.getCurrentPosition();
 
             // Displaying Total Duration time
-            songTotalDurationLabel.setText(""+utils.milliSecondsToTimer(totalDuration));
+            songTotalDurationLabel.setText(""+Utilities.milliSecondsToTimer(totalDuration));
             // Displaying time completed playing
-            songCurrentDurationLabel.setText(""+utils.milliSecondsToTimer(currentDuration));
+            songCurrentDurationLabel.setText("" + Utilities.milliSecondsToTimer(currentDuration));
 
             // Updating progress bar
             seekBar.setProgress((int)(((float)mediaPlayer.getCurrentPosition() / lengthOfAudio) * 100));
@@ -336,31 +345,35 @@ public class PlayerActivity extends Activity implements MediaPlayer.OnCompletion
     }
 
     private void pauseAudio() {
-        mediaPlayer.pause();
         btn_play.setVisibility(View.VISIBLE);
         btn_pause.setVisibility(View.GONE);
+        Command command = Command.Pause;
+        eventBus.post(command);
     }
 
     private void stopAudio(){
-        mediaPlayer.pause();
-        mediaPlayer.seekTo(0);
         btn_play.setVisibility(View.VISIBLE);
         btn_pause.setVisibility(View.GONE);
+        Command command = Command.Stop;
+        eventBus.post(command);
     }
 
     private void playAudio() {
         btn_play.setVisibility(View.GONE);
         btn_pause.setVisibility(View.VISIBLE);
-        mediaPlayer.start();
-        updateSeekProgress();
+        Command command = Command.Play;
+        eventBus.post(command);
     }
 
     @Override
-    public void onPrepared(MediaPlayer mediaPlayer){
-        btn_play.setEnabled(true);
-        btn_stop.setEnabled(true);
-    }
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        if(this.seekBar == seekBar){
+            int currentPosition = Utilities.progressToTimer(seekBar.getProgress(), information.getTotalMillisDuration());
+            SeekBarTouchPosition seekPosition = new SeekBarTouchPosition(currentPosition);
+            eventBus.post(seekPosition);
 
+        }
+    }
 
 
 
@@ -369,10 +382,6 @@ public class PlayerActivity extends Activity implements MediaPlayer.OnCompletion
     /*
     Equalizer Methods_____________________________________________________________________________________________________________________
      */
-
-
-
-
 
     private void initializeEqualizerVariables() {
         flat = (Button)findViewById(R.id.flat);
@@ -460,24 +469,7 @@ public class PlayerActivity extends Activity implements MediaPlayer.OnCompletion
     }
 
     @Override
-    public void onStartTrackingTouch(SeekBar seekBar)
-    {
-        handler.removeCallbacks(mUpdateTimeTask);
-    }
-
-    @Override
-    public void onStopTrackingTouch(SeekBar seekBar)
-    {
-        if(this.seekBar == seekBar){
-            handler.removeCallbacks(mUpdateTimeTask);
-            int totalDuration = mediaPlayer.getDuration();
-            int currentPosition = utils.progressToTimer(seekBar.getProgress(), totalDuration);
-            // forward or backward to certain seconds
-            mediaPlayer.seekTo(currentPosition);
-            // update timer progress again
-            updateSeekProgress();
-        }
-    }
+    public void onStartTrackingTouch(SeekBar seekBar) { }
 
     public String formatBandLabel (int[] band)
     {
