@@ -6,7 +6,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.IBinder;
 import android.util.Log;
-import com.google.common.eventbus.EventBus;
+import de.greenrobot.event.EventBus;
 import it.polimi.dima.sound4u.activity.PlayerActivity;
 import it.polimi.dima.sound4u.conf.Const;
 import it.polimi.dima.sound4u.model.DurationInformation;
@@ -43,7 +43,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
                     int totalDuration = mMediaPlayer.getDuration();
                     int currentDuration = mMediaPlayer.getCurrentPosition();
                     DurationInformation information = new DurationInformation(totalDuration, currentDuration);
-                    eventBus.post(information);
+                    EventBus.getDefault().post(information);
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     Log.e(MusicService.class.getName(), e.getMessage());
@@ -57,7 +57,6 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     private MediaPlayer mMediaPlayer;
     private String streamUrl;
-    private EventBus eventBus;
     private State mState;
 
     @Override
@@ -67,23 +66,20 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if(intent.getAction().equals(MUSICPLAYER_SOUND_ACTION)){
-            streamUrl = intent.getStringExtra(MUSICPLAYER_STREAM_URL_EXTRA);
-            initMediaPlayer();
-        }
+        streamUrl = intent.getStringExtra(MUSICPLAYER_STREAM_URL_EXTRA);
+        initMediaPlayer();
         return START_STICKY;
     }
 
     @Override
     public void onCreate() {
-        eventBus = new EventBus();
-        eventBus.register(this);
+        EventBus.getDefault().register(this);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        eventBus.unregister(this);
+        EventBus.getDefault().unregister(this);
     }
 
     private void initMediaPlayer() {
@@ -99,24 +95,24 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         }
         mMediaPlayer.prepareAsync();
         mState = State.Retriving;
-        eventBus.post(mState);
+        EventBus.getDefault().post(mState);
     }
 
     @Override
     public void onBufferingUpdate(MediaPlayer mp, int percent) {
-        eventBus.post(new SeekBarPercentage(percent));
+        EventBus.getDefault().post(new SeekBarPercentage(percent));
     }
 
     @Override
     public void onPrepared(MediaPlayer mp) {
         mState = State.Prepared;
-        eventBus.post(mState);
+        EventBus.getDefault().post(mState);
     }
 
     @Override
     public void onCompletion(MediaPlayer mp) {
         mState = State.Prepared;
-        eventBus.post(mState);
+        EventBus.getDefault().post(mState);
     }
 
     public void onEvent(PlayerActivity.Command event) {
@@ -147,20 +143,20 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         mMediaPlayer.pause();
         mMediaPlayer.seekTo(0);
         mState = State.Prepared;
-        eventBus.post(mState);
+        EventBus.getDefault().post(mState);
     }
 
     private void pause() {
         mMediaPlayer.pause();
         mState = State.Paused;
-        eventBus.post(mState);
+        EventBus.getDefault().post(mState);
     }
 
     private void play() {
         mMediaPlayer.start();
         new Thread(mUpdateTimeTask).start();
         mState = State.Playing;
-        eventBus.post(mState);
+        EventBus.getDefault().post(mState);
     }
 
     public void onEvent(PlayerActivity.SeekBarTouchProgress event) {

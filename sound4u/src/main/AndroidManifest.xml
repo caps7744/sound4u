@@ -106,11 +106,14 @@
             android:name="it.polimi.dima.sound4u.activity.FacebookConnect"
             android:label="@string/title_activity_facebook_connect" >
         </activity>
-
         <service
             android:name="it.polimi.dima.sound4u.service.MusicService"
             android:enabled="true"
-            android:exported="true" >
+            android:exported="true">
+            <intent-filter>
+                <action android:name="it.polimi.dima.sound4u.action.MUSICPLAYER_SOUND_ACTION" />
+                <category android:name="android.intent.category.APP_MUSIC" />
+            </intent-filter>
         </service>
     </application>
 

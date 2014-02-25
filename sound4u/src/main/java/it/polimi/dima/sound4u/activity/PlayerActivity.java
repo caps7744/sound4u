@@ -11,7 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
-import com.google.common.eventbus.EventBus;
+import de.greenrobot.event.EventBus;
 import it.polimi.dima.sound4u.R;
 import it.polimi.dima.sound4u.model.DurationInformation;
 import it.polimi.dima.sound4u.service.MusicService;
@@ -51,8 +51,6 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
             return progress;
         }
     }
-
-    private EventBus eventBus;
 
     private DurationInformation information;
 
@@ -99,9 +97,7 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        eventBus = new EventBus();
-        eventBus.register(this);
-
+        EventBus.getDefault().register(this);
         information = new DurationInformation(0,0);
 
         super.onCreate(savedInstanceState);
@@ -125,7 +121,7 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        eventBus.unregister(this);
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -135,7 +131,6 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
         currentSound = getIntent().getParcelableExtra(SOUND_EXTRA);
         song_title.setText(currentSound.getTitle());
         streamURL = currentSound.getURLStream().concat("?client_id=").concat(getString(R.string.client_id));
-
         coverURL = currentSound.getCoverBig();
 
         initializeMediaPlayerVariables();
@@ -145,7 +140,11 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
                 new DownloadImageTask(thumbnail).execute(coverURL);
             }
         } catch (Exception e) {
+
         }
+        Intent playerIntent = new Intent(this, MusicService.class);
+        playerIntent.putExtra(MusicService.MUSICPLAYER_STREAM_URL_EXTRA, streamURL);
+        startService(playerIntent);
     }
 
     @Override
@@ -256,14 +255,18 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
     public void onEventMainThread(DurationInformation event) {
         information = event;
         // Displaying Total Duration time
-        songTotalDurationLabel.setText(""+Utilities.milliSecondsToTimer(information.getTotalMillisDuration()));
+        int totalMillisDuration = information.getTotalMillisDuration();
+        songTotalDurationLabel.setText(""+Utilities.milliSecondsToTimer(totalMillisDuration));
         // Displaying time completed playing
-        songCurrentDurationLabel.setText("" + Utilities.milliSecondsToTimer(information.getCurrentMillisDuration()));
+        int currentMillisDuration = information.getCurrentMillisDuration();
+        songCurrentDurationLabel.setText("" + Utilities.milliSecondsToTimer(currentMillisDuration));
+        // Updating progress bar
+        seekBar.setSecondaryProgress((int)(((float)currentMillisDuration/totalMillisDuration)*100));
     }
 
     public void onEventMainThread(MusicService.SeekBarPercentage event) {
         // Updating progress bar
-        seekBar.setProgress(event.getPercentage());
+        seekBar.setSecondaryProgress(event.getPercentage());
     }
 
     private void initializeMediaPlayerVariables() {
@@ -307,17 +310,17 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
 
     private void pauseAudio() {
         Command command = Command.Pause;
-        eventBus.post(command);
+        EventBus.getDefault().post(command);
     }
 
     private void stopAudio(){
         Command command = Command.Stop;
-        eventBus.post(command);
+        EventBus.getDefault().post(command);
     }
 
     private void playAudio() {
         Command command = Command.Play;
-        eventBus.post(command);
+        EventBus.getDefault().post(command);
     }
 
     private void onRetriving() {
@@ -348,7 +351,7 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
     public void onStopTrackingTouch(SeekBar seekBar) {
         if(this.seekBar == seekBar){
             SeekBarTouchProgress seekPosition = new SeekBarTouchProgress(seekBar.getProgress());
-            eventBus.post(seekPosition);
+            EventBus.getDefault().post(seekPosition);
 
         }
     }
