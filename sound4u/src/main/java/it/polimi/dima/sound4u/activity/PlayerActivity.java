@@ -31,8 +31,9 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
 
     public static final String SHARING_GIFT_EXTRA = "it.polimi.dima.sound4u.extra.SHARING_GIFT_EXTRA";
 
-    private static final int USER_SEARCH_ID = 1;
+    public static final String SOUND_TO_MUSIC_SERVICE_EXTRA = "it.polimi.dima.sound4u.extra.SOUND_TO_MUSIC_SERVICE_EXTRA";
 
+    private static final int USER_SEARCH_ID = 1;
     private static final String PLAY_BUTTON_VISIBILITY_KEY = "it.polimi.dima.sound4u.key.PLAY_BUTTON_VISIBILITY_KEY";
     private static final String PAUSE_BUTTON_VISIBILITY_KEY = "it.polimi.dima.sound4u.key.PAUSE_BUTTON_VISIBILITY_KEY";
 
@@ -163,11 +164,13 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
             if(!MusicService.streamUrl.equals(streamURL)){
                 Intent playerIntent = new Intent(this, MusicService.class);
                 playerIntent.putExtra(MusicService.MUSICPLAYER_STREAM_URL_EXTRA, streamURL);
+                playerIntent.putExtra(SOUND_TO_MUSIC_SERVICE_EXTRA, currentSound);
                 startService(playerIntent);
             }
         } catch (NullPointerException e) {
             Intent playerIntent = new Intent(this, MusicService.class);
             playerIntent.putExtra(MusicService.MUSICPLAYER_STREAM_URL_EXTRA, streamURL);
+            playerIntent.putExtra(SOUND_TO_MUSIC_SERVICE_EXTRA, currentSound);
             startService(playerIntent);
         }
     }
@@ -289,7 +292,7 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
     }
 
     public void onEventMainThread(MusicService.SeekBarPercentage event) {
-        // Updating progress bar
+        // Updating secondary progress
         seekBar.setSecondaryProgress(event.getPercentage());
     }
 

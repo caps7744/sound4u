@@ -2,18 +2,20 @@ package it.polimi.dima.sound4u.service;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.widget.RemoteViews;
 import de.greenrobot.event.EventBus;
 import it.polimi.dima.sound4u.R;
 import it.polimi.dima.sound4u.activity.PlayerActivity;
 import it.polimi.dima.sound4u.conf.Const;
 import it.polimi.dima.sound4u.model.DurationInformation;
+import it.polimi.dima.sound4u.model.Sound;
 import it.polimi.dima.sound4u.utilities.Utilities;
 
 import java.io.IOException;
@@ -53,6 +55,11 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
                     DurationInformation information = new DurationInformation(totalDuration, currentDuration);
                     EventBus.getDefault().post(information);
                     Thread.sleep(1000);
+
+                    int percent = (int)(((float)currentDuration/totalDuration)*100);
+                    notificationCompat.setProgress(100, percent, false);
+                    notification = notificationCompat.build();
+                    notificationManager.notify(NOTIFY_ID, notification);
                 } catch (InterruptedException e) {
                     Log.e(MusicService.class.getName(), e.getMessage());
                 }
@@ -66,6 +73,9 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     private MediaPlayer mMediaPlayer;
     private State mState;
     private NotificationManager notificationManager;
+    private Notification notification;
+    NotificationCompat.Builder notificationCompat;
+    private Sound mySound;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -81,14 +91,22 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        Notification notification = new Notification();
-        notification.icon = R.drawable.app_launcher;
-        notification.tickerText = getString(R.string.notification_player_message);
-        notification.flags |= Notification.FLAG_ONGOING_EVENT;
-        RemoteViews layout = new RemoteViews(getPackageName(), R.layout.notification);
-        notification.contentView = layout;
+        mySound = intent.getParcelableExtra(PlayerActivity.SOUND_TO_MUSIC_SERVICE_EXTRA);
 
-        startForeground(startId, notification);
+        //Prepare intent for calling back to player by clicking on the notification
+        Intent backToPlayerIntent = new Intent(this, PlayerActivity.class);
+        backToPlayerIntent.putExtra(PlayerActivity.SOUND_EXTRA, mySound);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, backToPlayerIntent, 0);
+
+        notificationCompat = new NotificationCompat.Builder(this)
+                .setContentTitle(getString(R.string.notification_player_message))
+                .setContentText(mySound.getTitle())
+                .setSmallIcon(R.drawable.app_launcher)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+                .setProgress(100, 0, false);
+
+        notification = notificationCompat.build();
 
         streamUrl = intent.getStringExtra(MUSICPLAYER_STREAM_URL_EXTRA);
         initMediaPlayer();
@@ -166,6 +184,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         mMediaPlayer.seekTo(0);
         mState = State.Prepared;
         EventBus.getDefault().post(mState);
+        stopForeground(true);
     }
 
     private void pause() {
@@ -179,6 +198,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         new Thread(mUpdateTimeTask).start();
         mState = State.Playing;
         EventBus.getDefault().post(mState);
+        startForeground(NOTIFY_ID, notification);
     }
 
     public void onEvent(PlayerActivity.SeekBarTouchProgress event) {
