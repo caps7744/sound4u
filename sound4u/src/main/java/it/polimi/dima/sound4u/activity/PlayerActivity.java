@@ -13,14 +13,14 @@ import android.view.View;
 import android.widget.*;
 import de.greenrobot.event.EventBus;
 import it.polimi.dima.sound4u.R;
-import it.polimi.dima.sound4u.model.DurationInformation;
-import it.polimi.dima.sound4u.service.MusicService;
-import it.polimi.dima.sound4u.utilities.Utilities;
 import it.polimi.dima.sound4u.conf.Const;
+import it.polimi.dima.sound4u.model.DurationInformation;
 import it.polimi.dima.sound4u.model.Gift;
 import it.polimi.dima.sound4u.model.Sound;
 import it.polimi.dima.sound4u.service.DownloadImageTask;
 import it.polimi.dima.sound4u.service.GiftSenderTask;
+import it.polimi.dima.sound4u.service.MusicService;
+import it.polimi.dima.sound4u.utilities.Utilities;
 
 public class PlayerActivity extends Activity implements View.OnClickListener,
         SeekBar.OnSeekBarChangeListener, CompoundButton.OnCheckedChangeListener {
@@ -142,15 +142,23 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
         } catch (Exception e) {
 
         }
-        Intent playerIntent = new Intent(this, MusicService.class);
-        playerIntent.putExtra(MusicService.MUSICPLAYER_STREAM_URL_EXTRA, streamURL);
-        startService(playerIntent);
+
+        try {
+            if(!MusicService.streamUrl.equals(streamURL)){
+                Intent playerIntent = new Intent(this, MusicService.class);
+                playerIntent.putExtra(MusicService.MUSICPLAYER_STREAM_URL_EXTRA, streamURL);
+                startService(playerIntent);
+            }
+        } catch (NullPointerException e) {
+            Intent playerIntent = new Intent(this, MusicService.class);
+            playerIntent.putExtra(MusicService.MUSICPLAYER_STREAM_URL_EXTRA, streamURL);
+            startService(playerIntent);
+        }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        stopAudio();
     }
 
     @Override
@@ -316,6 +324,7 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
     private void stopAudio(){
         Command command = Command.Stop;
         EventBus.getDefault().post(command);
+        seekBar.setProgress(0);
     }
 
     private void playAudio() {

@@ -1,12 +1,16 @@
 package it.polimi.dima.sound4u.service;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.RemoteViews;
 import de.greenrobot.event.EventBus;
+import it.polimi.dima.sound4u.R;
 import it.polimi.dima.sound4u.activity.PlayerActivity;
 import it.polimi.dima.sound4u.conf.Const;
 import it.polimi.dima.sound4u.model.DurationInformation;
@@ -15,6 +19,10 @@ import it.polimi.dima.sound4u.utilities.Utilities;
 import java.io.IOException;
 
 public class MusicService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnBufferingUpdateListener, MediaPlayer.OnCompletionListener {
+
+    private static final int NOTIFY_ID = 123456789 ;
+
+    public static String streamUrl = null;
 
     public static enum State {
         Retriving,      // After prepareAsync
@@ -55,9 +63,18 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     public static final String MUSICPLAYER_SOUND_ACTION = Const.PKG + ".action.MUSICPLAYER_SOUND_ACTION";
     public static final String MUSICPLAYER_STREAM_URL_EXTRA = Const.PKG + ".extra.MUSICPLAYER_STREAM_URL_EXTRA";
 
+    public static MusicService myMusicService;
+
+    public static MusicService getMyMusicService() {
+        if(myMusicService==null){
+            myMusicService = new MusicService();
+        }
+            return myMusicService;
+    }
+
     private MediaPlayer mMediaPlayer;
-    private String streamUrl;
     private State mState;
+    private NotificationManager notificationManager;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -65,20 +82,33 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        streamUrl = intent.getStringExtra(MUSICPLAYER_STREAM_URL_EXTRA);
-        initMediaPlayer();
-        return START_STICKY;
+    public void onCreate() {
+        EventBus.getDefault().register(this);
+        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
     }
 
     @Override
-    public void onCreate() {
-        EventBus.getDefault().register(this);
+    public int onStartCommand(Intent intent, int flags, int startId) {
+
+        Notification notification = new Notification();
+        notification.icon = R.drawable.btn_play_grey;
+        notification.tickerText = "Notification Test";
+        notification.flags |= Notification.FLAG_ONGOING_EVENT;
+        RemoteViews layout = new RemoteViews(getPackageName(), R.layout.notification);
+        notification.contentView = layout;
+
+        startForeground(startId, notification);
+
+        streamUrl = intent.getStringExtra(MUSICPLAYER_STREAM_URL_EXTRA);
+        initMediaPlayer();
+
+        return START_NOT_STICKY;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        notificationManager.cancelAll();
         EventBus.getDefault().unregister(this);
     }
 
@@ -111,6 +141,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     @Override
     public void onCompletion(MediaPlayer mp) {
+        stopForeground(true);
         mState = State.Prepared;
         EventBus.getDefault().post(mState);
     }

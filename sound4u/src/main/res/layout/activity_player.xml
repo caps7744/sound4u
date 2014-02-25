@@ -318,21 +318,23 @@
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
                     android:gravity="center"
-                    android:layout_gravity="center"
-                    android:animateLayoutChanges="true">
+                    android:layout_gravity="center">
                 <ImageButton
+                        android:layout_marginRight="2dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/btn_stop"
                         android:background="@drawable/button_stop"/>
         <!-- Play Button -->
         <ImageButton
+                android:layout_marginRight="2dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/btn_play"
                 android:background="@drawable/button_play"/>
         <!-- Pause Button -->
         <ImageButton
+                android:layout_marginRight="2dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/btn_pause"
@@ -340,6 +342,7 @@
                 android:visibility="gone"/>
         <!-- Equalizer Button -->
                 <CheckBox
+                        android:layout_marginRight="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""

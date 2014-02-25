@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <ImageView
+            android:id="@+id/thumbnail"
+            android:layout_width="@dimen/avatar_list_size"
+            android:layout_height="@dimen/avatar_list_size"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/app_launcher"
+            android:scaleType="fitXY" />
+
+    <LinearLayout
+            android:id="@+id/buttons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@id/thumbnail"
+            android:divider="?android:listDivider"
+            android:dividerPadding="12.0dip"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:showDividers="middle" >
+
+        <ImageButton
+                android:id="@+id/playpause"
+                android:layout_width="0.0dip"
+                android:layout_height="15dp"
+                android:layout_weight="1.0"
+                android:background="?android:selectableItemBackground"
+                android:padding="10.0dip"
+                android:scaleType="fitCenter"
+                android:src="@drawable/btn_play_grey" />
+    </LinearLayout>
+
+    <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="1.0px"
+            android:layout_above="@id/buttons"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@id/thumbnail"
+            android:background="?android:dividerHorizontal" />
+
+    <ImageButton
+            android:id="@+id/stop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:background="?android:selectableItemBackground"
+            android:padding="8.0dip"
+            android:src="@drawable/btn_stop_grey" />
+
+    <LinearLayout
+            android:id="@+id/textarea"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="center_vertical"
+            android:layout_toLeftOf="@id/stop"
+            android:layout_toRightOf="@id/thumbnail"
+            android:orientation="vertical"
+            android:paddingLeft="5dp"
+            android:paddingTop="8.0dip" >
+
+        <TextView
+                android:id="@+id/trackname"
+                style="@android:style/TextAppearance.StatusBar.EventContent.Title"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:ellipsize="marquee"
+                android:fadingEdge="horizontal"
+                android:focusable="true"
+                android:singleLine="true" />
+
+        <Chronometer
+                android:id="@+id/duration"
+                style="@android:style/TextAppearance.StatusBar.EventContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:ellipsize="marquee"
+                android:layout_marginTop="6dp"
+                android:fadingEdge="horizontal"
+                android:maxLines="1" />
+
+    </LinearLayout>
+
+</LinearLayout>
