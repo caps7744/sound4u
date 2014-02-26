@@ -42,10 +42,10 @@
         <activity
             android:name="it.polimi.dima.sound4u.activity.PlayerActivity"
             android:label="@string/title_activity_player"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar" >
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="it.polimi.dima.sound4u.action.PLAYER_ACTION" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -90,7 +90,6 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="it.polimi.dima.sound4u.action.USERSEARCH_ACTION" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>

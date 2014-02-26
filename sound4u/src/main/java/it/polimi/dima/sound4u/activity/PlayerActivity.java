@@ -7,6 +7,7 @@ import android.media.audiofx.BassBoost;
 import android.media.audiofx.Equalizer;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,12 +37,14 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
     private static final int USER_SEARCH_ID = 1;
     private static final String PLAY_BUTTON_VISIBILITY_KEY = "it.polimi.dima.sound4u.key.PLAY_BUTTON_VISIBILITY_KEY";
     private static final String PAUSE_BUTTON_VISIBILITY_KEY = "it.polimi.dima.sound4u.key.PAUSE_BUTTON_VISIBILITY_KEY";
+    public static final String SERVICE_STATE_KEY = Const.PKG + ".key.SERVICE_STATE_KEY";
 
     public static enum Command {
         Play,
         Pause,
         Stop,
-        Exit
+        Exit,
+        State
     }
 
     public class SeekBarTouchProgress {
@@ -57,6 +60,8 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
     }
 
     private DurationInformation information;
+
+    private MusicService.State serviceState;
 
     CheckBox btn_equalizer = null;
     View thumbAndTxt = null;
@@ -120,6 +125,17 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
         btn_send.setOnClickListener(this);
 
         initializeEqualizerVariables();
+
+        if (savedInstanceState == null) {
+            serviceState = MusicService.State.Retriving;
+        } else {
+            int ordinalState = savedInstanceState.getInt(SERVICE_STATE_KEY);
+            for (MusicService.State item: MusicService.State.values()) {
+                if (item.ordinal() == ordinalState) {
+                    serviceState = item;
+                }
+            }
+        }
     }
 
     @Override
@@ -127,6 +143,7 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
         super.onSaveInstanceState(outState);
         outState.putInt(PLAY_BUTTON_VISIBILITY_KEY, btn_play.getVisibility());
         outState.putInt(PAUSE_BUTTON_VISIBILITY_KEY, btn_pause.getVisibility());
+        outState.putInt(SERVICE_STATE_KEY, serviceState.ordinal());
     }
 
     @Override
@@ -139,6 +156,9 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (serviceState == MusicService.State.Retriving || serviceState == MusicService.State.Prepared) {
+            EventBus.getDefault().post(Command.Exit);
+        }
         EventBus.getDefault().unregister(this);
     }
 
@@ -158,16 +178,9 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
                 new DownloadImageTask(thumbnail).execute(coverURL);
             }
         } catch (Exception e) {
+            Log.e(this.getClass().getName(), e.getMessage());
         }
-
-        try {
-            if(!MusicService.streamUrl.equals(streamURL)){
-                Intent playerIntent = new Intent(this, MusicService.class);
-                playerIntent.putExtra(MusicService.MUSICPLAYER_STREAM_URL_EXTRA, streamURL);
-                playerIntent.putExtra(SOUND_TO_MUSIC_SERVICE_EXTRA, currentSound);
-                startService(playerIntent);
-            }
-        } catch (NullPointerException e) {
+        if (serviceState == MusicService.State.Retriving || serviceState == MusicService.State.Prepared) {
             Intent playerIntent = new Intent(this, MusicService.class);
             playerIntent.putExtra(MusicService.MUSICPLAYER_STREAM_URL_EXTRA, streamURL);
             playerIntent.putExtra(SOUND_TO_MUSIC_SERVICE_EXTRA, currentSound);
@@ -262,6 +275,7 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
 
 
     public void onEventMainThread(MusicService.State event) {
+        serviceState = event;
         switch (event) {
             case Retriving:
                 onRetriving();
@@ -288,7 +302,7 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
         int currentMillisDuration = information.getCurrentMillisDuration();
         songCurrentDurationLabel.setText("" + Utilities.milliSecondsToTimer(currentMillisDuration));
         // Updating progress bar
-        seekBar.setProgress((int)(((float)currentMillisDuration/totalMillisDuration)*100));
+        seekBar.setProgress((int) (((float) currentMillisDuration / totalMillisDuration) * 100));
     }
 
     public void onEventMainThread(MusicService.SeekBarPercentage event) {

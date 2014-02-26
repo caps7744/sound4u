@@ -93,13 +93,9 @@ public class Gift implements Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(id);
-        Log.w(Gift.class.getName(), "scritto id");
         dest.writeParcelable(sender, flags);
-        Log.w(Gift.class.getName(), "scritto sender");
         dest.writeParcelable(receiver, flags);
-        Log.w(Gift.class.getName(), "scritto receiver");
         dest.writeParcelable(sound, flags);
-        Log.w(Gift.class.getName(), "scritto sound");
     }
 
     public static String listToJson(List<Gift> giftList) {

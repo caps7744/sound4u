@@ -74,7 +74,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     private State mState;
     private NotificationManager notificationManager;
     private Notification notification;
-    NotificationCompat.Builder notificationCompat;
+    private NotificationCompat.Builder notificationCompat;
     private Sound mySound;
 
     @Override
@@ -90,34 +90,18 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
-        mySound = intent.getParcelableExtra(PlayerActivity.SOUND_TO_MUSIC_SERVICE_EXTRA);
-
-        //Prepare intent for calling back to player by clicking on the notification
-        Intent backToPlayerIntent = new Intent(this, PlayerActivity.class);
-        backToPlayerIntent.putExtra(PlayerActivity.SOUND_EXTRA, mySound);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, backToPlayerIntent, 0);
-
-        notificationCompat = new NotificationCompat.Builder(this)
-                .setContentTitle(getString(R.string.notification_player_message))
-                .setContentText(mySound.getTitle())
-                .setSmallIcon(R.drawable.app_launcher)
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(true)
-                .setProgress(100, 0, false);
-
-        notification = notificationCompat.build();
-
-        streamUrl = intent.getStringExtra(MUSICPLAYER_STREAM_URL_EXTRA);
-        initMediaPlayer();
-
+        Sound intentSound = intent.getParcelableExtra(PlayerActivity.SOUND_TO_MUSIC_SERVICE_EXTRA);
+        if (mySound == null) {
+            mySound = intentSound;
+            streamUrl = intent.getStringExtra(MUSICPLAYER_STREAM_URL_EXTRA);
+            initMediaPlayer();
+        }
         return START_NOT_STICKY;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        notificationManager.cancelAll();
         EventBus.getDefault().unregister(this);
     }
 
@@ -169,9 +153,16 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
             case Exit:
                 exit();
                 break;
+            case State:
+                sendState();
+                break;
             default:
                 return;
         }
+    }
+
+    private void sendState() {
+        EventBus.getDefault().post(mState);
     }
 
     private void exit() {
@@ -184,6 +175,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         mMediaPlayer.seekTo(0);
         mState = State.Prepared;
         EventBus.getDefault().post(mState);
+        notificationManager.cancel(NOTIFY_ID);
         stopForeground(true);
     }
 
@@ -198,6 +190,19 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         new Thread(mUpdateTimeTask).start();
         mState = State.Playing;
         EventBus.getDefault().post(mState);
+        //Prepare intent for calling back to player by clicking on the notification
+        Intent backToPlayerIntent = new Intent(this, PlayerActivity.class);
+        backToPlayerIntent.putExtra(PlayerActivity.SOUND_EXTRA, mySound);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, backToPlayerIntent, 0);
+
+        notificationCompat = new NotificationCompat.Builder(this)
+                .setContentTitle(getString(R.string.notification_player_message))
+                .setContentText(mySound.getTitle())
+                .setSmallIcon(R.drawable.app_launcher)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+                .setProgress(100, 0, false);
+        notification = notificationCompat.build();
         startForeground(NOTIFY_ID, notification);
     }
 
