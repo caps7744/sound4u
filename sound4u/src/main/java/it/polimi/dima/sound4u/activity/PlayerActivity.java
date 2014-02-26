@@ -182,7 +182,6 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
         }
         if (serviceState == MusicService.State.Retriving || serviceState == MusicService.State.Prepared) {
             Intent playerIntent = new Intent(this, MusicService.class);
-            playerIntent.putExtra(MusicService.MUSICPLAYER_STREAM_URL_EXTRA, streamURL);
             playerIntent.putExtra(SOUND_TO_MUSIC_SERVICE_EXTRA, currentSound);
             startService(playerIntent);
         }

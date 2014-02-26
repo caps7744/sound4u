@@ -24,8 +24,6 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     private static final int NOTIFY_ID = 123456789 ;
 
-    public static String streamUrl = null;
-
     public static enum State {
         Retriving,      // After prepareAsync
         Prepared,       // After onPrepared
@@ -54,21 +52,19 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
                     int currentDuration = mMediaPlayer.getCurrentPosition();
                     DurationInformation information = new DurationInformation(totalDuration, currentDuration);
                     EventBus.getDefault().post(information);
-                    Thread.sleep(1000);
-
                     int percent = (int)(((float)currentDuration/totalDuration)*100);
-                    notificationCompat.setProgress(100, percent, false);
-                    notification = notificationCompat.build();
-                    notificationManager.notify(NOTIFY_ID, notification);
+                    if (notificationCompat != null) {
+                        notificationCompat.setProgress(100, percent, false);
+                        notification = notificationCompat.build();
+                        notificationManager.notify(NOTIFY_ID, notification);
+                    }
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     Log.e(MusicService.class.getName(), e.getMessage());
                 }
             }
         }
     };
-
-    public static final String MUSICPLAYER_SOUND_ACTION = Const.PKG + ".action.MUSICPLAYER_SOUND_ACTION";
-    public static final String MUSICPLAYER_STREAM_URL_EXTRA = Const.PKG + ".extra.MUSICPLAYER_STREAM_URL_EXTRA";
 
     private MediaPlayer mMediaPlayer;
     private State mState;
@@ -91,9 +87,8 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Sound intentSound = intent.getParcelableExtra(PlayerActivity.SOUND_TO_MUSIC_SERVICE_EXTRA);
-        if (mySound == null) {
+        if (mySound == null || intentSound.getId() != mySound.getId()) {
             mySound = intentSound;
-            streamUrl = intent.getStringExtra(MUSICPLAYER_STREAM_URL_EXTRA);
             initMediaPlayer();
         }
         return START_NOT_STICKY;
@@ -106,19 +101,20 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     private void initMediaPlayer() {
+        mState = State.Retriving;
+        EventBus.getDefault().post(mState);
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         mMediaPlayer.setOnBufferingUpdateListener(this);
         mMediaPlayer.setOnPreparedListener(this);
         mMediaPlayer.setOnCompletionListener(this);
         try {
-            mMediaPlayer.setDataSource(streamUrl);
+            String urlStream = mySound.getURLStream().concat("?client_id=").concat(getString(R.string.client_id));
+            mMediaPlayer.setDataSource(urlStream);
         } catch (IOException e) {
             e.printStackTrace();
         }
         mMediaPlayer.prepareAsync();
-        mState = State.Retriving;
-        EventBus.getDefault().post(mState);
     }
 
     @Override
@@ -147,9 +143,11 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
             case Pause:
                 pause();
                 break;
-            case Stop:
+            case Stop: {
+                pause();
                 stop();
                 break;
+            }
             case Exit:
                 exit();
                 break;
@@ -171,7 +169,6 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     private void stop() {
-        mMediaPlayer.pause();
         mMediaPlayer.seekTo(0);
         mState = State.Prepared;
         EventBus.getDefault().post(mState);
@@ -188,22 +185,24 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     private void play() {
         mMediaPlayer.start();
         new Thread(mUpdateTimeTask).start();
+        if (mState != State.Paused) {
+            //Prepare intent for calling back to player by clicking on the notification
+            Intent backToPlayerIntent = new Intent(this, PlayerActivity.class);
+            backToPlayerIntent.putExtra(PlayerActivity.SOUND_EXTRA, mySound);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, backToPlayerIntent, 0);
+
+            notificationCompat = new NotificationCompat.Builder(this)
+                    .setContentTitle(getString(R.string.notification_player_message))
+                    .setContentText(mySound.getTitle())
+                    .setSmallIcon(R.drawable.app_launcher)
+                    .setContentIntent(pendingIntent)
+                    .setAutoCancel(true)
+                    .setProgress(100, 0, false);
+            notification = notificationCompat.build();
+            startForeground(NOTIFY_ID, notification);
+        }
         mState = State.Playing;
         EventBus.getDefault().post(mState);
-        //Prepare intent for calling back to player by clicking on the notification
-        Intent backToPlayerIntent = new Intent(this, PlayerActivity.class);
-        backToPlayerIntent.putExtra(PlayerActivity.SOUND_EXTRA, mySound);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, backToPlayerIntent, 0);
-
-        notificationCompat = new NotificationCompat.Builder(this)
-                .setContentTitle(getString(R.string.notification_player_message))
-                .setContentText(mySound.getTitle())
-                .setSmallIcon(R.drawable.app_launcher)
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(true)
-                .setProgress(100, 0, false);
-        notification = notificationCompat.build();
-        startForeground(NOTIFY_ID, notification);
     }
 
     public void onEvent(PlayerActivity.SeekBarTouchProgress event) {
