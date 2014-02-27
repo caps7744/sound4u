@@ -13,7 +13,6 @@ import android.util.Log;
 import de.greenrobot.event.EventBus;
 import it.polimi.dima.sound4u.R;
 import it.polimi.dima.sound4u.activity.PlayerActivity;
-import it.polimi.dima.sound4u.conf.Const;
 import it.polimi.dima.sound4u.model.DurationInformation;
 import it.polimi.dima.sound4u.model.Sound;
 import it.polimi.dima.sound4u.utilities.Utilities;
@@ -109,7 +108,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         mMediaPlayer.setOnPreparedListener(this);
         mMediaPlayer.setOnCompletionListener(this);
         try {
-            String urlStream = mySound.getURLStream().concat("?client_id=").concat(getString(R.string.client_id));
+            String urlStream = mySound.getStreamURL().concat("?client_id=").concat(getString(R.string.client_id));
             mMediaPlayer.setDataSource(urlStream);
         } catch (IOException e) {
             e.printStackTrace();

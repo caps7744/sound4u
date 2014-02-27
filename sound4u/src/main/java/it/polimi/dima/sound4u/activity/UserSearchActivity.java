@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,12 +26,14 @@ import it.polimi.dima.sound4u.conf.SoundCloudConst;
 import it.polimi.dima.sound4u.model.Gift;
 import it.polimi.dima.sound4u.model.Sound;
 import it.polimi.dima.sound4u.model.User;
-import it.polimi.dima.sound4u.service.DownloadImageTask;
 import it.polimi.dima.sound4u.service.GiftSenderTask;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.*;
 
 public class UserSearchActivity extends ListActivity {
@@ -147,10 +151,10 @@ public class UserSearchActivity extends ListActivity {
                 public boolean setViewValue(View view, Object data, String textRepresentation) {
                     switch (view.getId()) {
                         case R.id.list_item_avatar:
-                            String avatarURL = (String) data;
+                            Bitmap avatar = (Bitmap) data;
                             ImageView coverImageView = (ImageView) view;
-                            if (avatarURL != null) {
-                                new DownloadImageTask(coverImageView).execute(avatarURL);
+                            if (avatar != null) {
+                                coverImageView.setImageBitmap(avatar);
                             }
                             break;
                         case R.id.list_item_full_name:
@@ -168,6 +172,15 @@ public class UserSearchActivity extends ListActivity {
                 }
             });
         }
+    }
+
+    private User searchUser(long id) {
+        for (User item: mRealModel) {
+            if (item.getId() == id) {
+                return item;
+            }
+        }
+        return null;
     }
 
     public class UserSearchTask extends AsyncTask<String, Void, List<User>> {
@@ -193,6 +206,16 @@ public class UserSearchActivity extends ListActivity {
                         JsonArray jsonArray = JsonArray.readFrom(responseBody);
                         for (JsonValue item: jsonArray.values()) {
                             User userItem = User.create((JsonObject) item);
+                            if (userItem.getAvatarURL() != null) {
+                                Bitmap avatar = null;
+                                try {
+                                    InputStream in = new URL(userItem.getAvatarURL()).openStream();
+                                    avatar = BitmapFactory.decodeStream(in);
+                                } catch (IOException e) {
+                                    Log.w(UserSearchActivity.class.getName(), e.getMessage());
+                                }
+                                userItem = userItem.withAvatar(avatar);
+                            }
                             userList.add(userItem);
                         }
                         if (jsonArray.isEmpty()){

@@ -3,8 +3,11 @@ package it.polimi.dima.sound4u.activity;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,10 +19,10 @@ import it.polimi.dima.sound4u.R;
 import it.polimi.dima.sound4u.model.Gift;
 import it.polimi.dima.sound4u.model.Sound;
 import it.polimi.dima.sound4u.model.User;
-import it.polimi.dima.sound4u.service.DownloadImageTask;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.*;
 
 public class MyGiftsActivity extends ListActivity {
@@ -107,7 +110,7 @@ public class MyGiftsActivity extends ListActivity {
 
     public void playGift(int position) {
         Intent playIntent = new Intent(PlayerActivity.PLAYER_ACTION);
-        Sound extraSound = mRealModel.get(position).getSound();
+        Sound extraSound = mRealModel.get(position).getSound().withCover(null);
         playIntent.putExtra(PlayerActivity.SOUND_EXTRA, extraSound);
         startActivity(playIntent);
     }
@@ -132,10 +135,10 @@ public class MyGiftsActivity extends ListActivity {
                             receiverTextView.setText(receiverUsername);
                             break;
                         case R.id.list_item_cover:
-                            String coverURL = (String) data;
+                            Bitmap cover = (Bitmap) data;
                             ImageView coverImageView = (ImageView) view;
-                            if (coverURL != null) {
-                                new DownloadImageTask(coverImageView).execute(coverURL);
+                            if (cover != null) {
+                                coverImageView.setImageBitmap(cover);
                             }
                             break;
                         case R.id.list_item_title:
@@ -153,6 +156,15 @@ public class MyGiftsActivity extends ListActivity {
                 }
             });
         }
+    }
+
+    private Sound searchSound(long id) {
+        for(Gift item: mRealModel) {
+            if (item.getSound().getId() == id) {
+                return item.getSound();
+            }
+        }
+        return null;
     }
 
     private class MyGiftsTasks extends AsyncTask<Long, Void, List<Gift>> {
@@ -173,9 +185,19 @@ public class MyGiftsActivity extends ListActivity {
                     User receiver = User.create(item.getReceiverID(), item.getReceiverUsername());
                     User author = User.create(item.getSoundArtistID(), item.getSoundArtistUsername());
                     Sound sound = Sound.create(item.getSoundID(), item.getSoundTitle())
-                            .withCover(item.getCoverURL())
+                            .withCoverURL(item.getCoverURL())
                             .withAuthor(author)
-                            .withURLStream(item.getStreamURL());
+                            .withStreamURL(item.getStreamURL());
+                    if (item.getCoverURL() != null) {
+                        Bitmap cover = null;
+                        try {
+                            InputStream in = new URL(item.getCoverURL()).openStream();
+                            cover = BitmapFactory.decodeStream(in);
+                        } catch (IOException e) {
+                            Log.w(MyGiftsTasks.class.getName(), e.getMessage());
+                        }
+                        sound = sound.withCover(cover);
+                    }
                     Gift giftItem = Gift.create(
                             item.getId(),
                             sender,

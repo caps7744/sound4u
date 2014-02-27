@@ -1,8 +1,10 @@
 package it.polimi.dima.sound4u.model;
 
+import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
+import android.util.Log;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
@@ -40,9 +42,10 @@ public class Sound implements Parcelable{
     private long id;
     private String title;
     private User author;
-    private String cover;
+    private String coverURL;
     private String cover_big;
-    private String urlStream;
+    private String streamURL;
+    private Bitmap cover;
 
     private Sound(Parcel in) {
         this.id = in.readLong();
@@ -51,19 +54,24 @@ public class Sound implements Parcelable{
             this.author = in.readParcelable(User.class.getClassLoader());
         }
         if(in.readByte() == PRESENT) {
-            this.cover = in.readString();
+            this.coverURL = in.readString();
         }
         if(in.readByte() == PRESENT) {
             this.cover_big = in.readString();
         }
         if(in.readByte() == PRESENT) {
-            this.urlStream = in.readString();
+            this.cover = in.readParcelable(Bitmap.class.getClassLoader());
+        }
+        if(in.readByte() == PRESENT) {
+            this.streamURL = in.readString();
         }
     }
 
     private Sound(final long id, final String title) {
         this.id = id;
         this.title = title;
+        this.coverURL = null;
+        this.cover_big = null;
         this.cover = null;
     }
 
@@ -72,17 +80,22 @@ public class Sound implements Parcelable{
             this.id = jsonObject.get(ID).asLong();
             this.title = jsonObject.get(TITLE).asString();
             if (!jsonObject.get(ARTWORK_URL).isNull())  {
-                this.cover = jsonObject.get(ARTWORK_URL).asString();
-                this.cover_big = this.cover.replace("large","t500x500");
+                this.coverURL = jsonObject.get(ARTWORK_URL).asString();
+                this.cover_big = this.coverURL.replace("large","t500x500");
             } else {
-                this.cover = "";
-                this.cover_big = "";
+                this.coverURL = null;
+                this.cover_big = null;
             }
+            cover = null;
             JsonObject jsonUser = jsonObject.get(USER).asObject();
             this.author = User.create(jsonUser);
-            this.urlStream = jsonObject.get(STREAM_URL).asString();
+            if (jsonObject.get(STREAM_URL) != null && !jsonObject.get(STREAM_URL).isNull()) {
+                this.streamURL = jsonObject.get(STREAM_URL).asString();
+            } else {
+                this.streamURL = null;
+            }
         } catch (Exception e) {
-        e.printStackTrace();
+            e.printStackTrace();
         }
     }
 
@@ -106,14 +119,18 @@ public class Sound implements Parcelable{
         return author;
     }
 
-    public String getCover() {
-        return cover;
+    public String getCoverURL() {
+        return coverURL;
     }
 
     public String getCoverBig() { return cover_big; }
 
-    public String getURLStream() {
-        return urlStream;
+    public String getStreamURL() {
+        return streamURL;
+    }
+
+    public Bitmap getCover() {
+        return cover;
     }
 
     public Sound withAuthor(User author) {
@@ -121,9 +138,9 @@ public class Sound implements Parcelable{
         return this;
     }
 
-    public Sound withCover(String cover) {
-        this.cover = cover;
-        if(this.cover!=null){
+    public Sound withCoverURL(String cover) {
+        this.coverURL = cover;
+        if(this.coverURL !=null){
         this.cover_big = cover.replace("large","t500x500");
         } else {
             this.cover_big = null;
@@ -131,8 +148,13 @@ public class Sound implements Parcelable{
         return this;
     }
 
-    public Sound withURLStream(String urlStream) {
-        this.urlStream = urlStream;
+    public Sound withCover(Bitmap cover) {
+        this.cover = cover;
+        return this;
+    }
+
+    public Sound withStreamURL(String urlStream) {
+        this.streamURL = urlStream;
         return this;
     }
 
@@ -151,9 +173,9 @@ public class Sound implements Parcelable{
         } else {
             dest.writeByte(NOT_PRESENT);
         }
-        if(!TextUtils.isEmpty(cover)) {
+        if(!TextUtils.isEmpty(coverURL)) {
             dest.writeByte(PRESENT);
-            dest.writeString(cover);
+            dest.writeString(coverURL);
         } else {
             dest.writeByte(NOT_PRESENT);
         }
@@ -163,9 +185,15 @@ public class Sound implements Parcelable{
         } else {
             dest.writeByte(NOT_PRESENT);
         }
-        if(!TextUtils.isEmpty(urlStream)) {
+        if(cover != null) {
             dest.writeByte(PRESENT);
-            dest.writeString(urlStream);
+            dest.writeParcelable(cover, flags);
+        } else {
+            dest.writeByte(NOT_PRESENT);
+        }
+        if(!TextUtils.isEmpty(streamURL)) {
+            dest.writeByte(PRESENT);
+            dest.writeString(streamURL);
         } else {
             dest.writeByte(NOT_PRESENT);
         }
@@ -175,8 +203,8 @@ public class Sound implements Parcelable{
         JsonObject object = new JsonObject();
         object.add(ID, id);
         object.add(TITLE, title);
-        object.add(ARTWORK_URL, cover);
-        object.add(STREAM_URL, urlStream);
+        object.add(ARTWORK_URL, coverURL);
+        object.add(STREAM_URL, streamURL);
         if (author != null) {
             object.add(USER, author.toJsonObject());
         }
@@ -190,8 +218,8 @@ public class Sound implements Parcelable{
             object.add(ID, item.getId());
             object.add(TITLE, item.getTitle());
             object.add(USER, item.getAuthor().toJsonObject());
-            object.add(ARTWORK_URL, item.getCover());
-            object.add(STREAM_URL, item.getURLStream());
+            object.add(ARTWORK_URL, item.getCoverURL());
+            object.add(STREAM_URL, item.getStreamURL());
             array.add(object);
         }
         return array.toString();

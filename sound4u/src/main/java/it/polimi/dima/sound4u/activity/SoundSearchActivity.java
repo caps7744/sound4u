@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,11 +25,13 @@ import it.polimi.dima.sound4u.conf.Const;
 import it.polimi.dima.sound4u.conf.SoundCloudConst;
 import it.polimi.dima.sound4u.model.Sound;
 import it.polimi.dima.sound4u.model.User;
-import it.polimi.dima.sound4u.service.DownloadImageTask;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.*;
 
 public class SoundSearchActivity extends ListActivity {
@@ -147,7 +151,7 @@ public class SoundSearchActivity extends ListActivity {
 
     public void playGift(int position) {
         Intent playIntent = new Intent(PlayerActivity.PLAYER_ACTION);
-        Sound extraSound = mRealModel.get(position);
+        Sound extraSound = mRealModel.get(position).withCover(null);
         playIntent.putExtra(PlayerActivity.SOUND_EXTRA, extraSound);
         startActivity(playIntent);
     }
@@ -161,10 +165,10 @@ public class SoundSearchActivity extends ListActivity {
                 public boolean setViewValue(View view, Object data, String textRepresentation) {
                     switch (view.getId()) {
                         case R.id.list_item_cover:
-                            String coverURL = (String) data;
+                            Bitmap cover = (Bitmap) data;
                             ImageView coverImageView = (ImageView) view;
-                            if (coverURL != null) {
-                                new DownloadImageTask(coverImageView).execute(coverURL);
+                            if (cover != null) {
+                                coverImageView.setImageBitmap(cover);
                             }
                             break;
                         case R.id.list_item_title:
@@ -177,14 +181,14 @@ public class SoundSearchActivity extends ListActivity {
                             TextView artistTextView = (TextView) view;
                             artistTextView.setText(artist);
                             break;
-                        case R.id.list_item_send:
+                        /*case R.id.list_item_send:
                             final Sound sound = (Sound) data;
                             view.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
                                     searchUser(sound);
                                 }
-                            });
+                            });*/
                     }
                     return true;
                 }
@@ -196,6 +200,15 @@ public class SoundSearchActivity extends ListActivity {
             userSearchIntent.putExtra(UserSearchActivity.SOUND_EXTRA, sound);
             SoundSearchActivity.this.startActivityForResult(userSearchIntent, USER_REQUEST_ID);
         }
+    }
+
+    private Sound searchSound(long id) {
+        for(Sound item: mRealModel) {
+            if (item.getId() == id) {
+                return item;
+            }
+        }
+        return null;
     }
 
     public class SoundSearchTask extends AsyncTask<String, Void, List<Sound>> {
@@ -221,6 +234,16 @@ public class SoundSearchActivity extends ListActivity {
                         JsonArray jsonArray = JsonArray.readFrom(responseBody);
                         for (JsonValue item: jsonArray.values()) {
                             Sound soundItem = Sound.create((JsonObject) item);
+                            if (soundItem.getCoverURL() != null) {
+                                Bitmap cover = null;
+                                try {
+                                    InputStream in = new URL(soundItem.getCoverURL()).openStream();
+                                    cover = BitmapFactory.decodeStream(in);
+                                } catch (IOException e) {
+                                    Log.w(SoundSearchTask.class.getName(), e.getMessage());
+                                }
+                                soundItem = soundItem.withCover(cover);
+                            }
                             soundList.add(soundItem);
                         }
                         if (jsonArray.isEmpty()){

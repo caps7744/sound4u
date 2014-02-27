@@ -2,6 +2,7 @@ package it.polimi.dima.sound4u.model;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
@@ -66,11 +67,14 @@ public class User implements Parcelable{
 
     private Token token;
 
-    private String avatar;
+    private String avatarURL;
+
+    private Bitmap avatar;
 
     private User(final long id, final String username) {
         this.id = id;
         this.username = username;
+        this.avatar = null;
     }
 
     private User(Parcel in) throws IOException {
@@ -80,7 +84,10 @@ public class User implements Parcelable{
             this.full_name = in.readString();
         }
         if(in.readByte() == PRESENT) {
-            this.avatar = in.readString();
+            this.avatarURL = in.readString();
+        }
+        if(in.readByte() == PRESENT) {
+            this.avatar = in.readParcelable(Bitmap.class.getClassLoader());
         }
     }
 
@@ -93,9 +100,9 @@ public class User implements Parcelable{
             this.full_name = "";
         }
         if(!jsonObject.get(AVATAR).isNull()) {
-            this.avatar = jsonObject.get(AVATAR).asString();
+            this.avatarURL = jsonObject.get(AVATAR).asString();
         } else {
-            this.avatar = "";
+            this.avatarURL = "";
         }
     }
 
@@ -124,7 +131,11 @@ public class User implements Parcelable{
         return token;
     }
 
-    public String getAvatar() {
+    public String getAvatarURL() {
+        return avatarURL;
+    }
+
+    public Bitmap getAvatar() {
         return avatar;
     }
 
@@ -133,7 +144,12 @@ public class User implements Parcelable{
         return this;
     }
 
-    public User withAvatar(final String avatar) {
+    public User withAvatarURL(final String avatar) {
+        this.avatarURL = avatar;
+        return this;
+    }
+
+    public User withAvatar(final Bitmap avatar) {
         this.avatar = avatar;
         return this;
     }
@@ -153,9 +169,15 @@ public class User implements Parcelable{
         } else {
             dest.writeByte(NOT_PRESENT);
         }
-        if(!TextUtils.isEmpty(avatar)) {
+        if(!TextUtils.isEmpty(avatarURL)) {
             dest.writeByte(PRESENT);
-            dest.writeString(avatar);
+            dest.writeString(avatarURL);
+        } else {
+            dest.writeByte(NOT_PRESENT);
+        }
+        if(avatar != null) {
+            dest.writeByte(PRESENT);
+            dest.writeParcelable(avatar, flags);
         } else {
             dest.writeByte(NOT_PRESENT);
         }
@@ -166,7 +188,7 @@ public class User implements Parcelable{
         SharedPreferences.Editor editor = preferences.edit();
         editor.putLong(ID_KEY, id);
         editor.putString(USERNAME_KEY, username);
-        editor.putString(AVATAR_KEY, avatar);
+        editor.putString(AVATAR_KEY, avatarURL);
         editor.putString(TOKEN_KEY, token.access);
         editor.commit();
     }
@@ -178,7 +200,7 @@ public class User implements Parcelable{
         User user = null;
         if (username != null) {
             user = new User(id, username);
-            user.avatar = preferences.getString(AVATAR_KEY, null);
+            user.avatarURL = preferences.getString(AVATAR_KEY, null);
             user.token = new Token(preferences.getString(TOKEN_KEY, null), null, Token.SCOPE_NON_EXPIRING);
         }
         return user;
@@ -193,7 +215,7 @@ public class User implements Parcelable{
         object.add(ID, id);
         object.add(USERNAME, username);
         object.add(FULLNAME, full_name);
-        object.add(AVATAR, avatar);
+        object.add(AVATAR, avatarURL);
         return  object;
     }
 
@@ -214,7 +236,7 @@ public class User implements Parcelable{
             object.add(ID, item.getId());
             object.add(USERNAME, item.getUsername());
             object.add(FULLNAME, item.getFullName());
-            object.add(AVATAR, item.getAvatar());
+            object.add(AVATAR, item.getAvatarURL());
             array.add(object);
         }
         return array.toString();

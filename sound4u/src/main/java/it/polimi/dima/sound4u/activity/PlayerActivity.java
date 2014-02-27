@@ -2,9 +2,13 @@ package it.polimi.dima.sound4u.activity;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.audiofx.BassBoost;
 import android.media.audiofx.Equalizer;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,10 +22,13 @@ import it.polimi.dima.sound4u.conf.Const;
 import it.polimi.dima.sound4u.model.DurationInformation;
 import it.polimi.dima.sound4u.model.Gift;
 import it.polimi.dima.sound4u.model.Sound;
-import it.polimi.dima.sound4u.service.DownloadImageTask;
 import it.polimi.dima.sound4u.service.GiftSenderTask;
 import it.polimi.dima.sound4u.service.MusicService;
 import it.polimi.dima.sound4u.utilities.Utilities;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 
 public class PlayerActivity extends Activity implements View.OnClickListener,
         SeekBar.OnSeekBarChangeListener, CompoundButton.OnCheckedChangeListener {
@@ -128,6 +135,7 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
 
         if (savedInstanceState == null) {
             serviceState = MusicService.State.Retriving;
+            currentSound = getIntent().getParcelableExtra(SOUND_EXTRA);
         } else {
             int ordinalState = savedInstanceState.getInt(SERVICE_STATE_KEY);
             for (MusicService.State item: MusicService.State.values()) {
@@ -135,6 +143,7 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
                     serviceState = item;
                 }
             }
+            currentSound = savedInstanceState.getParcelable(SOUND_EXTRA);
         }
     }
 
@@ -144,6 +153,7 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
         outState.putInt(PLAY_BUTTON_VISIBILITY_KEY, btn_play.getVisibility());
         outState.putInt(PAUSE_BUTTON_VISIBILITY_KEY, btn_pause.getVisibility());
         outState.putInt(SERVICE_STATE_KEY, serviceState.ordinal());
+        outState.putParcelable(SOUND_EXTRA, currentSound);
     }
 
     @Override
@@ -166,24 +176,61 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
     protected void onStart() {
         super.onStart();
 
-        currentSound = getIntent().getParcelableExtra(SOUND_EXTRA);
         song_title.setText(currentSound.getTitle());
-        streamURL = currentSound.getURLStream().concat("?client_id=").concat(getString(R.string.client_id));
-        coverURL = currentSound.getCoverBig();
+        streamURL = currentSound.getStreamURL().concat("?client_id=").concat(getString(R.string.client_id));
 
         initializeMediaPlayerVariables();
 
-        try {
-            if (coverURL != null) {
-                new DownloadImageTask(thumbnail).execute(coverURL);
-            }
-        } catch (Exception e) {
-            Log.e(this.getClass().getName(), e.getMessage());
+        if (currentSound.getCover() == null) {
+            new DownloadBigCover(currentSound, thumbnail).execute();
+        } else {
+            thumbnail.setImageBitmap(currentSound.getCover());
         }
+
         if (serviceState == MusicService.State.Retriving || serviceState == MusicService.State.Prepared) {
             Intent playerIntent = new Intent(this, MusicService.class);
             playerIntent.putExtra(SOUND_TO_MUSIC_SERVICE_EXTRA, currentSound);
             startService(playerIntent);
+        }
+    }
+
+    private class DownloadBigCover extends AsyncTask<Void, Void, Bitmap> {
+
+        private Sound mSound;
+
+        private ProgressDialog mProgressDialog;
+
+        private ImageView mImageView;
+
+        public DownloadBigCover(Sound mSound, ImageView mImageView) {
+            this.mSound = mSound;
+            this.mImageView = mImageView;
+        }
+
+        @Override
+        protected Bitmap doInBackground(Void... params) {
+            Bitmap cover = null;
+            try {
+                InputStream in = new URL(mSound.getCoverBig()).openStream();
+                cover = BitmapFactory.decodeStream(in);
+            } catch (IOException e) {
+                Log.w(DownloadBigCover.class.getName(), e.getMessage());
+            }
+            return cover;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mProgressDialog = ProgressDialog.show(PlayerActivity.this, "", "Loading. Please wait...", true);
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            super.onPostExecute(bitmap);
+            mSound = mSound.withCover(bitmap);
+            mImageView.setImageBitmap(bitmap);
+            mProgressDialog.dismiss();
         }
     }
 
