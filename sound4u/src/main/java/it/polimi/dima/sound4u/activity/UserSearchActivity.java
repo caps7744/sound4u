@@ -30,10 +30,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class UserSearchActivity extends ListActivity {
 
@@ -63,7 +60,7 @@ public class UserSearchActivity extends ListActivity {
 
     private List<Map<String, Object>> mModel;
 
-    private List<User> mRealModel;
+    private ArrayList<User> mRealModel;
 
     private Sound mReceivedSound;
 
@@ -77,12 +74,12 @@ public class UserSearchActivity extends ListActivity {
         if (mMe == null) {
             finish();
         }
-        if (savedInstanceState == null || savedInstanceState.getString(SOUND_KEY) == null) {
+        if (savedInstanceState == null || savedInstanceState.getParcelable(SOUND_KEY) == null) {
             mReceivedSound = getIntent().getParcelableExtra(SOUND_EXTRA);
         }
         mListView = getListView();
         mModel = new LinkedList<Map<String, Object>>();
-        mRealModel = new LinkedList<User>();
+        mRealModel = new ArrayList<User>();
         mAdapter = new UserAdapter();
         mListView.setAdapter(mAdapter);
         handleIntent(getIntent());
@@ -160,11 +157,6 @@ public class UserSearchActivity extends ListActivity {
                             String full_name = (String) data;
                             TextView fullNameTextView = (TextView) view;
                             fullNameTextView.setText(full_name);
-
-
-                            Log.w(UserSearchActivity.class.getName(), "fullname:"+full_name);
-
-
                             break;
                         case R.id.list_item_username:
                             String username = (String) data;
@@ -215,7 +207,7 @@ public class UserSearchActivity extends ListActivity {
                     UserSearchActivity.this.finish();
                 }
             } catch (Exception e) {
-                Log.w(TAG_LOG, e.getMessage());
+                Log.e(TAG_LOG, e.getMessage());
             }
             return userList;
         }
@@ -249,8 +241,8 @@ public class UserSearchActivity extends ListActivity {
                 item.put("user", user);
                 mModel.add(item);
             }
-            UserSearchActivity.this.getListView().setAdapter(new UserAdapter());
-            UserSearchActivity.this.mRealModel.addAll(list);
+            getListView().setAdapter(new UserAdapter());
+            mRealModel.addAll(list);
             mProgressDialog.dismiss();
         }
     }
@@ -274,18 +266,17 @@ public class UserSearchActivity extends ListActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(MODEL_KEY, User.listToJson(mRealModel));
-        outState.putString(SOUND_KEY, mReceivedSound.toJsonObject().toString());
+        outState.putParcelableArrayList(MODEL_KEY, mRealModel);
+        outState.putParcelable(SOUND_KEY, mReceivedSound);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle state) {
         super.onRestoreInstanceState(state);
-        JsonObject jsonObject = JsonObject.readFrom(state.getString(SOUND_KEY));
-        mReceivedSound = Sound.create(jsonObject);
-        String model = state.getString(MODEL_KEY);
+        mReceivedSound = state.getParcelable(SOUND_KEY);
+        ArrayList<User> model = state.getParcelableArrayList(MODEL_KEY);
         if (model != null) {
-            mRealModel = User.jsonToList(model);
+            mRealModel = model;
             for(User user: mRealModel) {
                 final Map<String, Object> item = new HashMap<String, Object>();
                 item.put("avatar", user.getAvatar());

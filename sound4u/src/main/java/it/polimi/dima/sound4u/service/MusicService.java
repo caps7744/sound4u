@@ -164,7 +164,9 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     private void exit() {
-        mMediaPlayer.stop();
+        if (mState != State.Retriving) {
+            mMediaPlayer.stop();
+        }
         mMediaPlayer.release();
     }
 

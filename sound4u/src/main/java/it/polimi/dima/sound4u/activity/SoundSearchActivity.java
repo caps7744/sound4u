@@ -28,10 +28,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SoundSearchActivity extends ListActivity {
 
@@ -57,7 +54,7 @@ public class SoundSearchActivity extends ListActivity {
 
     private List<Map<String, Object>> mModel;
 
-    private List<Sound> mRealModel;
+    private ArrayList<Sound> mRealModel;
 
     private User mUser;
 
@@ -71,7 +68,7 @@ public class SoundSearchActivity extends ListActivity {
         }
         mListView = getListView();
         mModel = new LinkedList<Map<String, Object>>();
-        mRealModel = new LinkedList<Sound>();
+        mRealModel = new ArrayList<Sound>();
         List<Map<String,Object>> mModel = new LinkedList<Map<String, Object>>();
         mAdapter = new SoundAdapter();
         mListView.setAdapter(mAdapter);
@@ -282,24 +279,23 @@ public class SoundSearchActivity extends ListActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(MODEL_KEY, Sound.listToJson(mRealModel));
+        outState.putParcelableArrayList(MODEL_KEY, mRealModel);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle state) {
         super.onRestoreInstanceState(state);
-        String model = state.getString(MODEL_KEY);
+        ArrayList<Sound> model = state.getParcelableArrayList(MODEL_KEY);
         mUser = User.load(this);
         if (mUser == null) {
             finish();
         }
         mListView = getListView();
         mModel = new LinkedList<Map<String, Object>>();
-        mRealModel = new LinkedList<Sound>();
         mAdapter = new SoundAdapter();
 
         if(model!=null){
-            mRealModel = Sound.jsonToList(model);
+            mRealModel = model;
 
             for(Sound sound: mRealModel) {
                 final Map<String, Object> item = new HashMap<String, Object>();

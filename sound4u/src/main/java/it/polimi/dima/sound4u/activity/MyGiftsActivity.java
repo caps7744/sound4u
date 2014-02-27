@@ -19,10 +19,8 @@ import it.polimi.dima.sound4u.model.User;
 import it.polimi.dima.sound4u.service.DownloadImageTask;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Array;
+import java.util.*;
 
 public class MyGiftsActivity extends ListActivity {
 
@@ -42,7 +40,7 @@ public class MyGiftsActivity extends ListActivity {
 
     private List<Map<String, Object>> mModel = new LinkedList<Map<String, Object>>();
 
-    private List<Gift> mRealModel = new LinkedList<Gift>();
+    private ArrayList<Gift> mRealModel = new ArrayList<Gift>();
 
     private ListView mListView;
 
@@ -61,7 +59,7 @@ public class MyGiftsActivity extends ListActivity {
         mAdapter = new MyGiftsAdapter();
         mListView = getListView();
         mListView.setAdapter(mAdapter);
-        if (savedInstanceState == null || savedInstanceState.getString(MODEL_KEY) == null){
+        if (savedInstanceState == null || savedInstanceState.getParcelableArrayList(MODEL_KEY) == null){
             new MyGiftsTasks().execute(mUser.getId());
         }
     }
@@ -233,13 +231,14 @@ public class MyGiftsActivity extends ListActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(MODEL_KEY, Gift.listToJson(mRealModel));
+        outState.putParcelableArrayList(MODEL_KEY, mRealModel);
+        // outState.putString(MODEL_KEY, Gift.listToJson(mRealModel));
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle state) {
         super.onRestoreInstanceState(state);
-        String model = state.getString(MODEL_KEY);
+        ArrayList<Gift> model = state.getParcelableArrayList(MODEL_KEY);
         if (model != null) {
             mUser = User.load(this);
             if (mUser == null) {
@@ -248,7 +247,7 @@ public class MyGiftsActivity extends ListActivity {
             mAdapter = new MyGiftsAdapter();
             mListView = getListView();
             mListView.setAdapter(mAdapter);
-            mRealModel = Gift.jsonToList(model);
+            mRealModel = model;
             if (!mRealModel.isEmpty()) {
                 for(Gift gift: mRealModel) {
                     final Map<String, Object> item = new HashMap<String, Object>();
