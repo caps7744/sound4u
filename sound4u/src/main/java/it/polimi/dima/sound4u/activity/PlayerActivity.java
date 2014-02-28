@@ -133,7 +133,7 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
 
         initializeEqualizerVariables();
 
-        if (savedInstanceState == null) {
+        if (savedInstanceState == null || savedInstanceState.get(SERVICE_STATE_KEY) == null) {
             serviceState = MusicService.State.Retriving;
             currentSound = getIntent().getParcelableExtra(SOUND_EXTRA);
         } else {
@@ -152,7 +152,9 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
         super.onSaveInstanceState(outState);
         outState.putInt(PLAY_BUTTON_VISIBILITY_KEY, btn_play.getVisibility());
         outState.putInt(PAUSE_BUTTON_VISIBILITY_KEY, btn_pause.getVisibility());
-        outState.putInt(SERVICE_STATE_KEY, serviceState.ordinal());
+        if (serviceState == MusicService.State.Playing || serviceState == MusicService.State.Paused) {
+            outState.putInt(SERVICE_STATE_KEY, serviceState.ordinal());
+        }
         outState.putParcelable(SOUND_EXTRA, currentSound);
     }
 
@@ -166,9 +168,9 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (serviceState == MusicService.State.Retriving || serviceState == MusicService.State.Prepared) {
+        /*if (serviceState == MusicService.State.Retriving || serviceState == MusicService.State.Prepared) {
             EventBus.getDefault().post(Command.Exit);
-        }
+        }*/
         EventBus.getDefault().unregister(this);
     }
 

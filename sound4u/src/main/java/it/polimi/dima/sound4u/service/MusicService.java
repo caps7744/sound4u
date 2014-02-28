@@ -96,6 +96,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mMediaPlayer.release();
         EventBus.getDefault().unregister(this);
     }
 
@@ -163,7 +164,9 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     private void exit() {
-        mMediaPlayer.release();
+        mState = State.Retriving;
+        EventBus.getDefault().post(mState);
+        stopSelf();
     }
 
     private void stop() {
