@@ -1,10 +1,7 @@
 package it.polimi.dima.sound4u.activity;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,7 +11,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.*;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import com.appspot.sound4u_backend.sound4uendpoints.Sound4uendpoints;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.json.gson.GsonFactory;
@@ -22,7 +22,6 @@ import it.polimi.dima.sound4u.R;
 import it.polimi.dima.sound4u.model.Gift;
 import it.polimi.dima.sound4u.model.Sound;
 import it.polimi.dima.sound4u.model.User;
-import it.polimi.dima.sound4u.service.GiftSenderTask;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -185,6 +184,9 @@ public class MyGiftsActivity extends ListActivity {
             List<Gift> myGifts = new LinkedList<Gift>();
             try {
                 List<com.appspot.sound4u_backend.sound4uendpoints.model.Gift> collection = service.list(params[0]).execute().getItems();
+                if(collection == null) {
+                    return myGifts;
+                }
                 for (com.appspot.sound4u_backend.sound4uendpoints.model.Gift item: collection) {
                     User sender = User.create(item.getSenderID(), item.getSenderUsername());
                     User receiver = User.create(item.getReceiverID(), item.getReceiverUsername());

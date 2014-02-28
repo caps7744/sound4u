@@ -237,11 +237,6 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.player, menu);

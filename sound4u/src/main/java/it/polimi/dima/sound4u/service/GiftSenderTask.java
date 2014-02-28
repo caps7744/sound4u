@@ -44,6 +44,12 @@ public class GiftSenderTask extends AsyncTask<Gift, Void, Boolean>{
         sendGift.setStreamURL(gift.getSound().getStreamURL());
         sendGift.setSoundArtistID(gift.getSound().getAuthor().getId());
         sendGift.setSoundArtistUsername(gift.getSound().getAuthor().getUsername());
+        if(gift.getSender().getFullName()!=null){
+            sendGift.setSenderUsername(gift.getSender().getFullName());
+        }
+        if(gift.getReceiver().getFullName()!=null){
+            sendGift.setReceiverUsername(gift.getReceiver().getFullName());
+        }
         try {
             service.add(sendGift).execute();
         } catch (IOException e) {

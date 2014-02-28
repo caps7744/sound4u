@@ -5,6 +5,8 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.IBinder;
@@ -192,10 +194,16 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
             backToPlayerIntent.putExtra(PlayerActivity.SOUND_EXTRA, mySound);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, backToPlayerIntent, 0);
 
+            if(mySound.getCover()==null){
+                Bitmap cover = BitmapFactory.decodeResource(getResources(), R.drawable.adele);
+                mySound = mySound.withCover(cover);
+            }
+
             notificationCompat = new NotificationCompat.Builder(this)
                     .setContentTitle(getString(R.string.notification_player_message))
                     .setContentText(mySound.getTitle())
                     .setSmallIcon(R.drawable.app_launcher)
+                    .setLargeIcon(mySound.getCover())
                     .setContentIntent(pendingIntent)
                     .setAutoCancel(true)
                     .setProgress(100, 0, false);

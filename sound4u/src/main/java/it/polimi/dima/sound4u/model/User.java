@@ -51,6 +51,8 @@ public class User implements Parcelable{
 
     private static final String TOKEN_KEY = Const.PKG + ".key.TOKEN_KEY";
 
+    private static final String FULLNAME_KEY = Const.PKG + ".key.FULLNAME_KEY";
+
     private static final String ID = "id";
 
     private static final String USERNAME = "username";
@@ -187,6 +189,7 @@ public class User implements Parcelable{
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putLong(ID_KEY, id);
+        editor.putString(FULLNAME_KEY, full_name);
         editor.putString(USERNAME_KEY, username);
         editor.putString(AVATAR_KEY, avatarURL);
         editor.putString(TOKEN_KEY, token.access);
@@ -200,6 +203,7 @@ public class User implements Parcelable{
         User user = null;
         if (username != null) {
             user = new User(id, username);
+            user.full_name = preferences.getString(FULLNAME_KEY, null);
             user.avatarURL = preferences.getString(AVATAR_KEY, null);
             user.token = new Token(preferences.getString(TOKEN_KEY, null), null, Token.SCOPE_NON_EXPIRING);
         }

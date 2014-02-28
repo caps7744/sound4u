@@ -22,11 +22,18 @@
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@string/placeholder_to"
+                style="@style/style_label"
+                android:id="@+id/sent"
+                android:layout_gravity="center"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="@string/placeholder_receiver"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                style="@style/style_label"
                 android:id="@+id/list_item_receiver"
-                android:layout_gravity="center"
-                android:visibility="gone"/>
+                android:layout_gravity="center"/>
     </LinearLayout>
     <LinearLayout
             android:layout_width="wrap_content"
