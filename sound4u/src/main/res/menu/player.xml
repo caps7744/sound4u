@@ -6,6 +6,7 @@
     <item
             android:id="@+id/action_to_gifts"
             android:title="My Gifts"
+            android:icon="@drawable/ic_gifts"
             android:showAsAction="always"/>
 
     <item android:id="@+id/to_sound_search_from_player"

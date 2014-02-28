@@ -67,7 +67,7 @@
 
 
             <Button android:id="@+id/flat"
-                    android:layout_height="wrap_content"
+                    android:layout_height="35dp"
                     android:layout_width="wrap_content"
                     android:text="Flat"
                     android:layout_margin="3dp"
