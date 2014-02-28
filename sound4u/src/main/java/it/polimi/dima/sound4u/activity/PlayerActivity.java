@@ -181,7 +181,7 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
 
         initializeMediaPlayerVariables();
 
-        if (currentSound.getCover() == null) {
+        if (currentSound.getCover() == null && currentSound.getCoverBig() != null) {
             new DownloadBigCover(currentSound, thumbnail).execute();
         } else {
             thumbnail.setImageBitmap(currentSound.getCover());
