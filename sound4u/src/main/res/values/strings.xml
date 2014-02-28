@@ -73,5 +73,9 @@
     <string name="title_activity_facebook_connect">FacebookConnect</string>
     <string name="app_id">1379605065621911</string>
     <string name="notification_player_message">Sound4u is playing...</string>
+    <!-- Confirm Dialog -->
+    <string name="dialog_title">The sound has no stream. Do you want to send it anyway?</string>
+    <string name="dialog_yes">Yes</string>
+    <string name="dialog_no">No</string>
 
 </resources>

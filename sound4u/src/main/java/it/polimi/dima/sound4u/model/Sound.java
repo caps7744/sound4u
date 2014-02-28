@@ -75,27 +75,23 @@ public class Sound implements Parcelable{
         this.cover = null;
     }
 
-    private Sound(JsonObject jsonObject) {
-        try{
-            this.id = jsonObject.get(ID).asLong();
-            this.title = jsonObject.get(TITLE).asString();
-            if (!jsonObject.get(ARTWORK_URL).isNull())  {
-                this.coverURL = jsonObject.get(ARTWORK_URL).asString();
-                this.cover_big = this.coverURL.replace("large","t500x500");
-            } else {
-                this.coverURL = null;
-                this.cover_big = null;
-            }
-            cover = null;
-            JsonObject jsonUser = jsonObject.get(USER).asObject();
-            this.author = User.create(jsonUser);
-            if (jsonObject.get(STREAM_URL) != null && !jsonObject.get(STREAM_URL).isNull()) {
-                this.streamURL = jsonObject.get(STREAM_URL).asString();
-            } else {
-                this.streamURL = null;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+    private Sound(JsonObject jsonObject) throws IllegalArgumentException{
+        this.id = jsonObject.get(ID).asLong();
+        this.title = jsonObject.get(TITLE).asString();
+        if (!jsonObject.get(ARTWORK_URL).isNull())  {
+            this.coverURL = jsonObject.get(ARTWORK_URL).asString();
+            this.cover_big = this.coverURL.replace("large","t500x500");
+        } else {
+            this.coverURL = null;
+            this.cover_big = null;
+        }
+        cover = null;
+        JsonObject jsonUser = jsonObject.get(USER).asObject();
+        this.author = User.create(jsonUser);
+        if (jsonObject.get(STREAM_URL) != null && !jsonObject.get(STREAM_URL).isNull()) {
+            this.streamURL = jsonObject.get(STREAM_URL).asString();
+        } else {
+            throw new IllegalArgumentException("Song has no stream url");
         }
     }
 
@@ -103,7 +99,7 @@ public class Sound implements Parcelable{
         return new Sound(id, title);
     }
 
-    public static Sound create(final JsonObject jsonObject) {
+    public static Sound create(final JsonObject jsonObject) throws IllegalArgumentException {
         return new Sound(jsonObject);
     }
 

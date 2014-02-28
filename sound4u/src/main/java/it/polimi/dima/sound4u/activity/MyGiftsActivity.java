@@ -1,7 +1,10 @@
 package it.polimi.dima.sound4u.activity;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,6 +22,7 @@ import it.polimi.dima.sound4u.R;
 import it.polimi.dima.sound4u.model.Gift;
 import it.polimi.dima.sound4u.model.Sound;
 import it.polimi.dima.sound4u.model.User;
+import it.polimi.dima.sound4u.service.GiftSenderTask;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,8 +40,6 @@ public class MyGiftsActivity extends ListActivity {
             R.id.list_item_title,
             R.id.list_item_artist
     };
-
-    private static final int SEARCH_SOUND_ID = 1;
 
     private static final String MODEL_KEY = "it.polimi.dima.sound4u.key.MODEL_KEY";
 
@@ -111,10 +113,11 @@ public class MyGiftsActivity extends ListActivity {
     }
 
     public void playGift(int position) {
+        final Sound extraSound = mRealModel.get(position).getSound().withCover(null);
         Intent playIntent = new Intent(PlayerActivity.PLAYER_ACTION);
-        Sound extraSound = mRealModel.get(position).getSound().withCover(null);
         playIntent.putExtra(PlayerActivity.SOUND_EXTRA, extraSound);
         startActivity(playIntent);
+
     }
 
     private class MyGiftsAdapter extends SimpleAdapter {

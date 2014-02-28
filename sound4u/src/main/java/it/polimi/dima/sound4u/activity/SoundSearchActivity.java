@@ -1,9 +1,8 @@
 package it.polimi.dima.sound4u.activity;
 
-import android.app.ListActivity;
-import android.app.ProgressDialog;
-import android.app.SearchManager;
+import android.app.*;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -23,8 +22,10 @@ import com.soundcloud.api.Request;
 import it.polimi.dima.sound4u.R;
 import it.polimi.dima.sound4u.conf.Const;
 import it.polimi.dima.sound4u.conf.SoundCloudConst;
+import it.polimi.dima.sound4u.model.Gift;
 import it.polimi.dima.sound4u.model.Sound;
 import it.polimi.dima.sound4u.model.User;
+import it.polimi.dima.sound4u.service.GiftSenderTask;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
@@ -42,6 +43,7 @@ public class SoundSearchActivity extends ListActivity {
 
     public static final int USER_REQUEST_ID = 2;
     public static final String MODEL_KEY = "it.polimi.dima.sound4u.key.MODEL_KEY";
+    private static final int USER_SEARCH_ID = 1;
 
     private final String[] FROM = {"cover", "title", "artist", "sound"};
 
@@ -61,6 +63,10 @@ public class SoundSearchActivity extends ListActivity {
     private ArrayList<Sound> mRealModel;
 
     private User mUser;
+
+    private AlertDialog mAlertDialog;
+
+    private DialogInterface.OnClickListener mDialogOnClickListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,8 +156,8 @@ public class SoundSearchActivity extends ListActivity {
     }
 
     public void playGift(int position) {
+        final Sound extraSound = mRealModel.get(position).withCover(null);
         Intent playIntent = new Intent(PlayerActivity.PLAYER_ACTION);
-        Sound extraSound = mRealModel.get(position).withCover(null);
         playIntent.putExtra(PlayerActivity.SOUND_EXTRA, extraSound);
         startActivity(playIntent);
     }
@@ -233,18 +239,22 @@ public class SoundSearchActivity extends ListActivity {
                         String responseBody = EntityUtils.toString(entity);
                         JsonArray jsonArray = JsonArray.readFrom(responseBody);
                         for (JsonValue item: jsonArray.values()) {
-                            Sound soundItem = Sound.create((JsonObject) item);
-                            if (soundItem.getCoverURL() != null) {
-                                Bitmap cover = null;
-                                try {
-                                    InputStream in = new URL(soundItem.getCoverURL()).openStream();
-                                    cover = BitmapFactory.decodeStream(in);
-                                } catch (IOException e) {
-                                    Log.w(SoundSearchTask.class.getName(), e.getMessage());
+                            try {
+                                Sound soundItem = Sound.create((JsonObject) item);
+                                if (soundItem.getCoverURL() != null) {
+                                    Bitmap cover = null;
+                                    try {
+                                        InputStream in = new URL(soundItem.getCoverURL()).openStream();
+                                        cover = BitmapFactory.decodeStream(in);
+                                    } catch (IOException e) {
+                                        Log.w(SoundSearchTask.class.getName(), e.getMessage());
+                                    }
+                                    soundItem = soundItem.withCover(cover);
                                 }
-                                soundItem = soundItem.withCover(cover);
+                                soundList.add(soundItem);
+                            } catch (IllegalArgumentException e) {
+                                // Nothing to do
                             }
-                            soundList.add(soundItem);
                         }
                         if (jsonArray.isEmpty()){
                             TextView no_result_msg = (TextView) findViewById(R.id.no_sound_results);
