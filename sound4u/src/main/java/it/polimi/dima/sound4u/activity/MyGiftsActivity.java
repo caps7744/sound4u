@@ -91,6 +91,8 @@ public class MyGiftsActivity extends ListActivity {
             case R.id.to_sound_search:
                 toSoundSearch();
                 return true;
+            case R.id.refresh:
+                new MyGiftsTasks().execute(mUser.getId());
             default:
                 return super.onOptionsItemSelected(item);
         }
