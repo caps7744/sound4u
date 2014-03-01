@@ -41,7 +41,7 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
 
     public static final String SOUND_TO_MUSIC_SERVICE_EXTRA = "it.polimi.dima.sound4u.extra.SOUND_TO_MUSIC_SERVICE_EXTRA";
 
-    private static final int USER_SEARCH_ID = 1;
+    private static final int USER_SEARCH_ID = 3;
     private static final String PLAY_BUTTON_VISIBILITY_KEY = "it.polimi.dima.sound4u.key.PLAY_BUTTON_VISIBILITY_KEY";
     private static final String PAUSE_BUTTON_VISIBILITY_KEY = "it.polimi.dima.sound4u.key.PAUSE_BUTTON_VISIBILITY_KEY";
     public static final String SERVICE_STATE_KEY = Const.PKG + ".key.SERVICE_STATE_KEY";
@@ -196,6 +196,11 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
         }
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
     private class DownloadBigCover extends AsyncTask<Void, Void, Bitmap> {
 
         private Sound mSound;
@@ -297,7 +302,8 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
     }
 
     private void toUserSearch() {
-        Intent intent = new Intent(this, UserSearchActivity.class);
+        Intent intent = new Intent(UserSearchActivity.USERSEARCH_ACTION);
+        currentSound = currentSound.withCover(null);
         intent.putExtra(UserSearchActivity.SOUND_EXTRA, currentSound);
         startActivityForResult(intent, USER_SEARCH_ID);
     }

@@ -56,13 +56,9 @@ public class Gift implements Parcelable{
 
     private Gift(Parcel in) {
         this.id = in.readLong();
-        Log.w(Gift.class.getName(), "letto id");
         this.sender = in.readParcelable(User.class.getClassLoader());
-        Log.w(Gift.class.getName(), "letto sender");
         this.receiver = in.readParcelable(User.class.getClassLoader());
-        Log.w(Gift.class.getName(), "letto receiver");
         this.sound = in.readParcelable(Sound.class.getClassLoader());
-        Log.w(Gift.class.getName(), "letto sound");
     }
 
     public static Gift create(final long id, final User sender, final User receiver, final Sound sound) {

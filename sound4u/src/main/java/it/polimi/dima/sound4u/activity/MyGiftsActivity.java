@@ -92,8 +92,10 @@ public class MyGiftsActivity extends ListActivity {
             case R.id.to_sound_search:
                 toSoundSearch();
                 return true;
-            case R.id.refresh:
+            case R.id.refresh:{
                 new MyGiftsTasks().execute(mUser.getId());
+                return true;
+            }
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -112,7 +114,7 @@ public class MyGiftsActivity extends ListActivity {
     }
 
     public void playGift(int position) {
-        final Sound extraSound = mRealModel.get(position).getSound().withCover(null);
+        Sound extraSound = mRealModel.get(position).getSound().withCover(null);
         Intent playIntent = new Intent(PlayerActivity.PLAYER_ACTION);
         playIntent.putExtra(PlayerActivity.SOUND_EXTRA, extraSound);
         startActivity(playIntent);
@@ -131,7 +133,7 @@ public class MyGiftsActivity extends ListActivity {
                         case R.id.list_item_sender:
                             String senderUsername = (String) data;
                             TextView senderTextView = (TextView) view;
-                            senderTextView.setText(getString(R.string.before_gift_sender_name).concat(senderUsername));
+                            senderTextView.setText(senderUsername);
                             break;
                         case R.id.list_item_receiver:
                             String receiverUsername = (String) data;

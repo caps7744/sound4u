@@ -156,7 +156,7 @@ public class SoundSearchActivity extends ListActivity {
     }
 
     public void playGift(int position) {
-        final Sound extraSound = mRealModel.get(position).withCover(null);
+        Sound extraSound = mRealModel.get(position).withCover(null);
         Intent playIntent = new Intent(PlayerActivity.PLAYER_ACTION);
         playIntent.putExtra(PlayerActivity.SOUND_EXTRA, extraSound);
         startActivity(playIntent);
