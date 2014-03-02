@@ -75,9 +75,9 @@ public class MyGiftsActivity extends ListActivity {
                 Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
             }
         } catch (PackageManager.NameNotFoundException e) {
-
+            Log.e(MyGiftsActivity.class.getName(), e.getMessage());
         } catch (NoSuchAlgorithmException e) {
-
+            Log.e(MyGiftsActivity.class.getName(), e.getMessage());
         }
 
 

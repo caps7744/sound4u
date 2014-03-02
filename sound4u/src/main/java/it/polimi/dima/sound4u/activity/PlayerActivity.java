@@ -302,7 +302,7 @@ public class PlayerActivity extends Activity implements View.OnClickListener,
     }
 
     private void toUserSearch() {
-        Intent intent = new Intent(UserSearchActivity.USERSEARCH_ACTION);
+        Intent intent = new Intent(this, UserSearchActivity.class);
         currentSound = currentSound.withCover(null);
         intent.putExtra(UserSearchActivity.SOUND_EXTRA, currentSound);
         startActivityForResult(intent, USER_SEARCH_ID);
