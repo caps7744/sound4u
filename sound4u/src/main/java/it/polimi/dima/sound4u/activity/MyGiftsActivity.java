@@ -61,28 +61,6 @@ public class MyGiftsActivity extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-
-        // Add code to print out the key hash
-        try {
-            PackageInfo info = getPackageManager().getPackageInfo(
-                    "com.facebook.samples.hellofacebook",
-                    PackageManager.GET_SIGNATURES);
-            for (Signature signature : info.signatures) {
-                MessageDigest md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-            }
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.e(MyGiftsActivity.class.getName(), e.getMessage());
-        } catch (NoSuchAlgorithmException e) {
-            Log.e(MyGiftsActivity.class.getName(), e.getMessage());
-        }
-
-
-
-
         setContentView(R.layout.activity_my_gifts);
         mUser = User.load(this);
         if (mUser == null) {
