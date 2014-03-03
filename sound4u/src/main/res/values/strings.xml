@@ -77,5 +77,35 @@
     <string name="dialog_title">The sound has no stream. Do you want to send it anyway?</string>
     <string name="dialog_yes">Yes</string>
     <string name="dialog_no">No</string>
+    <string name="help_login_explanation">Sound4u allows you to dedicate Soundcloud songs to other soundcloud users. In
+        order to use the application, you must have an account on Soundcloud. If you don\'t have one you can create it
+        by launching the application and by following instructions.
+    </string>
+    <string name="help_title">Sound4u Help</string>
+    <string name="help_gift_definition_title">What is a Gift?</string>
+    <string name="help_gift_explanation">A gift is a Soundcloud song which you can listen on Sound4u player. You can
+        send gifts to other Soundcloud users. You can chek if someone sent a gift to you on the first frame of Sound4u,
+        called \'Gifts\'.
+    </string>
+    <string name="help_listening_gift_title">How can I listen to one of my gifts?</string>
+    <string name="help_listening_gift">You can do it when you are in the first frame of the application: a list of all
+        your gifts is showed and by clicking on one of those gifts you will open the Sound4u player.
+    </string>
+    <string name="help_sending_gift_title">How can I send a gift to my friend?</string>
+    <string name="help_sending_gift">Once you\'re in the player frame, you have to click on the \'Send to..\' button.
+        You will open the Search User Frame in which you can search for Soundcloud users by typing a name or a username.
+        By clicking on a user you will automatically send the gift to that user. After that you can make your Facebook
+        friends know that you\'re using Sound4u by sharing a post about the gift.
+    </string>
+    <string name="help_soundsearch_button">Search on Soundcloud button: by clicking this you will open the Search page
+        for searching all Soundcloud songs by title or artist.
+    </string>
+    <string name="help_gift_button">My Gifts button: it will open the page where you can check all your sent and
+        received gifts.
+    </string>
+    <string name="help_refresh_button">Refresh button: it will reload all your gifts.</string>
+    <string name="help_eq_button">Equalizer button: it shows the player equalizer where you can change some player
+        settings. Click again to go back to the player.
+    </string>
 
 </resources>
