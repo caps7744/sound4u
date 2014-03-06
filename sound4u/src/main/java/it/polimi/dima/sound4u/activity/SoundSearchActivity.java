@@ -1,6 +1,9 @@
 package it.polimi.dima.sound4u.activity;
 
-import android.app.*;
+import android.app.AlertDialog;
+import android.app.ListActivity;
+import android.app.ProgressDialog;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,10 +25,8 @@ import com.soundcloud.api.Request;
 import it.polimi.dima.sound4u.R;
 import it.polimi.dima.sound4u.conf.Const;
 import it.polimi.dima.sound4u.conf.SoundCloudConst;
-import it.polimi.dima.sound4u.model.Gift;
 import it.polimi.dima.sound4u.model.Sound;
 import it.polimi.dima.sound4u.model.User;
-import it.polimi.dima.sound4u.service.GiftSenderTask;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
@@ -232,7 +233,7 @@ public class SoundSearchActivity extends ListActivity {
         protected List<Sound> doInBackground(String... params) {
             List<Sound> soundList = new LinkedList<Sound>();
             try {
-                HttpResponse response = wrapper.get(Request.to("/tracks.json?q=\"title='(.*)" + params[0] + "(.*)'\""));
+                HttpResponse response = wrapper.get(Request.to("/tracks").with("[q]", params[0]));
                 if(response.getStatusLine().getStatusCode() == 200) {
                     HttpEntity entity = response.getEntity();
                     if (entity != null) {
